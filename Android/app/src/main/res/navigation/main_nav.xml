@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/home2">
+
+    <fragment
+        android:id="@+id/configSetp_1"
+        android:name="com.example.domopotapp.ui.main.ConfigStep1"
+        android:label="ConfigSetp_1" >
+        <action
+            android:id="@+id/action_configStep_1_to_configStep_2"
+            app:destination="@id/configStep_2" />
+        <action
+            android:id="@+id/action_configStep_1_to_home"
+            app:destination="@id/home2" />
+    </fragment>
+    <fragment
+        android:id="@+id/configStep_2"
+        android:name="com.example.domopotapp.ui.main.ConfigStep2"
+        android:label="ConfigStep_2" >
+        <action
+            android:id="@+id/action_configStep_2_to_configStep_1"
+            app:destination="@id/configSetp_1" />
+    </fragment>
+    <fragment
+        android:id="@+id/home2"
+        android:name="com.example.domopotapp.ui.main.Home"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home_to_configStep_1"
+            app:destination="@id/configSetp_1" />
+    </fragment>
+</navigation>
