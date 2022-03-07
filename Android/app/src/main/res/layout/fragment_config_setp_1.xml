@@ -8,45 +8,46 @@
     tools:context=".ui.main.ConfigStep1">
 
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/current_wifi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
         android:gravity="center"
-        android:text="Benvenuto... Collegati alla rete DomoPot WiFi"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:text="Current wifi:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/wifi_setting"
+        android:id="@+id/wifiMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="WiFi Setting"
-        app:layout_constraintBottom_toTopOf="@+id/add"
+        android:layout_marginTop="-200dp"
+        android:text="menu Wifi"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/message" />
+        app:layout_constraintTop_toBottomOf="@+id/scanBtn" />
 
     <Button
-        android:id="@+id/add"
+        android:id="@+id/scanBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginTop="200dp"
+        android:text="Scan QrCode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/current_wifi" />
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
         android:text="Next"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginBottom="60dp"
-        android:text="Back"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.933"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
