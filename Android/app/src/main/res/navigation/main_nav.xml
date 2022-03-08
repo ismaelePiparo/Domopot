@@ -23,6 +23,9 @@
         <action
             android:id="@+id/ConfigStep2_to_ConfigStep1"
             app:destination="@id/configSetp_1" />
+        <action
+            android:id="@+id/ConfigStep2_to_ConfigStep3"
+            app:destination="@id/configStep3" />
     </fragment>
     <fragment
         android:id="@+id/home2"
@@ -33,4 +36,9 @@
             android:id="@+id/Home_to_ConfigStep1"
             app:destination="@id/configSetp_1" />
     </fragment>
+    <fragment
+        android:id="@+id/configStep3"
+        android:name="com.example.domopotapp.ui.main.ConfigStep3"
+        android:label="fragment_config_step3"
+        tools:layout="@layout/fragment_config_step3" />
 </navigation>

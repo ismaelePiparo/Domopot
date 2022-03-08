@@ -15,11 +15,18 @@ import android.view.View
 import android.widget.*
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.android.volley.AuthFailureError
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.domopotapp.R
 
 
 class ConfigStep2 : Fragment(R.layout.fragment_config_step_2) {
 
+    //TAG è usato per identificare i debug nel menù Logcat
+    private val TAG = ConfigStep2::class.java.name
 
     private val viewModel by activityViewModels<MainViewModel>()
     private lateinit var tv : TextView
@@ -32,6 +39,8 @@ class ConfigStep2 : Fragment(R.layout.fragment_config_step_2) {
     private var adapter : ArrayAdapter<*>? = null
     private var mySSID : String =""
     private var myPWD : String =""
+    private var mRequestQueue: RequestQueue? = null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -72,14 +81,53 @@ class ConfigStep2 : Fragment(R.layout.fragment_config_step_2) {
 
             override fun afterTextChanged(s: Editable?) {
                 connectBtn.isEnabled = !pwd.text.isEmpty()
+                myPWD = pwd.text.toString()
             }
         })
 
+        connectBtn.setOnClickListener{
+            sendCredentials();
+        }
 
         back.setOnClickListener{
             findNavController().navigate(R.id.ConfigStep2_to_ConfigStep1)
         }
     }
+
+    private fun sendCredentials() {
+
+        Toast.makeText(activity, "Invio dati in corso...", Toast.LENGTH_LONG).show()
+        mRequestQueue = Volley.newRequestQueue(activity)
+
+        val sr: StringRequest = object : StringRequest(
+            Method.POST, viewModel.ipWebServer,
+            Response.Listener { response ->
+                findNavController().navigate(R.id.ConfigStep2_to_ConfigStep3)
+            },
+            Response.ErrorListener { error ->
+                Log.i(TAG, "Error :$error")
+                tv.text = "Error"
+            })
+        {
+            @Throws(AuthFailureError::class)
+            override fun getParams() : Map<String, String> {
+                val params = HashMap<String,String>()
+                params["ssid"] = mySSID
+                params["pass"] = myPWD
+                return params
+            }
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["Content-Type"] = "application/x-www-form-urlencoded"
+                return params
+            }
+        }
+
+        mRequestQueue?.add(sr)
+    }
+
+
     //BroadcastReceveiver che notifica lo stato della connessione con l'esp
     var linkStatus: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {

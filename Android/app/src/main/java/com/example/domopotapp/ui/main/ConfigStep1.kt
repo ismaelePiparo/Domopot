@@ -89,7 +89,7 @@ class ConfigStep1 : Fragment(R.layout.fragment_config_setp_1) {
                 infoWifi.text = "NO WIFI!!!"
             }else{
                 infoWifi.text = defaultText + viewModel.wifiManager!!.connectionInfo.ssid
-                if(viewModel.wifiManager!!.connectionInfo.ssid.equals("\"" + "AndroidWifi" + "\"")){
+                if(viewModel.wifiManager!!.connectionInfo.ssid.equals("\"" + "DomoPot_WiFi" + "\"")){
                     nextBtn.isEnabled = true
                     viewModel.ssid = viewModel.wifiManager!!.connectionInfo.ssid
                 }
