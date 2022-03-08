@@ -28,6 +28,6 @@ class Home : Fragment(R.layout.fragment_home) {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         add.setOnClickListener{
-           findNavController().navigate(R.id.action_home_to_configStep_1)
+           findNavController().navigate(R.id.Home_to_ConfigStep1)
         }
     }}

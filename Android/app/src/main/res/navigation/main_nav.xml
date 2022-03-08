@@ -10,10 +10,10 @@
         android:name="com.example.domopotapp.ui.main.ConfigStep1"
         android:label="ConfigSetp_1" >
         <action
-            android:id="@+id/action_configStep_1_to_configStep_2"
+            android:id="@+id/ConfigStep1_to_ConfigStep2"
             app:destination="@id/configStep_2" />
         <action
-            android:id="@+id/action_configStep_1_to_home"
+            android:id="@+id/ConfigStep1_to_Home"
             app:destination="@id/home2" />
     </fragment>
     <fragment
@@ -21,7 +21,7 @@
         android:name="com.example.domopotapp.ui.main.ConfigStep2"
         android:label="ConfigStep_2" >
         <action
-            android:id="@+id/action_configStep_2_to_configStep_1"
+            android:id="@+id/ConfigStep2_to_ConfigStep1"
             app:destination="@id/configSetp_1" />
     </fragment>
     <fragment
@@ -30,7 +30,7 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_home_to_configStep_1"
+            android:id="@+id/Home_to_ConfigStep1"
             app:destination="@id/configSetp_1" />
     </fragment>
 </navigation>
