@@ -82,11 +82,12 @@ class ConfigStep2 : Fragment(R.layout.fragment_config_step_2) {
             override fun afterTextChanged(s: Editable?) {
                 connectBtn.isEnabled = !pwd.text.isEmpty()
                 myPWD = pwd.text.toString()
+
             }
         })
 
         connectBtn.setOnClickListener{
-            sendCredentials();
+            requestID();
         }
 
         back.setOnClickListener{
@@ -94,15 +95,36 @@ class ConfigStep2 : Fragment(R.layout.fragment_config_step_2) {
         }
     }
 
-    private fun sendCredentials() {
+    private fun requestID() {
 
         Toast.makeText(activity, "Invio dati in corso...", Toast.LENGTH_LONG).show()
         mRequestQueue = Volley.newRequestQueue(activity)
 
-        val sr: StringRequest = object : StringRequest(
-            Method.POST, viewModel.ipWebServer,
+        val id_request: StringRequest = object : StringRequest(
+            Method.GET, viewModel.ipWebServer,
             Response.Listener { response ->
-                findNavController().navigate(R.id.ConfigStep2_to_ConfigStep3)
+                if(viewModel.Pot_ID.isNullOrEmpty()){
+                    viewModel.Pot_ID=response
+                }
+                sendCredentials()
+            },
+            Response.ErrorListener { error ->
+                Log.i(TAG, "Error :$error")
+                tv.text = "Error"
+            }){}
+
+        mRequestQueue?.add(id_request)
+    }
+
+    private fun sendCredentials() {
+
+        Toast.makeText(activity, "Invio credenziali in corso...", Toast.LENGTH_LONG).show()
+        mRequestQueue = Volley.newRequestQueue(activity)
+
+        val sr: StringRequest = object : StringRequest(
+            Method.POST, viewModel.ipWebServer + "/credentials",
+            Response.Listener { response ->
+                //findNavController().navigate(R.id.Step2_to_Step3)
             },
             Response.ErrorListener { error ->
                 Log.i(TAG, "Error :$error")
@@ -125,6 +147,8 @@ class ConfigStep2 : Fragment(R.layout.fragment_config_step_2) {
         }
 
         mRequestQueue?.add(sr)
+        findNavController().navigate(R.id.ConfigStep2_to_ConfigStep3)
+
     }
 
 

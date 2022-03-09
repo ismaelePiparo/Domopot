@@ -40,5 +40,5 @@
         android:id="@+id/configStep3"
         android:name="com.example.domopotapp.ui.main.ConfigStep3"
         android:label="fragment_config_step3"
-        tools:layout="@layout/fragment_config_step3" />
+        tools:layout="@layout/config_step_3_fragment" />
 </navigation>
