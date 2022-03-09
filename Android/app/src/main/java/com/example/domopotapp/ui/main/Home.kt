@@ -9,7 +9,7 @@ import com.example.domopotapp.R
 import androidx.navigation.fragment.findNavController
 
 
-class Home : Fragment(R.layout.fragment_home) {
+class Home : Fragment(R.layout.home_fragment) {
     companion object {
         fun newInstance() = Home()
         fun newInstanceWithBundle(b: Bundle): Home{

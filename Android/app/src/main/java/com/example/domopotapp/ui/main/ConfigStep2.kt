@@ -23,7 +23,7 @@ import com.android.volley.toolbox.Volley
 import com.example.domopotapp.R
 
 
-class ConfigStep2 : Fragment(R.layout.fragment_config_step_2) {
+class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
 
     //TAG è usato per identificare i debug nel menù Logcat
     private val TAG = ConfigStep2::class.java.name

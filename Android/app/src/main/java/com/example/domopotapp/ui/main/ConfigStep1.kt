@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 
 import com.example.domopotapp.R
 
-class ConfigStep1 : Fragment(R.layout.fragment_config_setp_1) {
+class ConfigStep1 : Fragment(R.layout.config_setp_1_fragment) {
 
     companion object {
         fun newInstance() = ConfigStep1()

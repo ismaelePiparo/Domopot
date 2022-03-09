@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
-    app:startDestination="@id/home2">
+    app:startDestination="@id/configStep3">
 
     <fragment
         android:id="@+id/configSetp_1"
@@ -31,7 +31,7 @@
         android:id="@+id/home2"
         android:name="com.example.domopotapp.ui.main.Home"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/home_fragment" >
         <action
             android:id="@+id/Home_to_ConfigStep1"
             app:destination="@id/configSetp_1" />
@@ -40,5 +40,9 @@
         android:id="@+id/configStep3"
         android:name="com.example.domopotapp.ui.main.ConfigStep3"
         android:label="fragment_config_step3"
-        tools:layout="@layout/config_step_3_fragment" />
+        tools:layout="@layout/config_step_3_fragment" >
+        <action
+            android:id="@+id/ConfigStep3_to_Home"
+            app:destination="@id/home2" />
+    </fragment>
 </navigation>
