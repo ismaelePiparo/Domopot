@@ -1,7 +1,8 @@
 #include <Arduino.h>
+#include <Wire.h>
 #include "FastLED.h"
 
-#pragma region Macro
+#pragma region Macros
 //pins
 #define echoPin 3 // attach pin D2 Arduino to pin Echo of HC-SR04
 #define trigPin 2 //attach pin D3 Arduino to pin Trig of HC-SR04
@@ -33,8 +34,9 @@ led_state ledState = waterLevel;
 
 
 CRGB leds[5];
-#pragma region Prototipi
-long MeasureDistance(void);
+#pragma region Prototipi funzioni
+void sendData(void);
+int MeasureDistance(void);
 void ShowDistance(void);
 void OutOfRangeAnimation(void);
 void ShowDistanceAnimation(void);
@@ -46,10 +48,11 @@ void setup() {
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
   analogReference(EXTERNAL); // set the analog reference to 3.3V (AREF collegato a 3.3)
+  FastLED.addLeds<NEOPIXEL, ledPin>(leds, NUM_LEDS);
+  Wire.begin(1);     //diventa slave all'indirizzo 1;    
+  Wire.onRequest(sendData);   //imposta callback per mandare dati su richiesta
 
   Serial.begin(9600);
-
-  FastLED.addLeds<NEOPIXEL, ledPin>(leds, NUM_LEDS);
 }
 
 void loop() {
@@ -67,10 +70,9 @@ void loop() {
         break;
     case off:
         LedsOff();
-        Break;
+        break;
   }
 
-  // Invia la distanza filtrata al monitor seriale
   Serial.print("Distance: ");
   Serial.print(distance);
   Serial.println(" cm");
@@ -79,7 +81,15 @@ void loop() {
   Serial.println(" V");
 }
 
-long MeasureDistance() {
+void sendData() {
+  float humidity = MeasureHumidity();
+  int level = MeasureDistance();  
+  Wire.write((const byte*)(&humidity),4);
+  Wire.write((const byte*)(&level),2 );
+}
+
+#pragma region distanza
+int MeasureDistance() {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
@@ -135,6 +145,7 @@ void ShowDistanceAnimation(){
     }
     FastLED.show();
 }
+#pragma endregion
 
 void LedsOff(){
   FastLED.clear(true);
