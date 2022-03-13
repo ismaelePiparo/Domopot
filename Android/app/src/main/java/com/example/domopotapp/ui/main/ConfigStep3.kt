@@ -32,17 +32,20 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         tv = view.findViewById<TextView>(R.id.potID)
-        tv.text=viewModel.Pot_ID;
+        tv.text = "Carimento...";
 
-        val ref = viewModel.db.child(viewModel.Pot_ID+"/onLine")
+        val ref = viewModel.db.child(viewModel.Pot_ID + "/onLine")
         ref.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val v = snapshot.getValue<Long>()
+                val v = snapshot.getValue<Int>()
                 if(v==null){
                     tv.text = "Attendere..."
-                }else{
+                }else if(v==1){
                     tv.text = "Associazione riuscita"
                     findNavController().navigate(R.id.ConfigStep3_to_Home)
+                }else{
+                    //Se passa tropo tempo c'è stato un errore!
+                    //Da gestire
                 }
             }
             override fun onCancelled(error: DatabaseError) {
