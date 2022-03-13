@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "..\\..\\Domopot_Arduino"
+		},
+		{
+			"name": "Domopot_Esp8266",
+			"path": ".."
+		}
+	],
+	"settings": {}
+}
