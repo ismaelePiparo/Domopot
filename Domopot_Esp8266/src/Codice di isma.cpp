@@ -1,8 +1,11 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266Firebase.h>
+#include <EEPROM.h>
 
 #define PROJECT_ID "domopotdb-default-rtdb"   // Your Firebase Project ID. Can be found in project settings.
+#define PASSWORD_OFFSET 63
+#define SSID_OFFSET 32
 
 /*Specifying the SSID and Password of the AP*/
 const char* ap_ssid = "DomoPot_WiFi"; //Access Point SSID
@@ -27,21 +30,23 @@ void accessPoint(String ap_ssid, String ap_password);
 void handle_Credentials();
 void handle_Start();
 void handle_NotFound();
+void SetupWait();
+void writeStringToEEPROM(int addrOffset, const String &strToWrite);
+String readStringFromEEPROM(int addrOffset);
+void SaveWiFiCreds();
+void RestoreWiFiCreds();
 
 void setup() {
   Serial.begin(115200);
   Serial.println();
- 
+  EEPROM.begin(512);
+  
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN,HIGH);
 
-  for (uint8_t t = 4; t > 0; t--) {
-    Serial.printf("[SETUP] WAIT %d...\n", t);
-    Serial.flush();
-    delay(1000);
-  }
+  SetupWait();
 
-  //TO DO salvare credenziali in memoria eeprom
+  RestoreWiFiCreds();
   connectToWifi(ssid,pass); //tentativo di connessione
  
   if(WiFi.status() != WL_CONNECTED){
@@ -53,6 +58,7 @@ void setup() {
   onLine = true;
   //Una volta connesso l'esp si collega al DB dicendo che è onLine...
   firebase.setInt(Pot_ID+"/onLine", 1);   //<- non c'è setBool! :-(
+  SaveWiFiCreds();
 }
 
 //Solo quando è onLine entra nel loop
@@ -66,12 +72,20 @@ void loop() {
   //Da gestire il fatto che potrebbe mancare la rete wifi e bisogna riconnettersi
 }
 
-
-void ConfigurationPhase (){
-  if(WiFi.status() != WL_CONNECTED){
-    Serial.println("non connesso...");
-    accessPoint(ap_ssid,ap_password);
+//attesa di 4 secondi
+void SetupWait(){
+    for (uint8_t t = 4; t > 0; t--) {
+    Serial.printf("[SETUP] WAIT %d...\n", t);
+    Serial.flush();
+    delay(1000);
   }
+}
+
+//Configurazione primo utilizzo
+void ConfigurationPhase (){
+  
+  Serial.println("non connesso...attivazione AP");
+  accessPoint(ap_ssid,ap_password);
 
   //Fin quando non è connesso a nessuna rete si comporta da web server
   while ((WiFi.status() != WL_CONNECTED))
@@ -181,3 +195,37 @@ void handle_NotFound()
 {
   server.send(404, "text/plain", "Not found");
 }
+
+
+void writeStringToEEPROM(int addrOffset, const String &strToWrite)
+{
+  byte len = strToWrite.length();
+  EEPROM.write(addrOffset, len);
+  for (int i = 0; i < len; i++)
+  {
+    EEPROM.write(addrOffset + 1 + i, strToWrite[i]);
+  }
+}
+
+String readStringFromEEPROM(int addrOffset)
+{
+  int newStrLen = EEPROM.read(addrOffset);
+  char data[newStrLen + 1];
+  for (int i = 0; i < newStrLen; i++)
+  {
+    data[i] = EEPROM.read(addrOffset + 1 + i);
+  }
+  data[newStrLen] = '\0'; // !!! NOTE !!! Remove the space between the slash "/" and "0" (I've added a space because otherwise there is a display bug)
+  return String(data);
+}
+
+void SaveWiFiCreds(){
+    writeStringToEEPROM(0,ssid);
+    writeStringToEEPROM(SSID_OFFSET,pass);
+}
+
+void RestoreWiFiCreds(){
+    ssid = readStringFromEEPROM(0);
+    pass = readStringFromEEPROM(SSID_OFFSET);
+}
+
