@@ -4,7 +4,14 @@
 #define bytes 6
 
 float humidity = 0;
-int waterLevel = 0;
+int waterLvl = 0;
+
+enum led_state{
+  waterLevel,
+  accessPoint,
+  connected,
+  off
+};
 
 int requestData(void);
 
@@ -14,14 +21,7 @@ void setup() {
 }
 
 void loop() {
-  if(requestData()==0){
-    Serial.print(humidity);
-    Serial.println(" V");
-    Serial.print(waterLevel);
-    Serial.println(" cm");
-  } else{
-    Serial.println("Arduino didn't answer :(");
-  }
+  requestData();
   delay(2000);
 }
 
@@ -40,9 +40,14 @@ int requestData(){
 
   if(i==6){
     memcpy(&humidity, &data, sizeof(humidity));
-    waterLevel = (data[5]<<8)+data[4];
+    waterLvl = (data[5]<<8)+data[4];
+    Serial.print(humidity);
+    Serial.println(" V");
+    Serial.print(waterLvl);
+    Serial.println(" cm");
     return 0;
   }else{
+    Serial.println("No correct answer from arduino :(");
     return 1;
   }
 }
