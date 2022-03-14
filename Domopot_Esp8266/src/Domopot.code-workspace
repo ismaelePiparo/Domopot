@@ -8,5 +8,12 @@
 			"path": ".."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"*.tcc": "cpp",
+			"algorithm": "cpp",
+			"iterator": "cpp",
+			"random": "cpp"
+		}
+	}
 }

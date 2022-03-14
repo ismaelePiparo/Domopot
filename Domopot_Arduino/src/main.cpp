@@ -17,7 +17,7 @@
 #define NUM_LEDS 5 //numero di led
 #define depth 30  //profondità massima da misurare
 #define tono 180 //tono del colore dell'indicatore (hue in HSV)
-#define alpha 0.08 //sensibilità del sensore (veloce -> jitter, lento -> poco responsivo)
+#define alpha 0.5 //sensibilità del sensore (veloce -> jitter, lento -> poco responsivo)
 #pragma endregion
 
 // Variabili
@@ -52,7 +52,7 @@ void setup() {
   Wire.begin(1);     //diventa slave all'indirizzo 1;    
   Wire.onRequest(sendData);   //imposta callback per mandare dati su richiesta
 
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 void loop() {
@@ -86,6 +86,7 @@ void sendData() {
   int level = MeasureDistance();  
   Wire.write((const byte*)(&humidity),4);
   Wire.write((const byte*)(&level),2 );
+  Serial.println("Data was sent");
 }
 
 #pragma region distanza
