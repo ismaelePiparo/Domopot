@@ -35,13 +35,14 @@ led_state ledState = waterLevel;
 
 CRGB leds[5];
 #pragma region Prototipi funzioni
-void sendData(void);
-int MeasureDistance(void);
-void ShowDistance(void);
-void OutOfRangeAnimation(void);
-void ShowDistanceAnimation(void);
-void LedsOff(void);
-float MeasureHumidity(void);
+void sendData();
+int MeasureDistance();
+void ShowDistance();
+void OutOfRangeAnimation();
+void ShowDistanceAnimation();
+void LedsOff();
+float MeasureHumidity();
+void ReceiveState(int n);
 #pragma endregion
 
 void setup() {
@@ -51,8 +52,8 @@ void setup() {
   FastLED.addLeds<NEOPIXEL, ledPin>(leds, NUM_LEDS);
   Wire.begin(1);     //diventa slave all'indirizzo 1;    
   Wire.onRequest(sendData);   //imposta callback per mandare dati su richiesta
-
-  Serial.begin(115200);
+  Wire.onReceive(ReceiveState);
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -163,4 +164,13 @@ float MeasureHumidity(){ //per ora ritorna la tensione misurata dal sensore
   samples *= (3.3/1023); // conversione da int a Volt
 
   return samples;
+}
+
+void ReceiveState(int n){
+  if(n == 1){
+    ledState = (led_state)Wire.read();
+    Serial.println("Nuovo stato: " + ledState);
+  } else{
+    Serial.println("trasmissione non valida");
+  }
 }

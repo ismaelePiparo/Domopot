@@ -39,6 +39,7 @@ String pass = "UNKNOWN";
 
 //comunicazione con arduino
 int requestData(void);
+void SetArduinoState(led_state state);
 //configurazione
 void ConfigurationPhase();
 void connectToWifi (String ssid, String pass);
@@ -54,7 +55,7 @@ void SaveWiFiCreds();
 void RestoreWiFiCreds();
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   EEPROM.begin(512);
   Wire.begin();
 
@@ -63,7 +64,7 @@ void setup() {
 
   SetupWait();
 
-  RestoreWiFiCreds();           //recupera credenziali dalla EEPROM
+  RestoreWiFiCreds();           //recupera credenziali dalla EEPROM se ci sono
   connectToWifi(ssid,pass);     //tentativo di connessione
  
   if(WiFi.status() != WL_CONNECTED){
@@ -74,8 +75,8 @@ void setup() {
   Serial.println("Connesso alla rete: " + ssid);
   onLine = true;
   //Una volta connesso l'esp si collega al DB dicendo che è onLine...
-  firebase.setInt(Pot_ID+"/onLine", 1);
   SaveWiFiCreds(); //Salva credenziali nella EEPROM
+  firebase.setInt(Pot_ID+"/onLine", 1);
 }
 
 //Solo quando è onLine entra nel loop
@@ -84,7 +85,8 @@ void loop() {
     connectToWifi(ssid,pass);  //TODO: come tornare alla modalità AP?
   }else{
     //fai cose online
-    requestData();
+    requestData(); //richede e stampa i dati di arduino
+    delay(2000);
   }
   //Da gestire il fatto che potrebbe mancare la rete wifi e bisogna riconnettersi
 }
@@ -117,6 +119,12 @@ int requestData(){
   }
 }
 
+//di ad Arduino come comportarsi
+void SetArduinoState(led_state state){
+  Wire.beginTransmission(1); //indizzo Arduino
+  Wire.write(lowByte(state));        
+  Wire.endTransmission();
+}
 //attesa di 4 secondi
 void SetupWait(){
     for (uint8_t t = 4; t > 0; t--) {
@@ -260,18 +268,26 @@ String readStringFromEEPROM(int addrOffset)
   {
     data[i] = EEPROM.read(addrOffset + 1 + i);
   }
-  data[newStrLen] = '\0'; // !!! NOTE !!! Remove the space between the slash "/" and "0" (I've added a space because otherwise there is a display bug)
+  data[newStrLen] = '\0';
   return String(data);
 }
 
 void SaveWiFiCreds(){
-    writeStringToEEPROM(0,ssid);
-    writeStringToEEPROM(SSID_OFFSET,pass);
+    writeStringToEEPROM(5,ssid);
+    writeStringToEEPROM(SSID_OFFSET+10,pass);
 }
 
 void RestoreWiFiCreds(){
-    ssid = readStringFromEEPROM(0);
-    pass = readStringFromEEPROM(SSID_OFFSET);
+    ssid = readStringFromEEPROM(5);
+    pass = readStringFromEEPROM(SSID_OFFSET+10);
+    if(ssid.length() <= SSID_OFFSET+1 && pass.length() <= PASSWORD_OFFSET+1){
+      Serial.println("Recovered creds:");
+      Serial.println("Ssid: "+ssid);
+      Serial.println("Pass: "+pass);
+    } else{
+      Serial.println("No credentials saved");
+    }
+    
 }
 
 
