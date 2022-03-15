@@ -17,7 +17,7 @@
 #define NUM_LEDS 5 //numero di led
 #define depth 30  //profondità massima da misurare
 #define tono 180 //tono del colore dell'indicatore (hue in HSV)
-#define alpha 0.08 //sensibilità del sensore (veloce -> jitter, lento -> poco responsivo)
+#define alpha 0.5 //sensibilità del sensore (veloce -> jitter, lento -> poco responsivo)
 #pragma endregion
 
 // Variabili
@@ -35,13 +35,14 @@ led_state ledState = waterLevel;
 
 CRGB leds[5];
 #pragma region Prototipi funzioni
-void sendData(void);
-int MeasureDistance(void);
-void ShowDistance(void);
-void OutOfRangeAnimation(void);
-void ShowDistanceAnimation(void);
-void LedsOff(void);
-float MeasureHumidity(void);
+void sendData();
+int MeasureDistance();
+void ShowDistance();
+void OutOfRangeAnimation();
+void ShowDistanceAnimation();
+void LedsOff();
+float MeasureHumidity();
+void ReceiveState(int n);
 #pragma endregion
 
 void setup() {
@@ -51,7 +52,7 @@ void setup() {
   FastLED.addLeds<NEOPIXEL, ledPin>(leds, NUM_LEDS);
   Wire.begin(1);     //diventa slave all'indirizzo 1;    
   Wire.onRequest(sendData);   //imposta callback per mandare dati su richiesta
-
+  Wire.onReceive(ReceiveState);
   Serial.begin(9600);
 }
 
@@ -86,6 +87,7 @@ void sendData() {
   int level = MeasureDistance();  
   Wire.write((const byte*)(&humidity),4);
   Wire.write((const byte*)(&level),2 );
+  Serial.println("Data was sent");
 }
 
 #pragma region distanza
@@ -162,4 +164,13 @@ float MeasureHumidity(){ //per ora ritorna la tensione misurata dal sensore
   samples *= (3.3/1023); // conversione da int a Volt
 
   return samples;
+}
+
+void ReceiveState(int n){
+  if(n == 1){
+    ledState = (led_state)Wire.read();
+    Serial.println("Nuovo stato: " + ledState);
+  } else{
+    Serial.println("trasmissione non valida");
+  }
 }

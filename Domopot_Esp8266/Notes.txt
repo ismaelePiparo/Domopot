@@ -1,0 +1,74 @@
+ATTUALE:
+setup
+    cavolate
+    attesa setup
+    tentativo di connessione al wifi con credenziali salvate (non implementato)
+        Successo:
+            messaggio successo
+            dichiara di essere online su firebase
+        Fallimento:
+            messaggio Fallimento
+            avvia AP
+                *** fermati a gestire clients in loop ***
+                    Se credenziali wifi:
+                        tenta connessione
+                    Se richiesta Pot_ID
+                        Manda Pot_ID
+                    altrimenti nulla o 404
+
+
+loop
+    **vuoto**
+
+
+void connectToWifi (String ssid, String pass)
+
+
+void accessPoint(String ap_ssid, String ap_password) ASSEGNAZIONE HANDLES ACCESS POINT
+    Avvio access point e messaggi annessi
+    handle di invio Pot_ID
+    handle ricezione credenziali wifi
+    handle 404 not found
+    attivazione webserver e avviso
+
+void handle_Credentials()
+    salvataggio credenziali da POST HTTP del cellulare
+    tentativo di connessione
+
+void handle_Start()
+    invia Pot_ID
+
+void handle_NotFound()
+    rispondi con 404
+
+
+DESIDERATO:
+
+setup
+    cavolate
+    attesa setup
+    tentativo di connessione al wifi con credenziali salvate (fatto)
+        Successo: (funzionamento normale)
+            messaggio di successo
+            dichiara di essere online su firebase
+            +O+ salva credenziali wifi
+            +++ inizia routine principale
+                Postare dati periodicamente
+                Postare dati su richiesta
+                Eseguire comandi immediati e restituire esito
+                Eseguire comandi pianificati e restituire esito
+        
+        Fallimento: (configurazione iniziale)
+            messaggio Fallimento
+            avvia AP per inviare ID e ricevere credenziali
+                *** fermati a gestire clients in loop ***
+                    Se credenziali wifi:
+                        tenta connessione
+                            Successo:
+                                +++ funzionamento normale
+                            Fallimento:
+                                +++ torna a gestire i clients
+                    Se richiesta Pot_ID
+                        Manda Pot_ID
+                    altrimenti nulla o 404
+
