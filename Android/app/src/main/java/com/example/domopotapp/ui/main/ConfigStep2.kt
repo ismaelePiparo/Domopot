@@ -104,7 +104,7 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
             Method.GET, viewModel.ipWebServer,
             Response.Listener { response ->
                 if(viewModel.Pot_ID.isNullOrEmpty()){
-                    viewModel.Pot_ID=response
+                    viewModel.Pot_ID = response
                 }
                 sendCredentials()
             },

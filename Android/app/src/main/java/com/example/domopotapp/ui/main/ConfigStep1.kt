@@ -1,20 +1,26 @@
 package com.example.domopotapp.ui.main
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 
 import com.example.domopotapp.R
+import com.google.zxing.integration.android.IntentIntegrator
 
 class ConfigStep1 : Fragment(R.layout.config_setp_1_fragment) {
 
@@ -53,13 +59,51 @@ class ConfigStep1 : Fragment(R.layout.config_setp_1_fragment) {
             val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
             startActivity(intent)
         }
+        scanBtn.setOnClickListener{
+            startWifiQRCodeScanner(requireContext().applicationContext)
+        }
 
         //Il bottone si abilita solo se si è connessi alla rete DomoPot_WiFi
-        nextBtn.isEnabled=false
+        nextBtn.isEnabled = false
         nextBtn.setOnClickListener{
             findNavController().navigate(R.id.ConfigStep1_to_ConfigStep2)
         }
 
+    }
+
+    private fun startWifiQRCodeScanner(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val INTENT_ACTION_WIFI_QR_SCANNER = "android.settings.WIFI_DPP_ENROLLEE_QR_CODE_SCANNER"
+            val wifiManager = context.getSystemService(AppCompatActivity.WIFI_SERVICE) as WifiManager
+            if (wifiManager.isEasyConnectSupported) {
+                val intent = Intent(INTENT_ACTION_WIFI_QR_SCANNER)
+                resultLauncher.launch(intent)
+                //startActivity(intent)
+                //startActivityForResult(intent, 5000)
+            }
+        }else{
+            val intentIntegrator = IntentIntegrator(activity)
+            intentIntegrator.setBeepEnabled(false)
+            intentIntegrator.setCameraId(0)
+            intentIntegrator.setPrompt("Scansiona il codice QR")
+            intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+            //intentIntegrator.initiateScan()
+            resultLauncher.launch(intentIntegrator.createScanIntent())
+        }
+    }
+
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            Toast.makeText(activity, "Scanned: ", Toast.LENGTH_LONG).show()
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                //connessione via software... da implementare
+            }
+        }else{
+            Toast.makeText(activity, "Cancelled", Toast.LENGTH_LONG).show()
+
+        }
     }
 
     //BroadcastReceveiver che notifica lo stato del Wifi (acceso/spento)
