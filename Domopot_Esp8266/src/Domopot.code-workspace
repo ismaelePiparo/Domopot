@@ -13,7 +13,9 @@
 			"*.tcc": "cpp",
 			"algorithm": "cpp",
 			"iterator": "cpp",
-			"random": "cpp"
+			"random": "cpp",
+			"memory_resource": "cpp",
+			"memory": "cpp"
 		}
 	}
 }

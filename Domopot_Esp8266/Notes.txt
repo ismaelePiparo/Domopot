@@ -47,11 +47,11 @@ DESIDERATO:
 setup
     cavolate
     attesa setup
-    tentativo di connessione al wifi con credenziali salvate (non implementato)
+    tentativo di connessione al wifi con credenziali salvate (fatto)
         Successo: (funzionamento normale)
             messaggio di successo
             dichiara di essere online su firebase
-            +++ salva credenziali wifi
+            +O+ salva credenziali wifi
             +++ inizia routine principale
                 Postare dati periodicamente
                 Postare dati su richiesta

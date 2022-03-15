@@ -2,17 +2,30 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266Firebase.h>
 #include <EEPROM.h>
+#include <Wire.h>
 
-#define PROJECT_ID "domopotdb-default-rtdb"   // Your Firebase Project ID. Can be found in project settings.
+#define BYTES_RX 6
+#define PROJECT_ID "domopotdb-default-rtdb"   
 #define PASSWORD_OFFSET 63
 #define SSID_OFFSET 32
+#define AP_SSID "DomoPot_WiFi"
+#define AP_PASS ""
 
-/*Specifying the SSID and Password of the AP*/
-const char* ap_ssid = "DomoPot_WiFi"; //Access Point SSID
-const char* ap_password= ""; //Access Point Password
 uint8_t max_connections=8;//Maximum Connection Limit for AP
 int current_stations=0, new_stations=0;
- 
+
+//sensori
+float humidity = 0;
+int waterLvl = 0;
+
+//Enum per comunicare con arduino
+enum led_state{
+  waterLevel,
+  accessPoint,
+  connected,
+  off
+};
+
 //Specifying the Webserver instance to connect with HTTP Port: 80
 ESP8266WebServer server(80);
 
@@ -24,13 +37,17 @@ String Pot_ID = "DomoPot_01";
 String ssid = "UNKNOWN";
 String pass = "UNKNOWN";
 
+//comunicazione con arduino
+int requestData(void);
+//configurazione
 void ConfigurationPhase();
 void connectToWifi (String ssid, String pass);
-void accessPoint(String ap_ssid, String ap_password);
+void AccessPoint(String ap_ssid, String ap_password);
 void handle_Credentials();
 void handle_Start();
 void handle_NotFound();
 void SetupWait();
+//EEPROM
 void writeStringToEEPROM(int addrOffset, const String &strToWrite);
 String readStringFromEEPROM(int addrOffset);
 void SaveWiFiCreds();
@@ -38,38 +55,66 @@ void RestoreWiFiCreds();
 
 void setup() {
   Serial.begin(115200);
-  Serial.println();
   EEPROM.begin(512);
-  
+  Wire.begin();
+
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN,HIGH);
 
   SetupWait();
 
-  RestoreWiFiCreds();
-  connectToWifi(ssid,pass); //tentativo di connessione
+  RestoreWiFiCreds();           //recupera credenziali dalla EEPROM
+  connectToWifi(ssid,pass);     //tentativo di connessione
  
   if(WiFi.status() != WL_CONNECTED){
-    ConfigurationPhase();
+    ConfigurationPhase();       //non ritorna finché non si è connessi all'AP
   }
 
-  //Arrivati qui l'esp è connesso a alla rete wifi
+  //ESP CONNESSO
   Serial.println("Connesso alla rete: " + ssid);
   onLine = true;
   //Una volta connesso l'esp si collega al DB dicendo che è onLine...
-  firebase.setInt(Pot_ID+"/onLine", 1);   //<- non c'è setBool! :-(
-  SaveWiFiCreds();
+  firebase.setInt(Pot_ID+"/onLine", 1);
+  SaveWiFiCreds(); //Salva credenziali nella EEPROM
 }
 
 //Solo quando è onLine entra nel loop
 void loop() {
-  //Led acceso
-  digitalWrite(LED_BUILTIN,LOW);
-
-  //Da qui in poi ogni tot secondi l'esp invia al DB i valori letti dai sensori
-  //Da implementare...
-
+  if(WiFi.status() != WL_CONNECTED){
+    connectToWifi(ssid,pass);  //TODO: come tornare alla modalità AP?
+  }else{
+    //fai cose online
+    requestData();
+  }
   //Da gestire il fatto che potrebbe mancare la rete wifi e bisogna riconnettersi
+}
+
+//ricevi dati da Arduino
+int requestData(){
+  Serial.println("requesting data...");
+  Wire.requestFrom(1,6);
+  
+  byte data[BYTES_RX];
+  int i = 0;
+  
+  while(Wire.available()){
+    //Serial.println("Received byte");
+    data[i] = Wire.read();
+    i++;
+  }
+
+  if(i==6){
+    memcpy(&humidity, &data, sizeof(humidity));
+    waterLvl = (data[5]<<8)+data[4];
+    Serial.print(humidity);
+    Serial.println(" V");
+    Serial.print(waterLvl);
+    Serial.println(" cm");
+    return 0;
+  }else{
+    Serial.println("No correct answer from arduino :(");
+    return 1;
+  }
 }
 
 //attesa di 4 secondi
@@ -85,7 +130,7 @@ void SetupWait(){
 void ConfigurationPhase (){
   
   Serial.println("non connesso...attivazione AP");
-  accessPoint(ap_ssid,ap_password);
+  AccessPoint(AP_SSID, AP_PASS);
 
   //Fin quando non è connesso a nessuna rete si comporta da web server
   while ((WiFi.status() != WL_CONNECTED))
@@ -121,7 +166,7 @@ void connectToWifi (String ssid, String pass)
 }
 
 //Inizializza e e configura access point e webserver locale
-void accessPoint(String ap_ssid, String ap_password)
+void AccessPoint(String ap_ssid, String ap_password)
 {
   Serial.println("Starting in AP mode...");
   WiFi.mode(WIFI_AP);
@@ -228,4 +273,5 @@ void RestoreWiFiCreds(){
     ssid = readStringFromEEPROM(0);
     pass = readStringFromEEPROM(SSID_OFFSET);
 }
+
 
