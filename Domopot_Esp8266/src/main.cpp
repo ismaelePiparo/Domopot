@@ -264,7 +264,6 @@ void handle_NotFound()
   server.send(404, "text/plain", "Not found");
 }
 
-
 void writeStringToEEPROM(int addrOffset, const String &strToWrite)
 {
   byte len = strToWrite.length();
