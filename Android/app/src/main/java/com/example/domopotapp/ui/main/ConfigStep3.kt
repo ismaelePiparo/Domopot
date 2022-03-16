@@ -1,5 +1,7 @@
 package com.example.domopotapp.ui.main
 
+import android.content.IntentFilter
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -9,11 +11,15 @@ import androidx.navigation.fragment.findNavController
 import com.example.domopotapp.R
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
 
 class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
+
+
 
     companion object {
         fun newInstance() = ConfigStep1()
@@ -27,6 +33,8 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
 
     private val viewModel by activityViewModels<MainViewModel>()
     private lateinit var tv : TextView
+    private lateinit var ref: DatabaseReference
+    private lateinit var myListener: ValueEventListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -34,8 +42,8 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
         tv = view.findViewById<TextView>(R.id.potID)
         tv.text = "Carimento...";
 
-        val ref = viewModel.db.child(viewModel.Pot_ID + "/onLine")
-        ref.addValueEventListener(object: ValueEventListener {
+        ref = viewModel.db.child(viewModel.Pot_ID + "/onLine")
+        myListener = ref.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val v = snapshot.getValue<Int>()
                 if(v==null){
@@ -51,5 +59,20 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
             override fun onCancelled(error: DatabaseError) {
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+    }
+
+    override fun onPause(){
+        super.onPause()
+        ref.removeEventListener(myListener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ref.removeEventListener(myListener)
     }
 }

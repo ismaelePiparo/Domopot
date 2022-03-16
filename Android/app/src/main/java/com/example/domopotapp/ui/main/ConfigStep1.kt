@@ -5,10 +5,17 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
+import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
+import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
@@ -16,10 +23,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 
 import com.example.domopotapp.R
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.Result
+import com.google.zxing.client.result.ResultParser
+import com.google.zxing.client.result.WifiParsedResult
 import com.google.zxing.integration.android.IntentIntegrator
 
 class ConfigStep1 : Fragment(R.layout.config_setp_1_fragment) {
@@ -38,7 +50,6 @@ class ConfigStep1 : Fragment(R.layout.config_setp_1_fragment) {
 
     private val TAG = ConfigStep1::class.java.name
 
-    //private var wifiManager: WifiManager? = null
     private lateinit var scanBtn: Button
     private lateinit var nextBtn: Button
     private lateinit var wifiBtn: Button
@@ -94,15 +105,74 @@ class ConfigStep1 : Fragment(R.layout.config_setp_1_fragment) {
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            Toast.makeText(activity, "Scanned: ", Toast.LENGTH_LONG).show()
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                //connessione via software... da implementare
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Toast.makeText(activity, "Connessione in corso... ", Toast.LENGTH_LONG).show()
+            }else{
+                val intentResult = IntentIntegrator.parseActivityResult(result.resultCode, result.data)
+                val result = Result(intentResult.contents, null, null, BarcodeFormat.QR_CODE)
+                var parsedResult = ResultParser.parseResult(result) as WifiParsedResult
+                if(parsedResult.password.equals("\"" + "\"")){
+                    connectToWifi(parsedResult.ssid,"")
+                }else{
+                    connectToWifi(parsedResult.ssid,parsedResult.password)
+                }
+
+                Toast.makeText(activity, "Connessione in corso...", Toast.LENGTH_LONG).show()
             }
         }else{
             Toast.makeText(activity, "Cancelled", Toast.LENGTH_LONG).show()
+        }
+    }
 
+    private fun connectToWifi(ssid: String, password: String) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            try {
+                Log.e(TAG, "connection wifi pre Q")
+                val wifiConfig = WifiConfiguration()
+                wifiConfig.SSID = "\"" + ssid + "\""
+                wifiConfig.preSharedKey = "\"" + password + "\""
+                val netId = viewModel.wifiManager!!.addNetwork(wifiConfig)
+                viewModel.wifiManager!!.disconnect()
+                viewModel.wifiManager!!.enableNetwork(netId, true)
+                viewModel.wifiManager!!.reconnect()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } else {
+            Log.e(TAG, "connection wifi  Q")
+            Log.e(TAG, "SSID: $ssid password: $password")
+            val wifiNetworkSpecifier = WifiNetworkSpecifier.Builder()
+                .setSsid(ssid)
+                .setWpa2Passphrase(password)
+                .build()
+            val networkRequest = NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .setNetworkSpecifier(wifiNetworkSpecifier)
+               .build()
+            var connectivityManager = context?.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
+            var networkCallback = object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                   connectivityManager.bindProcessToNetwork(network)
+                    Log.e(TAG, "onAvailable")
+                }
+
+                override fun onLosing(network: Network, maxMsToLive: Int) {
+                    super.onLosing(network, maxMsToLive)
+                    Log.e(TAG, "onLosing")
+                }
+
+                override fun onLost(network: Network) {
+                    super.onLost(network)
+                    Log.e(TAG, "losing active connection")
+                }
+
+                override fun onUnavailable() {
+                    super.onUnavailable()
+                    Log.e(TAG, "onUnavailable")
+                }
+            }
+            connectivityManager.requestNetwork(networkRequest, networkCallback)
         }
     }
 
