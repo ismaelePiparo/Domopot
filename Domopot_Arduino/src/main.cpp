@@ -64,7 +64,7 @@ void loop() {
         ShowDistance();
         break;
     case accessPoint:
-        Serial.println("Connection behaviour not implemented yet");
+        Serial.println("Access point behaviour to implement");
         break;
     case connected:
         Serial.println("Connection behaviour not implemented yet");

@@ -26,6 +26,8 @@ enum led_state{
   off
 };
 
+led_state ledState;
+
 //Specifying the Webserver instance to connect with HTTP Port: 80
 ESP8266WebServer server(80);
 
@@ -67,9 +69,11 @@ void setup() {
   connectToWifi(ssid,pass);     //tentativo di connessione
   
   if(WiFi.status() != WL_CONNECTED){
+    SetArduinoState(ledState = accessPoint);
     ConfigurationPhase();       //non ritorna finché non si è connessi all'AP
   }
 
+  SetArduinoState(ledState = connected);
   //ESP CONNESSO
   onLine = true;
   //Una volta connesso l'esp si collega al DB dicendo che è onLine...
