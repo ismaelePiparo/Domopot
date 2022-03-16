@@ -47,7 +47,7 @@ void AccessPoint(String ap_ssid, String ap_password);
 void handle_Credentials();
 void handle_Start();
 void handle_NotFound();
-void SetupWait();
+void SetupWait(int secs);
 //EEPROM
 void writeStringToEEPROM(int addrOffset, const String &strToWrite);
 String readStringFromEEPROM(int addrOffset);
@@ -62,20 +62,17 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN,HIGH);
 
-  SetupWait();
 
   RestoreWiFiCreds();           //recupera credenziali dalla EEPROM se ci sono
   connectToWifi(ssid,pass);     //tentativo di connessione
- 
+  
   if(WiFi.status() != WL_CONNECTED){
     ConfigurationPhase();       //non ritorna finché non si è connessi all'AP
   }
 
   //ESP CONNESSO
-  Serial.println("Connesso alla rete: " + ssid);
   onLine = true;
   //Una volta connesso l'esp si collega al DB dicendo che è onLine...
-  SaveWiFiCreds(); //Salva credenziali nella EEPROM
   firebase.setInt(Pot_ID+"/onLine", 1);
 }
 
@@ -126,8 +123,8 @@ void SetArduinoState(led_state state){
   Wire.endTransmission();
 }
 //attesa di 4 secondi
-void SetupWait(){
-    for (uint8_t t = 4; t > 0; t--) {
+void SetupWait(int secs){
+    for (uint8_t t = secs; t > 0; t--) {
     Serial.printf("[SETUP] WAIT %d...\n", t);
     Serial.flush();
     delay(1000);
@@ -171,6 +168,21 @@ void connectToWifi (String ssid, String pass)
   Serial.println("Try to connect...");
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid,pass);
+
+  while (true)
+  {
+    delay(100);
+    if(WiFi.status() == WL_CONNECTED){
+      Serial.println("Connected to " + ssid);
+      break;
+    }
+    if(WiFi.status() == WL_CONNECT_FAILED){
+      Serial.println("Connection failed");
+      break;
+    }
+  }
+  
+
 }
 
 //Inizializza e e configura access point e webserver locale
@@ -235,6 +247,9 @@ void handle_Credentials()
     delay(5000);
     connectToWifi(ssid,pass);
   }
+  if(WiFi.status() == WL_CONNECTED){
+    SaveWiFiCreds();
+  }
 }
 
 //invia l'id su richiesta
@@ -258,6 +273,7 @@ void writeStringToEEPROM(int addrOffset, const String &strToWrite)
   {
     EEPROM.write(addrOffset + 1 + i, strToWrite[i]);
   }
+  if (EEPROM.commit()) Serial.println("EEPROM COMMITTED");
 }
 
 String readStringFromEEPROM(int addrOffset)
@@ -273,19 +289,20 @@ String readStringFromEEPROM(int addrOffset)
 }
 
 void SaveWiFiCreds(){
-    writeStringToEEPROM(5,ssid);
-    writeStringToEEPROM(SSID_OFFSET+10,pass);
+    writeStringToEEPROM(0,ssid);
+    writeStringToEEPROM(100,pass);
+    Serial.println("Credentials saved");
 }
 
 void RestoreWiFiCreds(){
-    ssid = readStringFromEEPROM(5);
-    pass = readStringFromEEPROM(SSID_OFFSET+10);
+    ssid = readStringFromEEPROM(0);
+    pass = readStringFromEEPROM(100);
     if(ssid.length() <= SSID_OFFSET+1 && pass.length() <= PASSWORD_OFFSET+1){
       Serial.println("Recovered creds:");
       Serial.println("Ssid: "+ssid);
       Serial.println("Pass: "+pass);
     } else{
-      Serial.println("No credentials saved");
+      Serial.println("No credentials saved\nFound: " + ssid + "\n"+pass);
     }
     
 }
