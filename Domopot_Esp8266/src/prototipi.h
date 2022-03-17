@@ -23,3 +23,5 @@ void writeStringToEEPROM(int addrOffset, const String &strToWrite);
 String readStringFromEEPROM(int addrOffset);
 void SaveWiFiCreds();
 void RestoreWiFiCreds();
+//FIREBASE
+void FirebaseSetup();
