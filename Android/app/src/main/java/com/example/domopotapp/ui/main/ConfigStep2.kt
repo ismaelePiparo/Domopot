@@ -87,6 +87,7 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
         })
 
         connectBtn.setOnClickListener{
+            //Spostare requestID() al passo precedente e sostituire con sendCredential()
             requestID();
         }
 

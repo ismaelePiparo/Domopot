@@ -77,6 +77,8 @@ class ConfigStep1 : Fragment(R.layout.config_setp_1_fragment) {
         //Il bottone si abilita solo se si è connessi alla rete DomoPot_WiFi
         nextBtn.isEnabled = false
         nextBtn.setOnClickListener{
+            //Sostituire con requestID() e controllare se il vaso sia presente nel DB
+            //se presente tornare alla home altrimenti procedere con la configurazione
             findNavController().navigate(R.id.ConfigStep1_to_ConfigStep2)
         }
 
