@@ -5,8 +5,12 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.FragmentContainerView
+import androidx.navigation.findNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -22,6 +26,29 @@ class MainActivity : AppCompatActivity() {
 
         } else {
             //per le versioni precedenti (9, 8...) non serve nessun permesso particolare
+        }
+
+        val navigationView : BottomNavigationView = findViewById(R.id.bottom_navigation)
+        val fragmentContainerView : FragmentContainerView = findViewById(R.id.fragmentContainerView)
+
+        navigationView.selectedItemId = R.id.navigation_home
+
+        navigationView.setOnItemSelectedListener{
+            when(it.itemId) {
+                R.id.navigation_home -> {
+                    fragmentContainerView.findNavController().navigate(R.id.action_global_home2)
+                    true
+                }
+                R.id.navigation_guide -> {
+                    fragmentContainerView.findNavController().navigate(R.id.action_global_guide)
+                    true
+                }
+                R.id.navigation_settings -> {
+                    fragmentContainerView.findNavController().navigate(R.id.action_global_settings)
+                    true
+                }
+                else -> false
+            }
         }
     }
 }

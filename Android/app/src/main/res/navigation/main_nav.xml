@@ -45,4 +45,15 @@
             android:id="@+id/ConfigStep3_to_Home"
             app:destination="@id/home2" />
     </fragment>
+    <fragment
+        android:id="@+id/guide"
+        android:name="com.example.domopotapp.ui.main.Guide"
+        android:label="Guide" />
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.example.domopotapp.ui.main.Settings"
+        android:label="Settings" />
+    <action android:id="@+id/action_global_guide" app:destination="@id/guide" />
+    <action android:id="@+id/action_global_settings" app:destination="@id/settings"/>
+    <action android:id="@+id/action_global_home2" app:destination="@id/home2"/>
 </navigation>

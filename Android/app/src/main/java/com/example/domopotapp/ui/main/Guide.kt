@@ -9,11 +9,11 @@ import com.example.domopotapp.R
 import androidx.navigation.fragment.findNavController
 
 
-class Home : Fragment(R.layout.home_fragment) {
+class Guide : Fragment(R.layout.guide_fragment) {
     companion object {
-        fun newInstance() = Home()
-        fun newInstanceWithBundle(b: Bundle): Home{
-            val f = Home()
+        fun newInstance() = Guide()
+        fun newInstanceWithBundle(b: Bundle): Guide{
+            val f = Guide()
             f.arguments = b
             return f
         }
@@ -23,12 +23,7 @@ class Home : Fragment(R.layout.home_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val add=view.findViewById<Button>(R.id.add)
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-
-        add.setOnClickListener{
-           findNavController().navigate(R.id.Home_to_ConfigStep1)
-        }
     }
 }
