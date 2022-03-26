@@ -72,3 +72,5 @@ setup
                         Manda Pot_ID
                     altrimenti nulla o 404
 
+
+Mantenere attivo accessPoint

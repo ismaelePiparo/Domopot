@@ -15,6 +15,12 @@
 #define AP_SSID "DomoPot_WiFi"
 #define AP_PASS ""
 
+/* Tenere attivo l'accesspoint in ascolto solo per handle start e credentials
+ * 
+ */
+
+
+
 uint8_t max_connections=8;//Maximum Connection Limit for AP
 int current_stations=0, new_stations=0;
 
@@ -57,6 +63,7 @@ int requestData(void);
 void SetArduinoState(led_state state);
 //configurazione
 void ConfigurationPhase();
+void APWhileConnected();
 void connectToWifi (String ssid, String pass);
 void AccessPoint(String ap_ssid, String ap_password);
 void handle_Credentials();
@@ -78,13 +85,15 @@ void setup() {
   EEPROM.begin(512);
   FirebaseSetup();
   Wire.begin();
-  
+  WiFi.mode(WIFI_AP_STA);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN,HIGH);
 
   RestoreWiFiCreds();           //recupera credenziali dalla EEPROM se ci sono
   connectToWifi(ssid,pass);     //tentativo di connessione
-  
+  Serial.println("Attivazione AP");
+  AccessPoint(AP_SSID, AP_PASS);
+
   if(WiFi.status() != WL_CONNECTED){
     SetArduinoState(ledState = accessPoint);
     ConfigurationPhase();       //non ritorna finché non si è connessi all'AP
@@ -92,19 +101,20 @@ void setup() {
   timeClient.begin(); //connessione al server NTP(?)
   SetArduinoState(ledState = connected);
   //ESP CONNESSO
-  FirebasePrintTime();
   onLine = true;
   
 }
 
 //Solo quando è onLine entra nel loop
 void loop() {
+  APWhileConnected();
   if(WiFi.status() != WL_CONNECTED){
-    connectToWifi(ssid,pass);  //TODO: come tornare alla modalità AP?
+    connectToWifi(ssid,pass);  
   }else{
     //fai cose online
     requestData(); //richede e stampa i dati di arduino
     delay(2000);
+    FirebasePrintTime();
   }
   //Da gestire il fatto che potrebbe mancare la rete wifi e bisogna riconnettersi
 }
@@ -157,9 +167,6 @@ void SetupWait(int secs){
 //Configurazione primo utilizzo
 void ConfigurationPhase (){
   
-  Serial.println("non connesso...attivazione AP");
-  AccessPoint(AP_SSID, AP_PASS);
-
   //Fin quando non è connesso a nessuna rete si comporta da web server
   while ((WiFi.status() != WL_CONNECTED))
   {
@@ -185,11 +192,19 @@ void ConfigurationPhase (){
   }
 }
 
+//Comportamento dell'AP mentre si ha connessione al wifi
+void APWhileConnected(){
+  
+  server.handleClient();
+  new_stations=WiFi.softAPgetStationNum();
+  
+}
+
 //Funzione che prova a connettersi ad una rete
 void connectToWifi (String ssid, String pass)
 {
   Serial.println("Try to connect...");
-  WiFi.mode(WIFI_STA);
+  
   WiFi.begin(ssid,pass);
 
   while (true)
@@ -211,8 +226,7 @@ void connectToWifi (String ssid, String pass)
 //Inizializza e e configura access point e webserver locale
 void AccessPoint(String ap_ssid, String ap_password)
 {
-  Serial.println("Starting in AP mode...");
-  WiFi.mode(WIFI_AP);
+  
   if(WiFi.softAP(ap_ssid,ap_password,1,false,max_connections)==true)
   {
     Serial.print("Access Point is Created with SSID: ");

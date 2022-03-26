@@ -12,6 +12,7 @@ int requestData(void);
 void SetArduinoState(led_state state);
 //configurazione
 void ConfigurationPhase();
+void APWhileConnected();
 void connectToWifi (String ssid, String pass);
 void AccessPoint(String ap_ssid, String ap_password);
 void handle_Credentials();
