@@ -64,7 +64,7 @@ void setup() {
 
 void loop() {
   
-  //Loop tra stati per testare i led (codice temporaneo)
+  //CODICE DI DEBUG!!! Loop tra stati per testare i led (codice temporaneo)
   if((millis() % 6000) < 3000){
     ledState = accessPoint;
   }else{

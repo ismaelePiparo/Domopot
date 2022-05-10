@@ -89,7 +89,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN,HIGH);
 
-  RestoreWiFiCreds();           //recupera credenziali dalla EEPROM se ci sono
+  //RestoreWiFiCreds();           //recupera credenziali dalla EEPROM se ci sono
   connectToWifi(ssid,pass);     //tentativo di connessione
   Serial.println("Attivazione AP");
   AccessPoint(AP_SSID, AP_PASS);
@@ -108,10 +108,10 @@ void setup() {
 //Solo quando è onLine entra nel loop
 void loop() {
   APWhileConnected();
-  if(WiFi.status() != WL_CONNECTED){
+  if(WiFi.status() != WL_CONNECTED){ // TO DO: implementare una procedura robusta per quando cade la connessione
     connectToWifi(ssid,pass);  
   }else{
-    //fai cose online
+    //fai cose online TO DO: implementare come fare le cose online
     requestData(); //richede e stampa i dati di arduino
     delay(2000);
     FirebasePrintTime();
@@ -212,9 +212,10 @@ void connectToWifi (String ssid, String pass)
     delay(100);
     if(WiFi.status() == WL_CONNECTED){
       Serial.println("Connected to " + ssid);
+      WiFi.softAPdisconnect(false); //disconnette i client dall'ap senza spegnerlo
       break;
     }
-    if(WiFi.status() == WL_CONNECT_FAILED){
+    if(WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_NO_SSID_AVAIL){
       Serial.println("Connection failed");
       break;
     }
