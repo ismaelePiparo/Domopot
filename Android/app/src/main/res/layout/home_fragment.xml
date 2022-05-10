@@ -8,23 +8,51 @@
     tools:context=".ui.main.Home">
 
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/myPlants"
+
+        style="@style/TextTitleTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:gravity="center"
-        android:text="HOME"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+
+        android:text="Le mie piante"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/add"
+    <TextView
+        android:id="@+id/plantName"
+
+        style="@style/TextTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Peperomia"
+
+        app:layout_constraintTop_toBottomOf="@id/myPlants"
+        app:layout_constraintLeft_toLeftOf="@id/myPlants"/>
+
+    <ImageButton
+        android:id="@+id/add"
+
+        style="@style/AddButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/plantName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/myPlants" />
+
+    <android.widget.Button
+        style="@style/PrimaryButton"
+
+        android:id="@+id/plantDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="60dp"
         android:layout_marginBottom="60dp"
-        android:text="Aggiungi vaso +"
+        android:text="Dettagli"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.lifecycle.ViewModelProvider
 import com.example.domopotapp.R
 import androidx.navigation.fragment.findNavController
@@ -23,7 +24,7 @@ class Home : Fragment(R.layout.home_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val add=view.findViewById<Button>(R.id.add)
+        val add = view.findViewById<ImageButton>(R.id.add)
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
