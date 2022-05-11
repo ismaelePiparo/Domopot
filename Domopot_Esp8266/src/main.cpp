@@ -96,6 +96,7 @@ void setup() {
 
   if(WiFi.status() != WL_CONNECTED){
     SetArduinoState(ledState = accessPoint);
+    Serial.println("Entro in ConfigurationPhase");
     ConfigurationPhase();       //non ritorna finché non si è connessi all'AP
   }
   timeClient.begin(); //connessione al server NTP(?)
@@ -111,6 +112,8 @@ void loop() {
   if(WiFi.status() != WL_CONNECTED){ // TO DO: implementare una procedura robusta per quando cade la connessione
     connectToWifi(ssid,pass);  
   }else{
+    //Led dell'esp acceso per vedere che è connesso ad internet
+    digitalWrite(LED_BUILTIN,LOW);
     //fai cose online TO DO: implementare come fare le cose online
     requestData(); //richede e stampa i dati di arduino
     delay(2000);
@@ -286,7 +289,7 @@ void handle_Credentials()
     connectToWifi(ssid,pass);
   }
   if(WiFi.status() == WL_CONNECTED){
-    SaveWiFiCreds();
+    //SaveWiFiCreds();
   }
 }
 

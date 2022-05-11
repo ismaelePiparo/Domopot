@@ -107,6 +107,7 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
                 if(viewModel.Pot_ID.isNullOrEmpty()){
                     viewModel.Pot_ID = response
                 }
+
                 sendCredentials()
             },
             Response.ErrorListener { error ->

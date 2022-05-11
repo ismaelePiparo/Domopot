@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
-    app:startDestination="@id/home2">
+    app:startDestination="@id/login">
 
     <fragment
         android:id="@+id/configSetp_1"
@@ -35,6 +35,9 @@
         <action
             android:id="@+id/Home_to_ConfigStep1"
             app:destination="@id/configSetp_1" />
+        <action
+            android:id="@+id/home_to_login"
+            app:destination="@id/login" />
     </fragment>
     <fragment
         android:id="@+id/configStep3"
@@ -56,4 +59,12 @@
     <action android:id="@+id/action_global_guide" app:destination="@id/guide" />
     <action android:id="@+id/action_global_settings" app:destination="@id/settings"/>
     <action android:id="@+id/action_global_home2" app:destination="@id/home2"/>
+    <fragment
+        android:id="@+id/login"
+        android:name="com.example.domopotapp.ui.main.Login"
+        android:label="Login" >
+        <action
+            android:id="@+id/login_to_home"
+            app:destination="@id/home2" />
+    </fragment>
 </navigation>
