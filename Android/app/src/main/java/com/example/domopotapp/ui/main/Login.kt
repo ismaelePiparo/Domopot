@@ -107,17 +107,27 @@ class Login : Fragment(R.layout.login_fragment) {
                 val value = snapshot.child(user.uid).value
                 Log.w("DB REsponse: ", "VALUE: "+ value.toString())
                 if (value == null){
-                    Log.w("DB REsponse: ", "Utente non presente nel DB -> creo record")
+                    Log.w("DB Response ", "Utente non presente nel DB -> creo record")
                     val values: MutableMap<String, Any> = HashMap()
                     values["eMail"] = user.email.toString()
                     values["name"] = user.displayName.toString()
                     values["pots"] = 0
-                    viewModel.db.child("Users")
+
+                    //vecchia implementazione
+                    /*viewModel.db.child("Users")
                         .child(user.uid)
                         .setValue(values)
                     ref.removeEventListener(myListener)
-                    findNavController().navigate(R.id.login_to_home)
+                    findNavController().navigate(R.id.login_to_home)*/
 
+                    viewModel.db.child("Users")
+                        .child(user.uid)
+                        .setValue(values).addOnCompleteListener{
+                            if(it.isSuccessful){
+                                ref.removeEventListener(myListener)
+                                findNavController().navigate(R.id.login_to_home)
+                            }
+                        }
                 }else{
                     Log.w("DB REsponse: ", "Utente già presente nel DB")
                     ref.removeEventListener(myListener)
