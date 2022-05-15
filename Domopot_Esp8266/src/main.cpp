@@ -85,7 +85,7 @@ void setup() {
   EEPROM.begin(512);
   FirebaseSetup();
   Wire.begin();
-  WiFi.mode(WIFI_AP_STA);
+  //WiFi.mode(WIFI_AP_STA);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN,HIGH);
 
@@ -108,11 +108,11 @@ void setup() {
 
 //Solo quando è onLine entra nel loop
 void loop() {
-  APWhileConnected();
+  //APWhileConnected();
   if(WiFi.status() != WL_CONNECTED){ // TO DO: implementare una procedura robusta per quando cade la connessione
     connectToWifi(ssid,pass);  
   }else{
-    //Led dell'esp acceso per vedere che è connesso ad internet
+    //Led dell'esp acceso per vedere che è connesso ad internet in fase di debug
     digitalWrite(LED_BUILTIN,LOW);
     //fai cose online TO DO: implementare come fare le cose online
     requestData(); //richede e stampa i dati di arduino
@@ -169,7 +169,7 @@ void SetupWait(int secs){
 
 //Configurazione primo utilizzo
 void ConfigurationPhase (){
-  
+
   //Fin quando non è connesso a nessuna rete si comporta da web server
   while ((WiFi.status() != WL_CONNECTED))
   {
@@ -207,7 +207,7 @@ void APWhileConnected(){
 void connectToWifi (String ssid, String pass)
 {
   Serial.println("Try to connect...");
-  
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid,pass);
 
   while (true)
@@ -215,7 +215,7 @@ void connectToWifi (String ssid, String pass)
     delay(100);
     if(WiFi.status() == WL_CONNECTED){
       Serial.println("Connected to " + ssid);
-      WiFi.softAPdisconnect(false); //disconnette i client dall'ap senza spegnerlo
+      //WiFi.softAPdisconnect(false); //disconnette i client dall'ap senza spegnerlo
       break;
     }
     if(WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_NO_SSID_AVAIL){
@@ -230,7 +230,7 @@ void connectToWifi (String ssid, String pass)
 //Inizializza e e configura access point e webserver locale
 void AccessPoint(String ap_ssid, String ap_password)
 {
-  
+  WiFi.mode(WIFI_AP);
   if(WiFi.softAP(ap_ssid,ap_password,1,false,max_connections)==true)
   {
     Serial.print("Access Point is Created with SSID: ");

@@ -4,12 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModel
 import androidx.navigation.fragment.findNavController
 import com.example.domopotapp.MainActivity
 import com.example.domopotapp.R
@@ -21,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 
 class Login : Fragment(R.layout.login_fragment) {
@@ -30,7 +28,9 @@ class Login : Fragment(R.layout.login_fragment) {
     private val viewModel by activityViewModels<MainViewModel>()
 
 
-    private lateinit var mEventListener: ValueEventListener
+    private lateinit var myListener: ValueEventListener
+    private lateinit var ref: DatabaseReference
+
 
 
     companion object{
@@ -53,9 +53,6 @@ class Login : Fragment(R.layout.login_fragment) {
         viewModel.googleSignInClient = activity?.let { GoogleSignIn.getClient(it, viewModel.gso) }!!
         login.setOnClickListener {
             signIn()
-            //findNavController().navigate(R.id.login_to_home)
-
-
         }
     }
 
@@ -102,14 +99,15 @@ class Login : Fragment(R.layout.login_fragment) {
     }
 
     fun writeUserInBD(user: FirebaseUser)  {
-        mEventListener = object : ValueEventListener {
+        ref = viewModel.db.child("Users")
+        myListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 val value = snapshot.child(user.uid).value
                 Log.w("DB REsponse: ", "VALUE: "+ value.toString())
                 if (value == null){
-                    Log.w("DB REsponse: ", "Utente non presente nel DB")
+                    Log.w("DB REsponse: ", "Utente non presente nel DB -> creo record")
                     val values: MutableMap<String, Any> = HashMap()
                     values["eMail"] = user.email.toString()
                     values["name"] = user.displayName.toString()
@@ -117,13 +115,12 @@ class Login : Fragment(R.layout.login_fragment) {
                     viewModel.db.child("Users")
                         .child(user.uid)
                         .setValue(values)
-                    viewModel.db.removeEventListener(mEventListener)
-
+                    ref.removeEventListener(myListener)
                     findNavController().navigate(R.id.login_to_home)
 
                 }else{
                     Log.w("DB REsponse: ", "Utente già presente nel DB")
-                    viewModel.db.removeEventListener(mEventListener)
+                    ref.removeEventListener(myListener)
 
                     findNavController().navigate(R.id.login_to_home)
                 }
@@ -133,9 +130,7 @@ class Login : Fragment(R.layout.login_fragment) {
                 Log.w("DB REsponse: ", "Failed to read value.", error.toException())
             }
         }
-        viewModel.db.child("Users").addListenerForSingleValueEvent(mEventListener)
-
-
+        ref.addListenerForSingleValueEvent(myListener)
     }
 
 }
