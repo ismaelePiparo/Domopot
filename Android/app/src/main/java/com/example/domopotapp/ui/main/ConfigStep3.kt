@@ -70,8 +70,10 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
                     handler.postDelayed(runnable, 30000)
                 }else if(!connctionStatus.isNullOrEmpty()){
                     if(connctionStatus.toLong()>viewModel.timestamp){
+                        ref.removeEventListener(myListener)
                         Log.w("stop handler timer: ","timer stop")
                         handler.removeCallbacks(runnable)
+
                         tv.text = "Associazione riuscita"
 
                         //inserisce l'ID del vaso e il nome nel database dell'utente
@@ -85,10 +87,12 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
                                     if(it.isSuccessful){
                                         Log.w("Assegnato vaso a utente", "vaso assegnato correttamente")
                                         Toast.makeText(activity, "Associazione riuscita", Toast.LENGTH_LONG).show()
-                                        ref.removeEventListener(myListener)
+                                        //ref.removeEventListener(myListener)
 
                                         findNavController().navigate(R.id.ConfigStep3_to_Home)
                                     }else{
+                                        Log.w("ERRORE", "errore nella scrittura sul database")
+
                                         /*si potrebbe gestire il caso di un errore di scrittuta su DB
                                         e quindi disconnettere l'ESP da internet e riprovare l'associazione*/
                                     }
