@@ -12,6 +12,7 @@ import com.example.domopotapp.R
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -34,6 +35,8 @@ class Home : Fragment(R.layout.home_fragment) {
 
     private lateinit var myListener: ValueEventListener
     private lateinit var ref: DatabaseReference
+    private lateinit var user: FirebaseUser
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,8 +47,13 @@ class Home : Fragment(R.layout.home_fragment) {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         plantName = view.findViewById<TextView>(R.id.plantName)
 
-        var user = viewModel.mAuth.currentUser
-        ref = user?.let { viewModel.db.child("Users").child(it.uid).child("pots") }!!
+
+        //DA GESTIRE LA PARTE DI CREAZIONE DELLE CARD PER I VASI DELL'UTENTE
+        //QUESTO è SOLO UN TEST!!!
+        user = viewModel.mAuth.currentUser!!
+        ref = user?.let { viewModel.db.child("Users")
+                                    .child(it.uid)
+                                    .child("pots") }!!
         myListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val plants = snapshot.value.toString()
@@ -64,7 +72,6 @@ class Home : Fragment(R.layout.home_fragment) {
                 Log.w("DB REsponse: ", "Failed to read value.", error.toException())
             }
         }
-        ref.addListenerForSingleValueEvent(myListener)
 
         add.setOnClickListener{
            findNavController().navigate(R.id.Home_to_ConfigStep1)
@@ -87,4 +94,20 @@ class Home : Fragment(R.layout.home_fragment) {
                 })
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        ref.addValueEventListener(myListener)
+    }
+
+    override fun onPause(){
+        super.onPause()
+        ref.removeEventListener(myListener)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ref.removeEventListener(myListener)
+    }
 }
+

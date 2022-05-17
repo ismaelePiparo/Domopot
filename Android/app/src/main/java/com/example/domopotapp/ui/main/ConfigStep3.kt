@@ -54,48 +54,78 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
 
         tv = view.findViewById<TextView>(R.id.potID)
         tv.text = "Carimento...";
-        //usato per debug ----> viewModel.Pot_ID = "DomoPot_01"
+        //valori usati per debug ---->
+        //viewModel.Pot_ID = "DomoPot_01"
+        //viewModel.timestamp = System.currentTimeMillis() / 1000
+
         ref = viewModel.db.child(viewModel.Pot_ID + "/OnlineStatus/ConnectTime")
-        myListener = ref.addValueEventListener(object: ValueEventListener {
+        myListener = object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val v = snapshot.value.toString()
-                Log.w("Value from DB: ",v.toString())
-                if(v.isNullOrEmpty()) {
+                val connctionStatus = snapshot.value.toString()
+                Log.w("connectionStatus: ",connctionStatus)
+                if(connctionStatus.isNullOrEmpty()) {
                     tv.text = "Attendere..."
                     //getione del tempo di attesa
-                    handler.postDelayed(runnable, 10000)
-                }else if(!v.isNullOrEmpty()){
-                    handler.removeCallbacks(runnable)
-                    tv.text = "Associazione riuscita"
+                    Log.w("start handler timer: ","timer start")
+                    handler.postDelayed(runnable, 30000)
+                }else if(!connctionStatus.isNullOrEmpty()){
+                    if(connctionStatus.toLong()>viewModel.timestamp){
+                        Log.w("stop handler timer: ","timer stop")
+                        handler.removeCallbacks(runnable)
+                        tv.text = "Associazione riuscita"
 
-                    //inserisce l'ID del vaso e il nome nel database dell'utente
-                    val pot: MutableMap<String, Any> = HashMap()
-                    pot["PotID"] = viewModel.Pot_ID!!
-                    pot["PotName"] = viewModel.Pot_ID!!
-                    viewModel.mAuth.currentUser?.let {
-                        viewModel.db.child("Users")
-                            .child(it.uid).child("pots").setValue(pot)}
-                    Toast.makeText(activity, "Associazione riuscita", Toast.LENGTH_LONG).show()
+                        //inserisce l'ID del vaso e il nome nel database dell'utente
+                        viewModel.mAuth.currentUser?.let {
+                            viewModel.db.child("Users")
+                                .child(it.uid)
+                                .child("pots")
+                                .child(viewModel.Pot_ID)
+                                .setValue(viewModel.Pot_ID)
+                                .addOnCompleteListener{
+                                    if(it.isSuccessful){
+                                        Log.w("Assegnato vaso a utente", "vaso assegnato correttamente")
+                                        Toast.makeText(activity, "Associazione riuscita", Toast.LENGTH_LONG).show()
+                                        ref.removeEventListener(myListener)
 
-                    findNavController().navigate(R.id.ConfigStep3_to_Home)
+                                        findNavController().navigate(R.id.ConfigStep3_to_Home)
+                                    }else{
+                                        /*si potrebbe gestire il caso di un errore di scrittuta su DB
+                                        e quindi disconnettere l'ESP da internet e riprovare l'associazione*/
+                                    }
+                                }
+
+                        }
+                    }else{
+                        tv.text = "Attendere..."
+                        //getione del tempo di attesa
+                        Log.w("start handler timer: ","timer start")
+                        handler.postDelayed(runnable, 30000)
+                    }
                 }
             }
             override fun onCancelled(error: DatabaseError) {
             }
-        })
+        }
+
     }
 
     override fun onResume() {
         super.onResume()
+        ref.addValueEventListener(myListener)
+
     }
 
     override fun onPause(){
         super.onPause()
         ref.removeEventListener(myListener)
+        handler.removeCallbacks(runnable)
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
         ref.removeEventListener(myListener)
+        handler.removeCallbacks(runnable)
+
     }
 }

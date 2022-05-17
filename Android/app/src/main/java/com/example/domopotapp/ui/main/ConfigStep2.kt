@@ -40,10 +40,12 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
     private var mySSID : String =""
     private var myPWD : String =""
     private var mRequestQueue: RequestQueue? = null
+    private var initialScanWifi = true
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         back = view.findViewById<Button>(R.id.back_2)
         connectBtn = view.findViewById(R.id.conect)
@@ -126,7 +128,9 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
         val sr: StringRequest = object : StringRequest(
             Method.POST, viewModel.ipWebServer + "/credentials",
             Response.Listener { response ->
-                //findNavController().navigate(R.id.Step2_to_Step3)
+                viewModel.timestamp = System.currentTimeMillis() / 1000
+                Log.w("Timestap ",viewModel.timestamp.toString())
+                findNavController().navigate(R.id.ConfigStep2_to_ConfigStep3)
             },
             Response.ErrorListener { error ->
                 Log.i(TAG, "Error :$error")
@@ -149,7 +153,7 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
         }
 
         mRequestQueue?.add(sr)
-        findNavController().navigate(R.id.ConfigStep2_to_ConfigStep3)
+        //findNavController().navigate(R.id.ConfigStep2_to_ConfigStep3)
 
     }
 
@@ -185,6 +189,7 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
         requireActivity().registerReceiver(wifiReceiver, IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION))
         viewModel.wifiManager!!.startScan()
         Toast.makeText(activity, "Scanning WiFi ...", Toast.LENGTH_SHORT).show()
+        initialScanWifi = false
     }
 
     //Creazione di un Broadcast Receiver (Non fatto a lezione, preso online)
@@ -228,7 +233,9 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
 
     override fun onResume() {
         super.onResume()
-        scanWifi()
+        if(initialScanWifi){
+            scanWifi()
+        }
         //Inizializzazione dei BroadcastReceiver
         requireActivity().registerReceiver(linkStatus, IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION))
     }
