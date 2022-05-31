@@ -380,5 +380,5 @@ void FirebaseSetup(){
 
 void FirebasePrintTime(){
   timeClient.update();
-  Firebase.RTDB.setString(&fbdo, '/'+Pot_ID+"/OnlineStatus/ConnectTime", String(timeClient.getEpochTime()));
+  Firebase.RTDB.setString(&fbdo, "/Pots/"+Pot_ID+"/OnlineStatus/ConnectTime", String(timeClient.getEpochTime()));
 }
