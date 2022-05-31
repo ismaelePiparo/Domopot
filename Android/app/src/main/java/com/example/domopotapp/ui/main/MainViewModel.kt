@@ -19,6 +19,7 @@ class MainViewModel : ViewModel(){
     public var timestamp : Long = 0
     public val db = Firebase.database.reference
     public var mAuth = FirebaseAuth.getInstance();
+    public var myPots = mutableMapOf<String, String>()
     public lateinit var googleSignInClient: GoogleSignInClient
 
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

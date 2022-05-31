@@ -70,7 +70,7 @@
         app:layout_constraintStart_toEndOf="@+id/plantDetails" />
 
     <ImageButton
-        android:id="@+id/previusPlant"
+        android:id="@+id/prevPlant"
         android:layout_width="60dip"
         android:layout_height="60dip"
         android:layout_marginBottom="112dp"
@@ -90,5 +90,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="108dp"
+        android:text="Humidity:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        app:layout_constraintBottom_toTopOf="@+id/plantDetails"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/plantName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

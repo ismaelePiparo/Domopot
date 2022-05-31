@@ -7,16 +7,15 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.domopotapp.R
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.slider.Slider
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 
 class Home : Fragment(R.layout.home_fragment) {
@@ -32,9 +31,20 @@ class Home : Fragment(R.layout.home_fragment) {
     private lateinit var viewModel: MainViewModel
     private lateinit var logoutBtn: Button
     private lateinit var plantName: TextView
+    private lateinit var nextPlant: ImageButton
+    private lateinit var prevPlant: ImageButton
+    private lateinit var humidity: TextView
 
-    private lateinit var myListener: ValueEventListener
-    private lateinit var ref: DatabaseReference
+
+
+    var pageCounter = 0;
+
+    //private lateinit var myPotsListener: ValueEventListener
+    private lateinit var myPotsListener: ChildEventListener
+    private lateinit var userRef: DatabaseReference
+    private lateinit var potRef: DatabaseReference
+    private lateinit var myPlantListener: ValueEventListener
+
     private lateinit var user: FirebaseUser
 
 
@@ -43,18 +53,23 @@ class Home : Fragment(R.layout.home_fragment) {
         super.onViewCreated(view, savedInstanceState)
         val add = view.findViewById<ImageButton>(R.id.add)
 
+
+
         logoutBtn = view.findViewById<Button>(R.id.logoutBtn)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         plantName = view.findViewById<TextView>(R.id.plantName)
+        nextPlant = view.findViewById<ImageButton>(R.id.nextPlant)
+        prevPlant = view.findViewById<ImageButton>(R.id.prevPlant)
+        humidity = view.findViewById<TextView>(R.id.test)
 
-
-        //DA GESTIRE LA PARTE DI CREAZIONE DELLE CARD PER I VASI DELL'UTENTE
-        //QUESTO è SOLO UN TEST!!!
         user = viewModel.mAuth.currentUser!!
-        ref = user?.let { viewModel.db.child("Users")
+
+
+        // GESTICE IL CARICAMENTO DEI VASI DELL'UTENTE
+        userRef = user?.let { viewModel.db.child("Users")
                                     .child(it.uid)
                                     .child("pots") }!!
-        myListener = object : ValueEventListener {
+       /* myPotsListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val plants = snapshot.value.toString()
                 if(plants == "0"){
@@ -63,22 +78,114 @@ class Home : Fragment(R.layout.home_fragment) {
                 }else{
                     snapshot.children.forEach{
                         Log.w("Caricamento vasi utente","---")
-                            plantName.text=it.value.toString()
-                            Log.w("Caricamento vasi utente",it.value.toString())
+                        var pot = it.key.toString()
+                        var name = it.value.toString()
+                        viewModel.myPots[pot] = name
+                        Log.w("Map",viewModel.myPots.toString())
+                        Log.w("Element in position 0",viewModel.myPots.keys.elementAt(0).toString())
+
+                        Log.w("Caricamento vasi utente",it.value.toString())
+                        updateView()
                     }
                 }
             }
             override fun onCancelled(error: DatabaseError) {
                 Log.w("DB REsponse: ", "Failed to read value.", error.toException())
             }
+        }*/
+
+        myPotsListener = object : ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                Log.w("Vaso Aggiunto", "onChildAdded:" + snapshot.key!!)
+                var pot = snapshot.key.toString()
+                var name = snapshot.value.toString()
+                viewModel.myPots[pot] = name
+                Log.w("Map", viewModel.myPots.toString())
+
+                updateView(0)
         }
 
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                Log.w("Vaso Modificato", "onChildAdded:" + snapshot.key!!)
+                var pot = snapshot.key.toString()
+                var name = snapshot.value.toString()
+                viewModel.myPots[pot] = name
+                Log.w("Map", viewModel.myPots.toString())
+
+                updateView(0)
+
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                Log.w("Vaso eliminato", "onChildAdded:" + snapshot.key!!)
+                var pot = snapshot.key.toString()
+                viewModel.myPots.remove(pot)
+                Log.w("Map", viewModel.myPots.toString())
+                updateView(0)
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("ERRORE", "postComments:onCancelled", databaseError.toException())
+                Toast.makeText(context, "Failed to load comments.",
+                    Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        myPlantListener = object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var hum = snapshot.child("Humidity").child("LastHumidity").value.toString()
+                humidity.text = "Humidity: " + hum
+                Log.w("Humidity", hum.toString())
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.w("ERRORE", "postComments:onCancelled", error.toException())
+                Toast.makeText(context, "Failed to load comments.",
+                    Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+        // GESTIONE BUTTON
         add.setOnClickListener{
            findNavController().navigate(R.id.Home_to_ConfigStep1)
         }
 
+        nextPlant.setOnClickListener{
+            if(pageCounter < viewModel.myPots.size - 1){
+                pageCounter++
+                updateView(pageCounter)
+            }
+        }
+
+        prevPlant.setOnClickListener{
+            if(pageCounter > 0){
+                pageCounter--
+                updateView(pageCounter)
+            }
+        }
+
         logoutBtn.setOnClickListener{
             signOut()
+        }
+    }
+
+
+    // AGGIORNA LA VISTA
+    private fun updateView(page: Int){
+
+        userRef.removeEventListener(myPlantListener)
+        Log.w("UpdateView", "page "+ page.toString())
+        if(viewModel.myPots.isEmpty()){
+            plantName.text="No Pots!!!"
+        }else{
+            plantName.text=viewModel.myPots.values.elementAt(page)
+            userRef = user?.let { viewModel.db.child("Pots")
+                .child(viewModel.myPots.keys.elementAt(page).toString())}!!
+            userRef.addValueEventListener(myPlantListener)
         }
     }
 
@@ -97,17 +204,17 @@ class Home : Fragment(R.layout.home_fragment) {
 
     override fun onResume() {
         super.onResume()
-        ref.addValueEventListener(myListener)
+        userRef.addChildEventListener(myPotsListener)
     }
 
     override fun onPause(){
         super.onPause()
-        ref.removeEventListener(myListener)
+        userRef.removeEventListener(myPotsListener)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        ref.removeEventListener(myListener)
+        userRef.removeEventListener(myPotsListener)
     }
 }
 
