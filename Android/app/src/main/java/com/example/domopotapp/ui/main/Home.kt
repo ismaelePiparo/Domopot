@@ -8,12 +8,11 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import com.example.domopotapp.R
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.material.slider.Slider
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 
@@ -28,12 +27,18 @@ class Home : Fragment(R.layout.home_fragment) {
         }
     }
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel by activityViewModels<MainViewModel>()
+
     private lateinit var logoutBtn: Button
     private lateinit var plantName: TextView
     private lateinit var nextPlant: ImageButton
     private lateinit var prevPlant: ImageButton
+    private lateinit var plantDetail: Button
     private lateinit var humidity: TextView
+    private lateinit var waterLevel: TextView
+    private lateinit var temperature: TextView
+    private lateinit var lastWatering: TextView
+
 
 
 
@@ -56,11 +61,13 @@ class Home : Fragment(R.layout.home_fragment) {
 
 
         logoutBtn = view.findViewById<Button>(R.id.logoutBtn)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         plantName = view.findViewById<TextView>(R.id.plantName)
         nextPlant = view.findViewById<ImageButton>(R.id.nextPlant)
         prevPlant = view.findViewById<ImageButton>(R.id.prevPlant)
-        humidity = view.findViewById<TextView>(R.id.test)
+        humidity = view.findViewById<TextView>(R.id.humidity)
+        waterLevel = view.findViewById<TextView>(R.id.waterLevel)
+        plantDetail = view.findViewById<Button>(R.id.plantDetails)
+
 
         user = viewModel.mAuth.currentUser!!
 
@@ -140,6 +147,9 @@ class Home : Fragment(R.layout.home_fragment) {
                 var hum = snapshot.child("Humidity").child("LastHumidity").value.toString()
                 humidity.text = "Humidity: " + hum
                 Log.w("Humidity", hum.toString())
+                var wL = snapshot.child("WaterLevel").value.toString()
+                waterLevel.text = "W level : " + wL
+                Log.w("Water Level", wL.toString())
             }
             override fun onCancelled(error: DatabaseError) {
                 Log.w("ERRORE", "postComments:onCancelled", error.toException())
@@ -171,21 +181,28 @@ class Home : Fragment(R.layout.home_fragment) {
         logoutBtn.setOnClickListener{
             signOut()
         }
+
+        plantDetail.setOnClickListener{
+            findNavController().navigate(R.id.Home_to_details)
+
+        }
     }
 
 
     // AGGIORNA LA VISTA
     private fun updateView(page: Int){
 
-        userRef.removeEventListener(myPlantListener)
+        potRef.removeEventListener(myPlantListener)
         Log.w("UpdateView", "page "+ page.toString())
         if(viewModel.myPots.isEmpty()){
             plantName.text="No Pots!!!"
         }else{
+            viewModel.currentPot = viewModel.myPots.keys.elementAt(page)
             plantName.text=viewModel.myPots.values.elementAt(page)
-            userRef = user?.let { viewModel.db.child("Pots")
-                .child(viewModel.myPots.keys.elementAt(page).toString())}!!
-            userRef.addValueEventListener(myPlantListener)
+            potRef = viewModel.db.child("Pots")
+                .child(viewModel.currentPot)
+            potRef.addValueEventListener(myPlantListener)
+            Log.w("Current pot", viewModel.currentPot)
         }
     }
 
@@ -204,17 +221,20 @@ class Home : Fragment(R.layout.home_fragment) {
 
     override fun onResume() {
         super.onResume()
+        potRef = viewModel.db.child("Pots")
         userRef.addChildEventListener(myPotsListener)
     }
 
     override fun onPause(){
         super.onPause()
         userRef.removeEventListener(myPotsListener)
+        potRef.removeEventListener(myPlantListener)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         userRef.removeEventListener(myPotsListener)
+        potRef.removeEventListener(myPlantListener)
     }
 }
 

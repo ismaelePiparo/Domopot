@@ -1,17 +1,14 @@
 package com.example.domopotapp.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.example.domopotapp.R
-import androidx.navigation.fragment.findNavController
 
 
-class Guide : Fragment(R.layout.guide_fragment) {
+class Details : Fragment(R.layout.details_fragment) {
     companion object {
         fun newInstance() = Guide()
         fun newInstanceWithBundle(b: Bundle): Guide{
@@ -23,9 +20,13 @@ class Guide : Fragment(R.layout.guide_fragment) {
 
     private val viewModel by activityViewModels<MainViewModel>()
 
+    private lateinit var details: TextView
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        details = view.findViewById<TextView>(R.id.potDetails)
+        details.text = viewModel.myPots.getValue(viewModel.currentPot)
     }
 }
