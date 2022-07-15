@@ -31,8 +31,8 @@ class Home : Fragment(R.layout.home_fragment) {
 
     private lateinit var logoutBtn: Button
     private lateinit var plantName: TextView
-    private lateinit var nextPlant: ImageButton
     private lateinit var prevPlant: ImageButton
+    private lateinit var nextPlant: ImageButton
     private lateinit var plantDetail: Button
     private lateinit var humidity: TextView
     private lateinit var waterLevel: TextView
