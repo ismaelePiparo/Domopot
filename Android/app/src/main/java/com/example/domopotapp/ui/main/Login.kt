@@ -1,11 +1,14 @@
 package com.example.domopotapp.ui.main
 
 import android.content.Intent
+import android.content.res.AssetManager
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.domopotapp.MainActivity
@@ -20,6 +23,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
+import java.io.InputStream
 
 class Login : Fragment(R.layout.login_fragment) {
 
@@ -42,7 +46,7 @@ class Login : Fragment(R.layout.login_fragment) {
 
         Log.w("Current user: ", viewModel.mAuth.currentUser.toString())
 
-
+        val logo = view.findViewById<ImageView>(R.id.logo)
         login = view.findViewById<Button>(R.id.loginBtn)
 
         //disabilita il tasto "back"
@@ -54,6 +58,11 @@ class Login : Fragment(R.layout.login_fragment) {
         login.setOnClickListener {
             signIn()
         }
+
+        val assetManager: AssetManager = view.context.assets
+        val ims: InputStream = assetManager.open("logo.png")
+        val d = Drawable.createFromStream(ims, null)
+        logo.setImageDrawable(d)
     }
 
     private fun signIn(){
