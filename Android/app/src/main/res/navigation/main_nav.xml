@@ -38,6 +38,9 @@
         <action
             android:id="@+id/home_to_login"
             app:destination="@id/login" />
+        <action
+            android:id="@+id/Home_to_details"
+            app:destination="@id/details" />
     </fragment>
     <fragment
         android:id="@+id/configStep3"
@@ -67,4 +70,8 @@
             android:id="@+id/login_to_home"
             app:destination="@id/home2" />
     </fragment>
+    <fragment
+        android:id="@+id/details"
+        android:name="com.example.domopotapp.ui.main.Details"
+        android:label="Details" />
 </navigation>

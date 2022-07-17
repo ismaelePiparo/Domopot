@@ -58,7 +58,8 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
         //viewModel.Pot_ID = "DomoPot_01"
         //viewModel.timestamp = System.currentTimeMillis() / 1000
 
-        ref = viewModel.db.child(viewModel.Pot_ID + "/OnlineStatus/ConnectTime")
+        //ref = viewModel.db.child(viewModel.Pot_ID + "/OnlineStatus/ConnectTime")
+        ref = viewModel.db.child("Pots/" + viewModel.Pot_ID + "/OnlineStatus/ConnectTime")
         myListener = object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val connctionStatus = snapshot.value.toString()
@@ -88,6 +89,10 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
                                         Log.w("Assegnato vaso a utente", "vaso assegnato correttamente")
                                         Toast.makeText(activity, "Associazione riuscita", Toast.LENGTH_LONG).show()
                                         //ref.removeEventListener(myListener)
+
+                                        // Restetta il POT_ID in modo tale da poter poi associare altri vasi
+                                        viewModel.Pot_ID = ""
+                                        // _________________________
 
                                         findNavController().navigate(R.id.ConfigStep3_to_Home)
                                     }else{

@@ -1,10 +1,23 @@
 <resources>
-    <string name="app_name">DomopotApp</string>
+    <string name="app_name">Domopot</string>
+
+    <!-- Titles -->
     <string name="title_home">Home</string>
-    <string name="title_guide">Guide</string>
-    <string name="title_settings">Settings</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_guide">Guida</string>
+    <string name="title_settings">Impostazioni</string>
+    <string name="title_tag_my_plants">Le mie piante</string>
+
+    <!-- Buttons -->
+    <string name="btn_details">Dettagli</string>
+    <string name="btn_login">Login</string>
+
+    <string name="welcome_text">Non riesci a far sopravvivere le tue piante più di una settimana?\nDa oggi le cose cambieranno</string>
+    <string name="difficulty_easy">Facile</string>
+    <string name="difficulty_medium">Medio</string>
+    <string name="difficulty_hard">Difficile</string>
+
+
+
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
@@ -19,4 +32,6 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="textview">TextView</string>
+    <string name="guide">GUIDE</string>
 </resources>
