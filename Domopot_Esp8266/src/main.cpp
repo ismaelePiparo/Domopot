@@ -39,14 +39,15 @@ float humidity = 0;
 int waterLvl = 0;
 
 //Enum per comunicare con arduino
-enum led_state{
-  waterLevel,
-  accessPoint,
-  connected,
-  off
+enum Arduino_tx{
+  pumpWater,
+  Led_waterLevel,
+  Led_accessPoint,
+  Led_connected,
+  Led_off
 };
 
-led_state ledState;
+Arduino_tx ledState;
 
 //Specifying the Webserver instance to connect with HTTP Port: 80
 ESP8266WebServer server(80);
@@ -60,7 +61,7 @@ String pass = "UNKNOWN";
 
 //comunicazione con arduino
 int requestData(void);
-void SetArduinoState(led_state state);
+void SendMessageToArduino(Arduino_tx state);
 //configurazione
 void ConfigurationPhase();
 void APWhileConnected();
@@ -77,8 +78,15 @@ void SaveWiFiCreds();
 void RestoreWiFiCreds();
 //firebase
 void FirebaseSetup();
-void FirebasePrintTime();
-
+void FirebasePrintData();
+void ModeImmediate();
+void ModeHumidity();
+void ModeProgram();
+// conversione epoch
+int epochToDay(int epoch);
+//flag delle modalità di innaffiamento
+bool immediateModeError = false;
+int programModeLastWatering;
 
 void setup() {
   Serial.begin(9600);
@@ -95,12 +103,12 @@ void setup() {
   AccessPoint(AP_SSID, AP_PASS);
 
   if(WiFi.status() != WL_CONNECTED){
-    SetArduinoState(ledState = accessPoint);
+    SendMessageToArduino(ledState = Led_accessPoint);
     Serial.println("Entro in ConfigurationPhase");
     ConfigurationPhase();       //non ritorna finché non si è connessi all'AP
   }
   timeClient.begin(); //connessione al server NTP(?)
-  SetArduinoState(ledState = connected);
+  SendMessageToArduino(ledState = Led_connected);
   //ESP CONNESSO
   onLine = true;
   
@@ -109,17 +117,91 @@ void setup() {
 //Solo quando è onLine entra nel loop
 void loop() {
   //APWhileConnected();
-  if(WiFi.status() != WL_CONNECTED){ // TO DO: implementare una procedura robusta per quando cade la connessione
+  if(WiFi.status() != WL_CONNECTED){ 
     connectToWifi(ssid,pass);  
   }else{
     //Led dell'esp acceso per vedere che è connesso ad internet in fase di debug
     digitalWrite(LED_BUILTIN,LOW);
-    //fai cose online TO DO: implementare come fare le cose online
     requestData(); //richede e stampa i dati di arduino
-    delay(2000);
-    FirebasePrintTime();
+    timeClient.update();
+
+    // Scrivi timestamp e dati
+    FirebasePrintData();
+    // Controlla modalità
+    String mode;
+    if (Firebase.RTDB.getString(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode", &mode)){
+      switch(mode[0]){
+        case 'i':
+          ModeImmediate();
+          break;
+        case 'h':
+          ModeHumidity();
+          break;
+        case 'p':
+          ModeProgram();
+          break;
+        default:
+          break;
+      }
+    }
   }
-  //Da gestire il fatto che potrebbe mancare la rete wifi e bisogna riconnettersi
+}
+
+// agisci secondo modalità
+// 	immediate:
+// 		Se trovi comando positivo
+// 			cancella comando
+// 			innaffia
+void ModeImmediate(){
+  bool Annaffia;
+  if(Firebase.RTDB.getBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Immediate/Annaffia", &Annaffia) 
+     && Annaffia 
+     && !immediateModeError){
+    SendMessageToArduino(pumpWater);
+    immediateModeError = !Firebase.RTDB.setBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Immediate/Annaffia", false);
+  } else if (immediateModeError){
+    immediateModeError = !Firebase.RTDB.setBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Immediate/Annaffia", false);
+  }
+}
+// 	humidity
+// 		Se umidità < threshold
+// 			innaffia
+void ModeHumidity(){
+  int threshold;
+  if(Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Humidity", &threshold))
+  {
+    if (humidity < threshold){
+      SendMessageToArduino(pumpWater);
+    }
+  }
+}
+// 	program
+// 		Se:
+// 		1. non si è già eseguito il comando a una certa ora oggi 
+// 		2. È trascorsa l'ora programmata
+// 			Innaffia
+//      Segna il giorno e l'ora del comando eseguito
+
+void ModeProgram(){
+  int hour;
+  if(Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Timing", &hour))
+  {
+    int waterAmount;
+    if (epochToDay(timeClient.getEpochTime()) != epochToDay(programModeLastWatering)
+        && timeClient.getHours() > hour
+        && Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/WaterQuantity", &waterAmount))
+    {
+      for(int i = waterAmount; i > 0; i--){
+        SendMessageToArduino(pumpWater);
+        delay(2000);
+      }
+      programModeLastWatering = timeClient.getEpochTime();
+    }
+  }
+}
+
+int epochToDay(int epoch){
+  return  (epoch / 86400L) + 4;
 }
 
 #pragma region TempHideCode
@@ -153,9 +235,9 @@ int requestData(){
 }
 
 //di ad Arduino come comportarsi
-void SetArduinoState(led_state state){
+void SendMessageToArduino(Arduino_tx Message){
   Wire.beginTransmission(1); //indizzo Arduino
-  Wire.write(lowByte(state));        
+  Wire.write(lowByte(Message));        
   Wire.endTransmission();
 }
 //attesa di 4 secondi
@@ -378,7 +460,12 @@ void FirebaseSetup(){
   //Firebase.begin(DATABASE_URL, DATABASE_SECRET);
 }
 
-void FirebasePrintTime(){
-  timeClient.update();
-  Firebase.RTDB.setString(&fbdo, '/'+Pot_ID+"/OnlineStatus/ConnectTime", String(timeClient.getEpochTime()));
+void FirebasePrintData(){
+  /*
+  Cose da stampare:
+  dati umidità e livello acqua
+  */
+  Firebase.RTDB.setString(&fbdo, "/Pots/"+Pot_ID+"/OnlineStatus/ConnectTime", String(timeClient.getEpochTime()));
+  Firebase.RTDB.setFloat(&fbdo, "/Pots/"+Pot_ID+"",humidity);
+  Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"",waterLvl);
 }

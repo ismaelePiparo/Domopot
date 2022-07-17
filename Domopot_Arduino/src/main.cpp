@@ -29,13 +29,14 @@
 int distance; // variable for the distance measurement
 int count; //posizione led errore
 enum led_state{
-  waterLevel,
-  accessPoint,
-  connected,
-  off
+  pumpWater,
+  Led_waterLevel,
+  Led_accessPoint,
+  Led_connected,
+  Led_off
 };
 
-led_state ledState = waterLevel;
+led_state ledState = Led_waterLevel;
 
 
 CRGB leds[5];
@@ -66,23 +67,23 @@ void loop() {
   
   //CODICE DI DEBUG!!! Loop tra stati per testare i led (codice temporaneo)
   if((millis() % 6000) < 3000){
-    ledState = accessPoint;
+    ledState = Led_accessPoint;
   }else{
-    ledState = accessPoint;
+    ledState = Led_accessPoint;
   }
 
   // Calcola la distanza e mostrala sui led o mostra un errore
   switch(ledState){
-    case waterLevel:
+    case Led_waterLevel:
         ShowDistance();
         break;
-    case accessPoint:
+    case Led_accessPoint:
         AccessPointAnimation();
         break;
-    case connected:
+    case Led_connected:
         Serial.println("Connection behaviour not implemented yet");
         break;
-    case off:
+    case Led_off:
         LedsOff();
         break;
   }
