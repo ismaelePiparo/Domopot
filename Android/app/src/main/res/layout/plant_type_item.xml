@@ -1,52 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="32dp"
-    android:layout_marginEnd="32dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
-    app:cardCornerRadius="36dp"
-    app:cardElevation="10dp">
+    android:layout_height="140dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="36dp"
+        app:cardElevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/plantTypeImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:srcCompat="@tools:sample/avatars" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/plantTypeDifficulty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/plantTypeName"
+                style="@style/SmallCardTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-            android:layout_marginTop="16dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:text="Basilico"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            android:text="TextView"
-            app:layout_constraintStart_toStartOf="@+id/plantTypeName"
-            app:layout_constraintTop_toBottomOf="@+id/plantTypeName" />
+            <TextView
+                android:id="@+id/difficultyText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Facile"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/plantTypeName" />
 
-        <TextView
-            android:id="@+id/plantTypeName"
-            style="@style/SmallCardTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/plantTypeDifficulty"
+                style="@style/TextSemiBold"
+                android:layout_width="wrap_content"
 
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:text="TextView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="wrap_content"
 
-</androidx.cardview.widget.CardView>
+                android:layout_marginStart="20dp"
+                android:text="3"
+                app:layout_constraintBottom_toBottomOf="@+id/difficultyText"
+                app:layout_constraintStart_toEndOf="@+id/difficultyText"
+                app:layout_constraintTop_toTopOf="@+id/difficultyText" />
+
+            <ProgressBar
+                android:id="@+id/difficultyBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="100dp"
+                android:layout_height="4dp"
+                android:layout_marginStart="8dp"
+                android:max="10"
+                android:progress="5"
+                android:progressDrawable="@drawable/progress_bar"
+                app:layout_constraintBottom_toBottomOf="@+id/plantTypeDifficulty"
+                app:layout_constraintStart_toEndOf="@+id/plantTypeDifficulty"
+                app:layout_constraintTop_toTopOf="@+id/plantTypeDifficulty"
+                app:layout_constraintVertical_bias="0.45" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/plantTypeImage"
+        android:layout_width="wrap_content"
+        android:layout_height="115dp"
+        android:backgroundTintMode="add"
+        android:elevation="50dp"
+        android:scaleType="fitCenter"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/imageHelper"
+        app:layout_constraintStart_toStartOf="@+id/imageHelper"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/imageHelper"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toStartOf="@+id/cardView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
