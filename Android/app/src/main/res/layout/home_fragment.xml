@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg"
     tools:context=".ui.main.Home">
 
     <TextView
@@ -13,10 +14,10 @@
         style="@style/TextTitleTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
 
-        android:text="Le mie piante"
+        android:text="@string/title_tag_my_plants"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,11 +29,11 @@
         android:layout_height="wrap_content"
         android:text="Peperomia"
 
-        app:layout_constraintTop_toBottomOf="@id/myPlants"
-        app:layout_constraintLeft_toLeftOf="@id/myPlants"/>
+        app:layout_constraintLeft_toLeftOf="@id/myPlants"
+        app:layout_constraintTop_toBottomOf="@id/myPlants" />
 
     <ImageButton
-        android:id="@+id/add"
+        android:id="@+id/addPlantButton"
 
         style="@style/AddButton"
         android:layout_width="wrap_content"
@@ -51,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="124dp"
         android:paddingHorizontal="60dp"
-        android:text="Dettagli"
+        android:text="@string/btn_details"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -116,25 +117,31 @@
 
     <ImageButton
         android:id="@+id/nextPlant"
-        android:layout_width="60dip"
-        android:layout_height="60dip"
-        android:layout_marginBottom="112dp"
-        android:src="@drawable/rightarrow"
-        app:layout_constraintBottom_toBottomOf="parent"
+
+        style="@style/CaretButton"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
+        android:src="@drawable/ic_caret_right"
+
+        app:layout_constraintBottom_toBottomOf="@+id/plantDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.515"
-        app:layout_constraintStart_toEndOf="@+id/plantDetails" />
+        app:layout_constraintStart_toEndOf="@+id/plantDetails"
+        app:layout_constraintTop_toTopOf="@+id/plantDetails" />
 
     <ImageButton
         android:id="@+id/prevPlant"
-        android:layout_width="60dip"
-        android:layout_height="60dip"
-        android:layout_marginBottom="112dp"
-        android:src="@drawable/leftarrow"
-        app:layout_constraintBottom_toBottomOf="parent"
+
+        style="@style/CaretButton"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
+        android:src="@drawable/ic_caret_left"
+
+        app:layout_constraintBottom_toBottomOf="@+id/plantDetails"
         app:layout_constraintEnd_toStartOf="@+id/plantDetails"
         app:layout_constraintHorizontal_bias="0.555"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/plantDetails" />
 
     <Button
         android:id="@+id/logoutBtn"

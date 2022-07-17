@@ -1,5 +1,7 @@
 package com.example.domopotapp.ui.main
 
+import android.content.res.AssetManager
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +17,7 @@ import com.example.domopotapp.R
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.io.InputStream
 
 
 class Guide : Fragment(R.layout.guide_fragment) {
@@ -30,13 +34,20 @@ class Guide : Fragment(R.layout.guide_fragment) {
 
     // TODO prendere i dati da Firebase
     val l: List<PlantTypeData> = listOf(
-        PlantTypeData("Gino", "IM", 5),
-        PlantTypeData("Gino", "IM", 5),
-        PlantTypeData("Gino", "IM", 5),
-        PlantTypeData("Gino", "IM", 5),
-        PlantTypeData("Gino", "IM", 5),
-        PlantTypeData("Gino", "IM", 5),
-        PlantTypeData("Gino", "IM", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
+        PlantTypeData("Gino", "plant_img/peperomia_obtusfolia.png", 5),
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,6 +65,7 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>): RecyclerView.Adapter
     class PlantTypeViewHolder(v: View): RecyclerView.ViewHolder(v) {
         val ptName: TextView = v.findViewById(R.id.plantTypeName)
         val ptDifficulty: TextView = v.findViewById(R.id.plantTypeDifficulty)
+        val ptImage: ImageView = v.findViewById(R.id.plantTypeImage)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlantTypeViewHolder {
@@ -64,6 +76,11 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>): RecyclerView.Adapter
     override fun onBindViewHolder(holder: PlantTypeViewHolder, position: Int) {
         holder.ptName.text = l[position].name
         holder.ptDifficulty.text = l[position].difficulty.toString()
+
+        val assetManager: AssetManager = holder.ptImage.context.assets
+        val ims: InputStream = assetManager.open(l[position].image)
+        val d = Drawable.createFromStream(ims, null)
+        holder.ptImage.setImageDrawable(d)
     }
 
     override fun getItemCount(): Int {

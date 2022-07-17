@@ -56,7 +56,7 @@ class Home : Fragment(R.layout.home_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val add = view.findViewById<ImageButton>(R.id.add)
+        val add = view.findViewById<ImageButton>(R.id.addPlantButton)
 
 
 
@@ -167,15 +167,19 @@ class Home : Fragment(R.layout.home_fragment) {
         nextPlant.setOnClickListener{
             if(pageCounter < viewModel.myPots.size - 1){
                 pageCounter++
-                updateView(pageCounter)
             }
+            else pageCounter = 0
+
+            updateView(pageCounter)
         }
 
         prevPlant.setOnClickListener{
             if(pageCounter > 0){
                 pageCounter--
-                updateView(pageCounter)
             }
+            else pageCounter = viewModel.myPots.size - 1
+
+            updateView(pageCounter)
         }
 
         logoutBtn.setOnClickListener{
