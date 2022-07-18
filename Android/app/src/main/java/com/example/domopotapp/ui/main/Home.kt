@@ -12,12 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.domopotapp.R
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-
 
 class Home : Fragment(R.layout.home_fragment) {
     companion object {
@@ -33,7 +30,6 @@ class Home : Fragment(R.layout.home_fragment) {
 
     private lateinit var bottomNav: BottomNavigationView
 
-    private lateinit var logoutBtn: Button
     private lateinit var plantName: TextView
     private lateinit var prevPlant: ImageButton
     private lateinit var nextPlant: ImageButton
@@ -62,16 +58,14 @@ class Home : Fragment(R.layout.home_fragment) {
         super.onViewCreated(view, savedInstanceState)
         val add = view.findViewById<ImageButton>(R.id.addPlantButton)
 
-        bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)!!
+        bottomNav = activity?.findViewById(R.id.bottom_navigation)!!
 
-        logoutBtn = view.findViewById<Button>(R.id.logoutBtn)
         plantName = view.findViewById<TextView>(R.id.plantName)
         nextPlant = view.findViewById<ImageButton>(R.id.nextPlant)
         prevPlant = view.findViewById<ImageButton>(R.id.prevPlant)
         humidity = view.findViewById<TextView>(R.id.humidity)
         waterLevel = view.findViewById<TextView>(R.id.waterLevel)
         plantDetail = view.findViewById<Button>(R.id.plantDetails)
-
 
         user = viewModel.mAuth.currentUser!!
 
@@ -187,10 +181,6 @@ class Home : Fragment(R.layout.home_fragment) {
             updateView(pageCounter)
         }
 
-        logoutBtn.setOnClickListener{
-            signOut()
-        }
-
         plantDetail.setOnClickListener{
             findNavController().navigate(R.id.Home_to_details)
 
@@ -212,20 +202,6 @@ class Home : Fragment(R.layout.home_fragment) {
                 .child(viewModel.currentPot)
             potRef.addValueEventListener(myPlantListener)
             Log.w("Current pot", viewModel.currentPot)
-        }
-    }
-
-    private fun signOut() {
-        viewModel.googleSignInClient = activity?.let { GoogleSignIn.getClient(it, viewModel.gso) }!!
-
-        activity?.let {
-            viewModel.googleSignInClient.signOut()
-                .addOnCompleteListener(it, OnCompleteListener<Void?> {
-                    Log.d("-------------------->","Log out")
-                    viewModel.mAuth.signOut()
-                    bottomNav.visibility = View.GONE
-                    findNavController().navigate(R.id.home_to_login)
-                })
         }
     }
 
