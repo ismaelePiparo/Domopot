@@ -18,6 +18,8 @@ import com.example.domopotapp.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
 
 class Home : Fragment(R.layout.home_fragment) {
     companion object {
@@ -63,7 +65,10 @@ class Home : Fragment(R.layout.home_fragment) {
         }
 
         val plantOverview: ViewPager2 = view.findViewById(R.id.plantOverview)
+        val wormDotsIndicator = view.findViewById<DotsIndicator>(R.id.dotsIndicator)
+
         plantOverview.adapter = PlantOverviewAdapter(potsList)
+        wormDotsIndicator.attachTo(plantOverview)
 
         // GESTIONE BUTTON
         addPlant.setOnClickListener {
