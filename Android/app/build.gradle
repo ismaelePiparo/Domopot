@@ -60,4 +60,8 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
 
+    implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
+    implementation 'im.dacer:AndroidCharts:1.0.4'
+
+
 }
