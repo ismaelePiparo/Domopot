@@ -21,16 +21,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/plantName"
-
-        style="@style/TextTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintLeft_toLeftOf="@id/myPlants"
-        app:layout_constraintTop_toBottomOf="@id/myPlants" />
-
     <ImageButton
         android:id="@+id/addPlantButton"
 
@@ -39,79 +29,37 @@
         android:layout_height="wrap_content"
 
         android:layout_marginEnd="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/plantName"
+        app:layout_constraintBottom_toBottomOf="@+id/myPlants"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/myPlants" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="50dp"
-        app:cardCornerRadius="30dp"
-        app:cardElevation="20dp"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/plantOverview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/plantDetails"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/myPlants">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    </androidx.viewpager2.widget.ViewPager2>
 
-            <TextView
-                android:id="@+id/temperature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="40dp"
-                android:text="temp:"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+        android:id="@+id/dotsIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="21dp"
 
-            <TextView
-                android:id="@+id/waterLevel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginBottom="40dp"
-                android:text="water:"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+        app:dotsColor="@color/light"
+        app:selectedDotColor="@color/secondary"
+        app:dotsCornerRadius="8dp"
+        app:dotsSize="8dp"
+        app:dotsSpacing="4dp"
+        app:dotsWidthFactor="1"
 
-            <TextView
-                android:id="@+id/humidity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="80dp"
-                android:text="hum:"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/annaffiato"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="80dp"
-                android:layout_marginBottom="40dp"
-                android:text="ann:"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <ImageButton
-        android:id="@+id/nextPlant"
-
-        style="@style/CaretButton"
-        android:layout_width="48dip"
-        android:layout_height="48dip"
-        android:src="@drawable/ic_caret_right"
-
-        app:layout_constraintBottom_toBottomOf="@+id/plantDetails"
+        app:layout_constraintBottom_toBottomOf="@+id/plantOverview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.515"
-        app:layout_constraintStart_toEndOf="@+id/plantDetails"
-        app:layout_constraintTop_toTopOf="@+id/plantDetails" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/prevPlant"
@@ -123,9 +71,21 @@
 
         app:layout_constraintBottom_toBottomOf="@+id/plantDetails"
         app:layout_constraintEnd_toStartOf="@+id/plantDetails"
-        app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/plantDetails" />
+
+    <ImageButton
+        android:id="@+id/nextPlant"
+
+        style="@style/CaretButton"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
+        android:src="@drawable/ic_caret_right"
+
+        app:layout_constraintBottom_toBottomOf="@+id/plantDetails"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/plantDetails"
+        app:layout_constraintTop_toBottomOf="@+id/plantOverview" />
 
     <android.widget.Button
         android:id="@+id/plantDetails"
@@ -133,7 +93,7 @@
         style="@style/PrimaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="50dp"
         android:paddingHorizontal="60dp"
         android:text="@string/btn_details"
 
