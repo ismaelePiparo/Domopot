@@ -9,6 +9,13 @@
 
     <!-- Buttons -->
     <string name="btn_details">Dettagli</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_logout">Logout</string>
+
+    <string name="welcome_text">Non riesci a far sopravvivere le tue piante più di una settimana?\nDa oggi le cose cambieranno</string>
+    <string name="difficulty_easy">Facile</string>
+    <string name="difficulty_medium">Medio</string>
+    <string name="difficulty_hard">Difficile</string>
 
 
 

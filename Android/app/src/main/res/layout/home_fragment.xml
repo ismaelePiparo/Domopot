@@ -27,7 +27,6 @@
         style="@style/TextTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Peperomia"
 
         app:layout_constraintLeft_toLeftOf="@id/myPlants"
         app:layout_constraintTop_toBottomOf="@id/myPlants" />
@@ -43,21 +42,6 @@
         app:layout_constraintBottom_toTopOf="@+id/plantName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/myPlants" />
-
-    <android.widget.Button
-        android:id="@+id/plantDetails"
-
-        style="@style/PrimaryButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="124dp"
-        android:paddingHorizontal="60dp"
-        android:text="@string/btn_details"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="300dp"
@@ -143,15 +127,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/plantDetails" />
 
-    <Button
-        android:id="@+id/logoutBtn"
+    <android.widget.Button
+        android:id="@+id/plantDetails"
+
+        style="@style/PrimaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        android:text="Logout"
+        android:paddingHorizontal="60dp"
+        android:text="@string/btn_details"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

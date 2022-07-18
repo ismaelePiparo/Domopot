@@ -1,15 +1,15 @@
 #include <WString.h>
 
-enum led_state{
-  waterLevel,
-  accessPoint,
-  connected,
-  off
+enum Arduino_tx{
+  Led_waterLevel,
+  Led_accessPoint,
+  Led_connected,
+  Led_off
 };
 
 //comunicazione con arduino
 int requestData(void);
-void SetArduinoState(led_state state);
+void SendMessageToArduino(Arduino_tx state);
 //configurazione
 void ConfigurationPhase();
 void APWhileConnected();
