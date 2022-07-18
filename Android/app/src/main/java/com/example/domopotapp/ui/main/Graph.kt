@@ -11,11 +11,12 @@ import androidx.navigation.fragment.findNavController
 import com.example.domopotapp.R
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import com.github.mikephil.charting.utils.ColorTemplate
+import com.github.mikephil.charting.formatter.ValueFormatter
+import java.util.concurrent.TimeUnit
 
 
 class Graph : Fragment(R.layout.graph_fragment) {
@@ -46,39 +47,78 @@ class Graph : Fragment(R.layout.graph_fragment) {
             findNavController().navigate(R.id.graph_to_details)
         }
 
+        //GRAFICO
         val barChart = view.findViewById<BarChart>(R.id.barChart)
 
         //adding values
         val ourBarEntries: ArrayList<BarEntry> = ArrayList()
-        var i = 0
-
-        ourBarEntries.add(BarEntry(i.toFloat(), 10f))
-        ourBarEntries.add(BarEntry((i+1).toFloat(), 8f))
-        ourBarEntries.add(BarEntry((i+4).toFloat(), 1f))
-        ourBarEntries.add(BarEntry((i+3).toFloat(), 4f))
-
+        ourBarEntries.add(BarEntry(0f, 30f))
+        ourBarEntries.add(BarEntry(1f, 80f))
+        ourBarEntries.add(BarEntry(2f, 50f))
+        ourBarEntries.add(BarEntry(3f, 40f))
+        ourBarEntries.add(BarEntry(4f, 60f))
 
         val barDataSet = BarDataSet(ourBarEntries, "")
         //set a template coloring
         barDataSet.setColors(Color.rgb(203, 203, 203))
+        //set label size
+        barDataSet.valueTextSize = 15F
+        //reformat label
+        barDataSet.valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return "$value%"
+            }
+        }
+
+        //setting the axis
+        val xAxis: XAxis = barChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM;
+        xAxis.setCenterAxisLabels(false)
+        xAxis.granularity = 1f
+        xAxis.setDrawAxisLine(true)
+        xAxis.setDrawGridLines(false)
+        barChart.axisLeft.setDrawAxisLine(true)
+        barChart.axisLeft.setDrawGridLines(true)
+        barChart.axisLeft.textSize =10f
+        barChart.axisLeft.axisMaximum = 100f
+        barChart.axisLeft.axisMinimum = 10f
+        barChart.axisLeft.granularity = 2f
+        barChart.axisRight.isEnabled = false
+
+        //Create Label
+        val xLabel  = ArrayList<String>()
+        xLabel.add("uno")
+        xLabel.add("due")
+        xLabel.add("tre")
+        xLabel.add("quattro")
+        xLabel.add("cinque")
+
+        //reformat axis value as label
+        xAxis.textSize =15f
+        xAxis.valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return xLabel[value.toInt()]
+            }
+        }
+
+        //data
         val data = BarData(barDataSet)
         barChart.data = data
-        //setting the x-axis
-        val xAxis: XAxis = barChart.xAxis
-        //calling methods to hide x-axis gridlines
-        barChart.axisLeft.setDrawGridLines(false)
-        xAxis.setDrawGridLines(false)
-        xAxis.setDrawAxisLine(false)
 
         //remove legend
         barChart.legend.isEnabled = false
-
         //remove description label
         barChart.description.isEnabled = false
-
+        //fit bars
+        barChart.setFitBars(true);
         //add animation
         barChart.animateY(3000)
         //refresh the chart
         barChart.invalidate()
+        //set how many bars are visible
+        barChart.setVisibleXRangeMaximum(4F)
+        //set view to last bar
+        barChart.moveViewToX(5F)
+
     }
 }
