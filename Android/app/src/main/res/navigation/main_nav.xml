@@ -74,5 +74,17 @@
     <fragment
         android:id="@+id/details"
         android:name="com.example.domopotapp.ui.main.Details"
-        android:label="Details" />
+        android:label="Details" >
+        <action
+            android:id="@+id/details_to_graph"
+            app:destination="@id/graph2" />
+    </fragment>
+    <fragment
+        android:id="@+id/graph2"
+        android:name="com.example.domopotapp.ui.main.Graph"
+        android:label="Graph" >
+        <action
+            android:id="@+id/graph_to_details"
+            app:destination="@id/details" />
+    </fragment>
 </navigation>
