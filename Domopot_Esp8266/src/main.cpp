@@ -14,7 +14,7 @@
 #define SSID_OFFSET 32
 #define AP_SSID "DomoPot_WiFi"
 #define AP_PASS ""
-s
+
 /* Tenere attivo l'accesspoint in ascolto solo per handle start e credentials
  * 
  */
