@@ -14,7 +14,7 @@
 #define SSID_OFFSET 32
 #define AP_SSID "DomoPot_WiFi"
 #define AP_PASS ""
-
+s
 /* Tenere attivo l'accesspoint in ascolto solo per handle start e credentials
  * 
  */
@@ -86,7 +86,7 @@ void ModeProgram();
 int epochToDay(int epoch);
 //flag delle modalità di innaffiamento
 bool immediateModeError = false;
-int programModeLastWatering;
+long programModeLastWatering;
 
 void setup() {
   Serial.begin(9600);
@@ -465,7 +465,14 @@ void FirebasePrintData(){
   Cose da stampare:
   dati umidità e livello acqua
   */
-  Firebase.RTDB.setString(&fbdo, "/Pots/"+Pot_ID+"/OnlineStatus/ConnectTime", String(timeClient.getEpochTime()));
-  Firebase.RTDB.setFloat(&fbdo, "/Pots/"+Pot_ID+"",humidity);
-  Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"",waterLvl);
+  //online status
+  long time = timeClient.getEpochTime();
+  Firebase.RTDB.setString(&fbdo, "/Pots/"+Pot_ID+"/OnlineStatus/ConnectTime", String(time));
+  //umidità
+  Firebase.RTDB.setFloat(&fbdo, "/Pots/"+Pot_ID+"/Humidity/LastHumidity",humidity);
+  Firebase.RTDB.pushFloat(&fbdo, "/Pots/"+Pot_ID+"/Humidity/HistoryHumidity/"+String(time),humidity);
+  //livello acqua
+  Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"/WaterLevel",waterLvl);
+  //ultima innaffiata
+  Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"/LastWatering",programModeLastWatering);
 }
