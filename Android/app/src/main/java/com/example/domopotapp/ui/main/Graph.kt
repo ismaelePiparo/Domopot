@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.domopotapp.R
-import lecho.lib.hellocharts.model.Line
-import lecho.lib.hellocharts.model.LineChartData
-import lecho.lib.hellocharts.model.PointValue
-import lecho.lib.hellocharts.view.Chart
-import lecho.lib.hellocharts.view.LineChartView
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.github.mikephil.charting.utils.ColorTemplate
 
 
 class Graph : Fragment(R.layout.graph_fragment) {
@@ -32,7 +34,6 @@ class Graph : Fragment(R.layout.graph_fragment) {
     private lateinit var backBtn: Button
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -45,20 +46,39 @@ class Graph : Fragment(R.layout.graph_fragment) {
             findNavController().navigate(R.id.graph_to_details)
         }
 
-        val values: MutableList<PointValue> = ArrayList()
-        values.add(PointValue(0f, 5f))
-        values.add(PointValue(1f, 2f))
-        values.add(PointValue(2f, 10f))
+        val barChart = view.findViewById<BarChart>(R.id.barChart)
+
+        //adding values
+        val ourBarEntries: ArrayList<BarEntry> = ArrayList()
+        var i = 0
+
+        ourBarEntries.add(BarEntry(i.toFloat(), 10f))
+        ourBarEntries.add(BarEntry((i+1).toFloat(), 8f))
+        ourBarEntries.add(BarEntry((i+4).toFloat(), 1f))
+        ourBarEntries.add(BarEntry((i+3).toFloat(), 4f))
 
 
-        val line: Line = Line(values).setColor(Color.RED).setCubic(true)
-        val lines: MutableList<Line> = ArrayList<Line>()
-        lines.add(line)
+        val barDataSet = BarDataSet(ourBarEntries, "")
+        //set a template coloring
+        barDataSet.setColors(Color.rgb(203, 203, 203))
+        val data = BarData(barDataSet)
+        barChart.data = data
+        //setting the x-axis
+        val xAxis: XAxis = barChart.xAxis
+        //calling methods to hide x-axis gridlines
+        barChart.axisLeft.setDrawGridLines(false)
+        xAxis.setDrawGridLines(false)
+        xAxis.setDrawAxisLine(false)
 
-        val data = LineChartData()
-        data.lines = lines
+        //remove legend
+        barChart.legend.isEnabled = false
 
-        var chart = view.findViewById<LineChartView>(R.id.chart)
-        chart.lineChartData = data
+        //remove description label
+        barChart.description.isEnabled = false
+
+        //add animation
+        barChart.animateY(3000)
+        //refresh the chart
+        barChart.invalidate()
     }
 }
