@@ -1,0 +1,44 @@
+{
+  "DomoPot_01": { //id del vaso
+	"Commands": { //3 modalità di comando
+      "Huminidty": "10%", //umidità target, impostata dall'app
+      "Immediate": {      
+        "Annaffia": false; // annafia subito
+      },
+      "Mode": "Humidity,Immediate,Program",
+      "Program": {
+        "Timing": "tempo",  //ora qui annaffiare
+        "WaterQuantity": "" // quanto annaffiare
+      }
+    },
+    "Error": "Stringa di errore",mandare eventuali errori all'app
+    "Humidity": {
+      "HistoryHumidity": { //dati storici umidità, formato timestamp : valore, aggiunti ogni ora o mezz'ora
+        "timestamp": ""
+      },
+      "LastHumidity": "" //ultimo valore dell'umidità
+    },
+   
+    "OnlineStatus": {
+      "ConnectTime": "1652177245"  //ultima connessione, aggiornato ogni 30 sec
+    },
+    "WaterLevel": "", //livello dell'acqua
+  }
+}
+
+Scrivi timestamp e dati
+Controlla modalità
+agisci secondo modalità
+	immediate:
+		Se trovi comando positivo
+			cancella comando
+			innaffia
+	humidity
+		Se umidità < threshold
+			innaffia
+	program
+		Se:
+		1. non si è già eseguito il comando a una certa ora oggi 
+		2. È trascorsa l'ora programmata
+			Innaffia
+Segna il giorno e l'ora del comando eseguito

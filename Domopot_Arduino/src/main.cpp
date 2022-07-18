@@ -3,10 +3,13 @@
 #include "FastLED.h"
 
 /*** APPUNTI
- * Nota bene: tutte le funzioni di animazione dei led sono pensate per non
- * essere bloccanti e per essere chiamate ripetutamente nel loop principale.
+ * Nota bene: tutte le funzioni di animazione dei led sono pensate per ritornare subito
+ * e per essere chiamate ripetutamente nel loop principale.
 ***/
 
+/*to do:
+- Programmazione e caratterizzazione pompa dell'acqua
+*/
 
 #pragma region Macros
 //pins
@@ -14,6 +17,10 @@
 #define trigPin 2 //attach pin D3 Arduino to pin Trig of HC-SR04
 #define ledPin 6 //pin di dati dei LED
 #define humPin A0 // pin sensore umidità
+#define pumpPin 9 //pin della pompa dell'acqua
+
+//tempo di attivazione della pompa
+#define PUMP_TIME 2000
 
 //Misura umidità
 #define humSamples 1 //numero di campioni su cui fare la media dell'umidità
@@ -28,14 +35,15 @@
 // Variabili
 int distance; // variable for the distance measurement
 int count; //posizione led errore
-enum led_state{
-  waterLevel,
-  accessPoint,
-  connected,
-  off
+enum Arduino_tx{
+  pumpWater,
+  Led_waterLevel,
+  Led_accessPoint,
+  Led_connected,
+  Led_off
 };
 
-led_state ledState = waterLevel;
+Arduino_tx ledState = Led_waterLevel;
 
 
 CRGB leds[5];
@@ -49,11 +57,13 @@ void LedsOff();
 float MeasureHumidity();
 void ReceiveState(int n);
 void AccessPointAnimation();
+void PumpWater();
 #pragma endregion
 
 void setup() {
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
+  pinMode(pumpPin, OUTPUT);
   analogReference(EXTERNAL); // set the analog reference to 3.3V (AREF collegato a 3.3)
   FastLED.addLeds<NEOPIXEL, ledPin>(leds, NUM_LEDS);
   Wire.begin(1);     //diventa slave all'indirizzo 1;    
@@ -63,26 +73,27 @@ void setup() {
 }
 
 void loop() {
-  
-  //CODICE DI DEBUG!!! Loop tra stati per testare i led (codice temporaneo)
+/* CODICE DI DEBUG!!! Loop tra stati per testare i led (codice temporaneo)
   if((millis() % 6000) < 3000){
-    ledState = accessPoint;
+    ledState = Led_accessPoint;
   }else{
-    ledState = accessPoint;
+    ledState = Led_accessPoint;
   }
+*/
+
 
   // Calcola la distanza e mostrala sui led o mostra un errore
   switch(ledState){
-    case waterLevel:
+    case Led_waterLevel:
         ShowDistance();
         break;
-    case accessPoint:
+    case Led_accessPoint:
         AccessPointAnimation();
         break;
-    case connected:
+    case Led_connected:
         Serial.println("Connection behaviour not implemented yet");
         break;
-    case off:
+    case Led_off:
         LedsOff();
         break;
   }
@@ -191,10 +202,22 @@ float MeasureHumidity(){ //per ora ritorna la tensione misurata dal sensore
   return samples;
 }
 
+void PumpWater(){
+    digitalWrite(pumpPin, HIGH);
+    delay(PUMP_TIME);
+    digitalWrite(pumpPin, LOW);
+}
+
 void ReceiveState(int n){
   if(n == 1){
-    ledState = (led_state)Wire.read();
-    Serial.println("Nuovo stato: " + ledState);
+    Arduino_tx messageReceived = (Arduino_tx)Wire.read();
+    if(messageReceived == pumpWater){
+      PumpWater();
+    } else{
+      ledState = (Arduino_tx)Wire.read();
+      Serial.println("Nuovo stato: " + ledState);
+    }
+    
   } else{
     Serial.println("trasmissione non valida");
   }
