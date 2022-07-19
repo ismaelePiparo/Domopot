@@ -13,19 +13,66 @@
         android:layout_height="wrap_content"
 
         android:layout_marginStart="24dp"
-        android:text="Basilico"
+        android:text="Gino"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/plantType"
+        style="@style/TextPlantType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-12dp"
+        android:text="Basilico"
+        app:layout_constraintStart_toStartOf="@+id/plantName"
+        app:layout_constraintTop_toBottomOf="@+id/plantName" />
+
     <ImageView
         android:id="@+id/plantImage"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-16dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="-24dp"
         app:layout_constraintBottom_toTopOf="@+id/cardView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/plantName"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/modeIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="24dp"
+        app:tint="@color/secondary"
+        app:layout_constraintBottom_toTopOf="@+id/cardView2"
+        app:layout_constraintStart_toStartOf="@+id/cardView2"
+        app:srcCompat="@drawable/ic_robot" />
+
+    <ImageView
+        android:id="@+id/connectionStatusIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:tint="@color/primary"
+        app:layout_constraintBottom_toBottomOf="@+id/modeIcon"
+        app:layout_constraintEnd_toEndOf="@+id/cardView2"
+        app:layout_constraintTop_toTopOf="@+id/modeIcon"
+        app:srcCompat="@drawable/ic_wifi" />
+
+    <ImageButton
+        android:id="@+id/manualWateringButton"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:background="@drawable/white_shadow"
+        app:layout_constraintBottom_toBottomOf="@+id/modeIcon"
+        app:layout_constraintEnd_toStartOf="@+id/connectionStatusIcon"
+        app:layout_constraintStart_toEndOf="@+id/modeIcon"
+        app:layout_constraintTop_toTopOf="@+id/modeIcon"
+        app:srcCompat="@drawable/btn_watering" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
