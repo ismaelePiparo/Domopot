@@ -19,7 +19,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
 
 class Home : Fragment(R.layout.home_fragment) {
     companion object {
@@ -242,10 +241,10 @@ class PlantOverviewAdapter(private var l: MutableList<PlantOverviewData>) :
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: PlantOverviewViewHolder, position: Int) {
         holder.plantName.text = l[position].name
-        holder.humidity.text = l[position].humidity.toString()
-        holder.temperature.text = l[position].temperature.toString()
-        holder.waterLevel.text = l[position].waterLevel.toString()
-        holder.lastWatering.text = l[position].lastWatering.toString()
+        holder.humidity.text = l[position].humidity.toString() + "%"
+        holder.temperature.text = l[position].temperature.toString() + "°"
+        holder.waterLevel.text = l[position].waterLevel.toString() + "%"
+        holder.lastWatering.text = l[position].lastWatering.toString() + "h"
     }
 
     override fun getItemCount(): Int {
