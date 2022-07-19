@@ -31,6 +31,7 @@ class Details : Fragment(R.layout.details_fragment) {
 
         details = view.findViewById<TextView>(R.id.potDetails)
         details.text = viewModel.myPots.getValue(viewModel.currentPot)
+        //details.text = viewModel.currentPot
 
         graphBtn = view.findViewById<Button>(R.id.graph)
 
