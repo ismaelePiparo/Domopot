@@ -93,7 +93,7 @@
         style="@style/PrimaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="32dp"
         android:paddingHorizontal="60dp"
         android:text="@string/btn_details"
 

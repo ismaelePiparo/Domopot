@@ -19,7 +19,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
 
 class Home : Fragment(R.layout.home_fragment) {
     companion object {
@@ -42,6 +41,10 @@ class Home : Fragment(R.layout.home_fragment) {
     private lateinit var user: FirebaseUser
 
     var potsList: MutableList<PlantOverviewData> = mutableListOf()
+
+
+    val images = listOf<String>("plant_img/peperomia.png", "plant_img/filodendro.png", "plant_img/peperomia.png", "plant_img/filodendro.png")
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -106,7 +109,7 @@ class Home : Fragment(R.layout.home_fragment) {
                 Log.w("Map", viewModel.myPots.toString())
 
                 if (index >= 0) {
-                    val newData = PlantOverviewData(pot, name, "", 0, 0, 0, 0)
+                    val newData = PlantOverviewData(pot, name, images[index], 0, 0, 0, 0)
                     (plantOverview.adapter as PlantOverviewAdapter).addListItem(newData, index)
                 }
             }
@@ -211,65 +214,3 @@ class Home : Fragment(R.layout.home_fragment) {
         potRef.removeEventListener(myPlantListener)
     }
 }
-
-data class PlantOverviewData(
-    var id: String,
-    var name: String,
-    var image: String,
-    var humidity: Int,
-    var waterLevel: Int,
-    var temperature: Int,
-    var lastWatering: Int
-)
-
-class PlantOverviewAdapter(private var l: MutableList<PlantOverviewData>) :
-    RecyclerView.Adapter<PlantOverviewAdapter.PlantOverviewViewHolder>() {
-
-    class PlantOverviewViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val plantName: TextView = v.findViewById(R.id.plantName)
-        val humidity: TextView = v.findViewById(R.id.humidity)
-        val temperature: TextView = v.findViewById(R.id.temperature)
-        val waterLevel: TextView = v.findViewById(R.id.waterLevel)
-        val lastWatering: TextView = v.findViewById(R.id.lastWatering)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlantOverviewViewHolder {
-        val v =
-            LayoutInflater.from(parent.context).inflate(R.layout.plant_overview_item, parent, false)
-        return PlantOverviewViewHolder(v)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    override fun onBindViewHolder(holder: PlantOverviewViewHolder, position: Int) {
-        holder.plantName.text = l[position].name
-        holder.humidity.text = l[position].humidity.toString()
-        holder.temperature.text = l[position].temperature.toString()
-        holder.waterLevel.text = l[position].waterLevel.toString()
-        holder.lastWatering.text = l[position].lastWatering.toString()
-    }
-
-    override fun getItemCount(): Int {
-        return l.size
-    }
-
-    fun addListItem(newData: PlantOverviewData, position: Int) {
-        l.add(position, newData)
-        notifyItemInserted(position)
-    }
-
-    fun removeListItem(position: Int) {
-        l.removeAt(position)
-        notifyItemRemoved(position)
-    }
-
-    fun updateListItem(newData: PlantOverviewData, position: Int) {
-        l[position].name = newData.name
-        l[position].image = newData.image
-        l[position].humidity = newData.humidity
-        l[position].waterLevel = newData.waterLevel
-        l[position].temperature = newData.temperature
-        l[position].waterLevel = newData.waterLevel
-        notifyItemChanged(position)
-    }
-}
-

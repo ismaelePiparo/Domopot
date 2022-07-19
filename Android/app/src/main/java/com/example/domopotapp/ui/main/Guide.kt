@@ -1,8 +1,6 @@
 package com.example.domopotapp.ui.main
 
-import android.content.res.AssetManager
 import android.content.res.ColorStateList
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +15,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domopotapp.R
-import java.io.InputStream
 
 
 class Guide : Fragment(R.layout.guide_fragment) {
@@ -101,10 +98,7 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>): RecyclerView.Adapter
         holder.ptDifficultyBar.progressTintList = color
         holder.ptDifficultyText.text = difficultyText
 
-        val assetManager: AssetManager = holder.ptImage.context.assets
-        val ims: InputStream = assetManager.open(l[position].image)
-        val d = Drawable.createFromStream(ims, null)
-        holder.ptImage.setImageDrawable(d)
+        linkAssetImage(holder.ptImage, l[position].image)
     }
 
     override fun getItemCount(): Int {
