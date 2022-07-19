@@ -2,6 +2,7 @@ package com.example.domopotapp.ui.main
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -16,6 +17,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.google.firebase.database.*
 import java.util.concurrent.TimeUnit
 
 
@@ -34,6 +36,9 @@ class Graph : Fragment(R.layout.graph_fragment) {
     private lateinit var currentPot: TextView
     private lateinit var backBtn: Button
 
+    private lateinit var potRef: DatabaseReference
+    private lateinit var humidityListener: ValueEventListener
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,6 +51,23 @@ class Graph : Fragment(R.layout.graph_fragment) {
         backBtn.setOnClickListener{
             findNavController().navigate(R.id.graph_to_details)
         }
+
+        //Get values from db
+        humidityListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach{
+                    Log.w("Values", it.key.toString() + "___" + it.value.toString())
+                }
+
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        }
+
 
         //GRAFICO
         val barChart = view.findViewById<BarChart>(R.id.barChart)
@@ -120,5 +142,11 @@ class Graph : Fragment(R.layout.graph_fragment) {
         //set view to last bar
         barChart.moveViewToX(5F)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        potRef = viewModel.db.child("Pots/" + viewModel.currentPot + "/Humidity/HistoryHumidity")
+        potRef.addListenerForSingleValueEvent(humidityListener)
     }
 }
