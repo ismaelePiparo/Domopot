@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.domopotapp.R
+import com.example.domopotapp.defaultFirebaseOnFailureListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot

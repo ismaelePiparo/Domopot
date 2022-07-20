@@ -1,4 +1,4 @@
-package com.example.domopotapp.ui.main
+package com.example.domopotapp
 
 data class PotData(
     var id: String,

@@ -1,4 +1,4 @@
-package com.example.domopotapp.ui.main
+package com.example.domopotapp
 
 import android.content.Context
 import android.content.res.AssetManager
@@ -8,7 +8,6 @@ import android.os.Build
 import android.util.Log
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
-import com.example.domopotapp.R
 import java.io.InputStream
 
 val defaultFirebaseOnFailureListener =

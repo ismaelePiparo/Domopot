@@ -4,6 +4,10 @@ import android.net.wifi.WifiManager
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.viewpager2.widget.ViewPager2
+import com.example.domopotapp.PlantTypeData
+import com.example.domopotapp.PotData
+import com.example.domopotapp.getConnectionStatusFromTimestamp
+import com.example.domopotapp.getLastWateringFromTimestamp
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth

@@ -10,6 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.domopotapp.R
+import com.example.domopotapp.getDifficultyColor
+import com.example.domopotapp.getDifficultyText
+import com.example.domopotapp.linkAssetImage
 
 class PlantType : Fragment(R.layout.plant_type_fragment) {
     companion object {

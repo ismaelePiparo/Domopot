@@ -16,7 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domopotapp.R
+import com.example.domopotapp.*
 
 
 class Guide : Fragment(R.layout.guide_fragment) {
@@ -34,23 +34,9 @@ class Guide : Fragment(R.layout.guide_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.db.child("PlantTypes").get().addOnSuccessListener { plantTypesSnapshot ->
-            plantTypesSnapshot.children.forEach {
-                viewModel.plantTypes[it.key.toString()] = PlantTypeData(
-                    it.key.toString(),
-                    it.child("name").value.toString(),
-                    it.child("img").value.toString(),
-                    (it.child("difficulty").value as Long).toInt(),
-                    (it.child("humidity_threshold").value as Long).toInt(),
-                    it.child("description").value.toString(),
-                )
-            }
-
-            val rv: RecyclerView = view.findViewById(R.id.plantTypesRV)
-            rv.layoutManager = LinearLayoutManager(activity)
-            rv.adapter = PlantTypeAdapter(viewModel.plantTypes.values.toList(), viewModel, this)
-
-        }.addOnFailureListener { defaultFirebaseOnFailureListener }
+        val rv: RecyclerView = view.findViewById(R.id.plantTypesRV)
+        rv.layoutManager = LinearLayoutManager(activity)
+        rv.adapter = PlantTypeAdapter(viewModel.plantTypes.values.toList(), viewModel, this)
     }
 }
 
@@ -72,8 +58,8 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>, private val viewModel
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: PlantTypeViewHolder, position: Int) {
-        var color: ColorStateList = getDifficultyColor(l[position].difficulty, holder.ptName.context)
-        var difficultyText: String = getDifficultyText(l[position].difficulty, holder.ptName.context)
+        val color: ColorStateList = getDifficultyColor(l[position].difficulty, holder.ptName.context)
+        val difficultyText: String = getDifficultyText(l[position].difficulty, holder.ptName.context)
 
         holder.ptName.text = l[position].name
         holder.ptDifficulty.text = l[position].difficulty.toString()

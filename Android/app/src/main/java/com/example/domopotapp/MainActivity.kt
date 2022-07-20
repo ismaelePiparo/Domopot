@@ -4,12 +4,16 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.findNavController
+import com.example.domopotapp.ui.main.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
+
+    private val viewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +57,19 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        viewModel.db.child("PlantTypes").get().addOnSuccessListener { plantTypesSnapshot ->
+            plantTypesSnapshot.children.forEach {
+                viewModel.plantTypes[it.key.toString()] = PlantTypeData(
+                    it.key.toString(),
+                    it.child("name").value.toString(),
+                    it.child("img").value.toString(),
+                    (it.child("difficulty").value as Long).toInt(),
+                    (it.child("humidity_threshold").value as Long).toInt(),
+                    it.child("description").value.toString(),
+                )
+            }
+        }.addOnFailureListener { defaultFirebaseOnFailureListener }
     }
 
 }

@@ -9,7 +9,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import com.example.domopotapp.PotData
 import com.example.domopotapp.R
+import com.example.domopotapp.applyDrawableAndColorToIV
+import com.example.domopotapp.linkAssetImage
 
 class PlantOverviewAdapter(var l: MutableList<PotData>) :
     RecyclerView.Adapter<PlantOverviewAdapter.PlantOverviewViewHolder>() {
