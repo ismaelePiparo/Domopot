@@ -41,7 +41,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
     private lateinit var humidityListener: ValueEventListener
 
     val humMap = mutableMapOf<String, Float>()
-    var type = "1h"
+    var range = 1
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,16 +60,12 @@ class Graph : Fragment(R.layout.graph_fragment) {
 
         rangeBtn = view.findViewById<Button>(R.id.range)
         rangeBtn.setOnClickListener{
-            barChart.notifyDataSetChanged();
-            barChart.invalidate();
-            //set how many bars are visible
-            barChart.setVisibleXRangeMaximum(4F)
-            //set view to last bar
-            barChart.moveViewToX(5F)
-            //type = "1/2h"
-            rangeBtn.text = type
-            prova(barChart)
-            //potRef = viewModel.db.child("Pots/" + viewModel.currentPot + "/Humidity/HistoryHumidity")
+
+            range = 2
+
+
+            rangeBtn.text = range.toString()+"h"
+            generateGraph(barChart)
         }
 
         //Get values from db
@@ -79,7 +75,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
                 //    Log.w("Values", it.key.toString() + "___" + it.value.toString())
                 //}
                 var counter = 0
-                for (item in snapshot.children){
+                for (item in snapshot.children.reversed()){
                     Log.w("Values", item.key.toString() + "___" + item.value.toString())
                     humMap[item.key.toString()] = item.value.toString().toFloat()
                     counter++
@@ -87,7 +83,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
                         for ((key, value) in humMap) {
                             Log.w("map", "$key = $value")
                         }
-                        prova(barChart)
+                        generateGraph(barChart)
                         break
                     }
                 }
@@ -102,66 +98,167 @@ class Graph : Fragment(R.layout.graph_fragment) {
     }
 
     //FUNZIONE PER CREARE IL GRAFICO
-    private fun prova( barChart: BarChart) {
-
-
+    private fun generateGraph(barChart: BarChart) {
 
         //adding values
         var barCounter = 0
-        var itemCounter = 1
+        var itemCounter = 0
         val ourBarEntries: ArrayList<BarEntry> = ArrayList()
         //Create Label Array
         val xLabel  = ArrayList<String>()
 
         var meanCounter = 0
         var humidityMean = 0
-        var actualHour = ""
+        var startHour = ""
         var timestampHour = ""
-        var actualMinute = ""
-        var timestampMinute = ""
         val sdfhour = java.text.SimpleDateFormat("HH")
-        val sdfminute = java.text.SimpleDateFormat("mm")
         var date : Date
+        var hourFrom =""
+        var hourTo =""
 
-        if (type == "1h"){
-            for ((key, value) in humMap) {
-                /*ourBarEntries.add(BarEntry(counter.toFloat(), value))
-                xLabel.add(key)
-                counter++*/
+        date = java.util.Date(humMap.toSortedMap(compareBy { it }).firstKey().toLong() * 1000)
+        startHour = sdfhour.format(date).toString()
+        Log.w("start hour",startHour.toString())
+        var intervalHour = arrayOf<String>("00", "01", "02","03","04","05","06","07","08","09","10"
+            ,"11","12","13","14","15","16","17","18","19","20","21","22","23")
+        for (hour in intervalHour.indices step range) {
+            hourFrom = intervalHour[hour];
+            if(hour+range >= intervalHour.size){
+                hourTo="24"
+            }else{
+                hourTo=intervalHour[hour+range]
+            }
+            Log.w("interval", "from $hourFrom, to $hourTo")
+            meanCounter = 0
+            humidityMean = 0
+            for ((key, value) in humMap.toSortedMap(compareBy { it })) {
                 date = java.util.Date(key.toLong() * 1000)
-                var date2 = java.util.Date((key.toLong() + (30*60)) * 1000)
-                Log.w("piu un ora",date.toString() + "  " +date2.toString() )
                 timestampHour = sdfhour.format(date).toString()
 
-                if (actualHour == ""){
-                    actualHour = timestampHour
+                if (timestampHour.toInt() < hourTo.toInt() && timestampHour.toInt() >= hourFrom.toInt()) {
+                    humidityMean += value.toInt()
+                    meanCounter++
+                    Log.w("media if", "$humidityMean $meanCounter ${humidityMean/meanCounter}")
+                }else{
+                    Log.w("ALLERT:","no DATA in this interval" )
                 }
-
-                if (timestampHour != actualHour){
-                    xLabel.add("$actualHour:00")
-                    actualHour = timestampHour
-                    ourBarEntries.add(BarEntry(barCounter.toFloat(), (humidityMean/meanCounter).toFloat()))
-                    meanCounter = 1
-                    humidityMean = 0
-                    barCounter++
-                }
-
-                humidityMean += value.toInt()
-                meanCounter++
-                Log.w("media", "$humidityMean $meanCounter")
-
-
-                itemCounter++
-                if(itemCounter == humMap.size){
-                    xLabel.add("$actualHour:00")
-                    ourBarEntries.add(BarEntry(barCounter.toFloat(), (humidityMean/meanCounter).toFloat()))
-                }
-
             }
-        }else{
+            xLabel.add("$hourFrom:00/$hourTo:00")
+
+            if(meanCounter>0){
+                var mean = humidityMean/meanCounter
+                ourBarEntries.add(BarEntry(barCounter.toFloat(), mean.toFloat()))
+                barCounter++
+            }else{
+                ourBarEntries.add(BarEntry(barCounter.toFloat(), 0f))
+                barCounter++
+            }
 
         }
 
+
+        /*var intervalHour = arrayOf<String>("00", "01", "02","03","04","05","06","07","08","09","10"
+            ,"11","12","13","14","15","16","17","18","19","20","21","22","23")
+        for (hour in intervalHour.indices step range){
+            hourFrom = intervalHour[hour];
+            if(hour+range >= intervalHour.size){
+                hourTo=intervalHour[0]
+            }else{
+                hourTo=intervalHour[hour+range]
+            }
+            xLabel.add("$hourFrom:00/$hourTo:00")
+
+
+            Log.w("interval", "from $hourFrom, to $hourTo")
+            for ((key, value) in humMap) {}
+        }
+
+        hourFrom=""
+        hourTo=""
+
+
+        //__________________________________________________________________
+        */
+        //Log.w("map", humMap.toString())
+        //Log.w("mapRev", humMap.toSortedMap(compareBy { it }).toString())
+
+        /*for ((key, value) in humMap.toSortedMap(compareBy { it })) {
+            date = java.util.Date(key.toLong() * 1000)
+            Log.w("map item:",key.toString() +" -> "+value.toString() )
+            timestampHour = sdfhour.format(date).toString()
+
+
+            if (hourFrom == ""){
+                hourFrom = timestampHour
+                hourTo = sdfhour.format(java.util.Date((key.toLong() + (range *60*60)) * 1000)).toString()
+            }
+            Log.w("->","from $hourFrom, to $hourTo, timestamp $timestampHour" )
+
+            if (timestampHour.toInt() < hourTo.toInt() && timestampHour.toInt() >= hourFrom.toInt()) {
+                humidityMean += value.toInt()
+                meanCounter++
+                Log.w("media if", "$humidityMean $meanCounter ${humidityMean/meanCounter}")
+            }else{
+                xLabel.add("$hourFrom:00/$hourTo:00")
+                var mean = humidityMean/meanCounter
+                ourBarEntries.add(BarEntry(barCounter.toFloat(), mean.toFloat()))
+
+                hourFrom = timestampHour
+                hourTo = sdfhour.format(java.util.Date((key.toLong() + (range *60*60)) * 1000)).toString()
+                Log.w("media else", "$humidityMean $meanCounter ${humidityMean/meanCounter}")
+                meanCounter = 1
+                humidityMean = 0
+
+                humidityMean += value.toInt()
+
+                barCounter++
+            }
+
+            itemCounter++
+            if(itemCounter == humMap.size){
+                xLabel.add("$hourFrom:00/now")
+                Log.w("media bar", "$humidityMean $meanCounter ${humidityMean/meanCounter}")
+                var mean = humidityMean/meanCounter
+                ourBarEntries.add(BarEntry(barCounter.toFloat(), mean.toFloat()))
+            }
+        }*/
+
+
+
+        /*for ((key, value) in humMap) {
+            *//*ourBarEntries.add(BarEntry(counter.toFloat(), value))
+            xLabel.add(key)
+            counter++*//*
+            date = java.util.Date(key.toLong() * 1000)
+            var date2 = java.util.Date((key.toLong() + (30*60)) * 1000)
+            Log.w("piu un ora",date.toString() + "  " +date2.toString() )
+            timestampHour = sdfhour.format(date).toString()
+
+            if (actualHour == ""){
+                actualHour = timestampHour
+            }
+
+            if (timestampHour != actualHour){
+                xLabel.add("$actualHour:00/$timestampHour:00")
+                actualHour = timestampHour
+                ourBarEntries.add(BarEntry(barCounter.toFloat(), (humidityMean/meanCounter).toFloat()))
+                meanCounter = 1
+                humidityMean = 0
+                barCounter++
+            }
+
+            humidityMean += value.toInt()
+            meanCounter++
+            Log.w("media", "$humidityMean $meanCounter")
+
+
+            itemCounter++
+            if(itemCounter == humMap.size){
+                xLabel.add("$actualHour:00/now")
+                ourBarEntries.add(BarEntry(barCounter.toFloat(), (humidityMean/meanCounter).toFloat()))
+            }
+
+        }*/
 
 
         val barDataSet = BarDataSet(ourBarEntries, "")
@@ -209,7 +306,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
         //remove description label
         barChart.description.isEnabled = false
         //fit bars
-        barChart.setFitBars(true);
+        barChart.setFitBars(false);
         //add animation
         barChart.animateY(3000)
         //refresh the chart
