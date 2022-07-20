@@ -22,6 +22,8 @@ class MainViewModel : ViewModel() {
     var mAuth = FirebaseAuth.getInstance();
     var myPots = mutableMapOf<String, String>()
     var currentPot: String = ""
+    var currentPlantType: String = ""
+
 
     val userPots = mutableMapOf<String, PotData>()
     val plantTypes = mutableMapOf<String, PlantTypeData>()

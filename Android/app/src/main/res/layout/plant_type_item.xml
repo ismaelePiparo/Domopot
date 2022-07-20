@@ -6,7 +6,7 @@
     android:layout_height="140dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/ptCardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="32dp"
@@ -82,7 +82,6 @@
         android:backgroundTintMode="add"
         android:elevation="50dp"
         android:scaleType="fitCenter"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageHelper"
         app:layout_constraintStart_toStartOf="@+id/imageHelper"
@@ -95,9 +94,9 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="@+id/ptCardView"
         app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toStartOf="@+id/cardView"
+        app:layout_constraintStart_toStartOf="@+id/ptCardView"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

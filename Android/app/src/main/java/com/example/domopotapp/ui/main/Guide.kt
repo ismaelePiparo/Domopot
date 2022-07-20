@@ -10,8 +10,10 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domopotapp.R
@@ -35,6 +37,7 @@ class Guide : Fragment(R.layout.guide_fragment) {
         viewModel.db.child("PlantTypes").get().addOnSuccessListener { plantTypesSnapshot ->
             plantTypesSnapshot.children.forEach {
                 viewModel.plantTypes[it.key.toString()] = PlantTypeData(
+                    it.key.toString(),
                     it.child("name").value.toString(),
                     it.child("img").value.toString(),
                     (it.child("difficulty").value as Long).toInt(),
@@ -45,13 +48,13 @@ class Guide : Fragment(R.layout.guide_fragment) {
 
             val rv: RecyclerView = view.findViewById(R.id.plantTypesRV)
             rv.layoutManager = LinearLayoutManager(activity)
-            rv.adapter = PlantTypeAdapter(viewModel.plantTypes.values.toList())
+            rv.adapter = PlantTypeAdapter(viewModel.plantTypes.values.toList(), viewModel, this)
 
         }.addOnFailureListener { defaultFirebaseOnFailureListener }
     }
 }
 
-class PlantTypeAdapter(private val l: List<PlantTypeData>) :
+class PlantTypeAdapter(private val l: List<PlantTypeData>, private val viewModel: MainViewModel, private val fragment: Fragment) :
     RecyclerView.Adapter<PlantTypeAdapter.PlantTypeViewHolder>() {
     class PlantTypeViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val ptName: TextView = v.findViewById(R.id.plantTypeName)
@@ -59,6 +62,7 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>) :
         val ptDifficultyText: TextView = v.findViewById(R.id.difficultyText)
         val ptDifficultyBar: ProgressBar = v.findViewById(R.id.difficultyBar)
         val ptImage: ImageView = v.findViewById(R.id.plantTypeImage)
+        val ptCard: CardView = v.findViewById(R.id.ptCardView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlantTypeViewHolder {
@@ -68,27 +72,8 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>) :
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: PlantTypeViewHolder, position: Int) {
-        var color: ColorStateList
-        var difficultyText: String
-
-        when {
-            l[position].difficulty <= 3 -> {
-                color =
-                    ColorStateList.valueOf(holder.ptDifficultyBar.context.getColor(R.color.primary))
-                difficultyText = holder.ptDifficultyText.context.getString(R.string.difficulty_easy)
-            }
-            l[position].difficulty <= 7 -> {
-                color =
-                    ColorStateList.valueOf(holder.ptDifficultyBar.context.getColor(R.color.warning))
-                difficultyText =
-                    holder.ptDifficultyText.context.getString(R.string.difficulty_medium)
-            }
-            else -> {
-                color =
-                    ColorStateList.valueOf(holder.ptDifficultyBar.context.getColor(R.color.danger))
-                difficultyText = holder.ptDifficultyText.context.getString(R.string.difficulty_hard)
-            }
-        }
+        var color: ColorStateList = getDifficultyColor(l[position].difficulty, holder.ptName.context)
+        var difficultyText: String = getDifficultyText(l[position].difficulty, holder.ptName.context)
 
         holder.ptName.text = l[position].name
         holder.ptDifficulty.text = l[position].difficulty.toString()
@@ -99,6 +84,11 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>) :
         holder.ptDifficultyText.text = difficultyText
 
         linkAssetImage(holder.ptImage, l[position].img)
+
+        holder.ptCard.setOnClickListener {
+            viewModel.currentPlantType = l[position].id
+            findNavController(fragment).navigate(R.id.guide_to_plantTypeNav)
+        }
     }
 
     override fun getItemCount(): Int {

@@ -20,6 +20,7 @@ data class PotData(
 )
 
 data class PlantTypeData(
+    val id: String,
     val name: String,
     val img: String,
     val difficulty: Int,

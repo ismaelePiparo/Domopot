@@ -51,7 +51,11 @@
     <fragment
         android:id="@+id/guide"
         android:name="com.example.domopotapp.ui.main.Guide"
-        android:label="Guide" />
+        android:label="Guide" >
+        <action
+            android:id="@+id/guide_to_plantTypeNav"
+            app:destination="@id/plantTypeNav" />
+    </fragment>
     <fragment
         android:id="@+id/settings"
         android:name="com.example.domopotapp.ui.main.Settings"
@@ -86,5 +90,17 @@
         <action
             android:id="@+id/graph_to_details"
             app:destination="@id/details" />
+    </fragment>
+    <fragment
+        android:id="@+id/plantTypeNav"
+        android:name="com.example.domopotapp.ui.main.PlantType"
+        android:label="PlantType" >
+        <action
+            android:id="@+id/plantTypeNav_to_guide"
+            app:destination="@id/guide"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 </navigation>
