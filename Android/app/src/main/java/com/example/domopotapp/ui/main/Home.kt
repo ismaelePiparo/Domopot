@@ -35,9 +35,6 @@ class Home : Fragment(R.layout.home_fragment) {
     private lateinit var userPotsListener: ChildEventListener
     private lateinit var globalPotsListener: ChildEventListener
 
-    private val defaultFirebaseOnFailureListener =
-        { it: Exception -> Log.e("firebase", "Error getting data", it) }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

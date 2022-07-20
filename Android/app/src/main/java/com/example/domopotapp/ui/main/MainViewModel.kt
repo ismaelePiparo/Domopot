@@ -24,6 +24,7 @@ class MainViewModel : ViewModel() {
     var currentPot: String = ""
 
     val userPots = mutableMapOf<String, PotData>()
+    val plantTypes = mutableMapOf<String, PlantTypeData>()
 
     lateinit var googleSignInClient: GoogleSignInClient
 

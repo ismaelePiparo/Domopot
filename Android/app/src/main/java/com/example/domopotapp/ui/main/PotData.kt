@@ -18,3 +18,11 @@ data class PotData(
     var humidityThreshold: Int,
     var programTiming: Int = -1,
 )
+
+data class PlantTypeData(
+    val name: String,
+    val img: String,
+    val difficulty: Int,
+    val humidityThreshold: Int,
+    val description: String
+)

@@ -20,7 +20,7 @@ import com.example.domopotapp.R
 class Guide : Fragment(R.layout.guide_fragment) {
     companion object {
         fun newInstance() = Guide()
-        fun newInstanceWithBundle(b: Bundle): Guide{
+        fun newInstanceWithBundle(b: Bundle): Guide {
             val f = Guide()
             f.arguments = b
             return f
@@ -29,35 +29,31 @@ class Guide : Fragment(R.layout.guide_fragment) {
 
     private val viewModel by activityViewModels<MainViewModel>()
 
-    // TODO prendere i dati da Firebase
-    val l: List<PlantTypeData> = listOf(
-        PlantTypeData("Peperomia", "plant_img/peperomia.png", 3),
-        PlantTypeData("Filodendro", "plant_img/filodendro.png", 5),
-        PlantTypeData("Bonsai", "plant_img/bonsai.png", 9),
-        PlantTypeData("Peperomia", "plant_img/peperomia.png", 3),
-        PlantTypeData("Filodendro", "plant_img/filodendro.png", 5),
-        PlantTypeData("Bonsai", "plant_img/bonsai.png", 9),
-        PlantTypeData("Peperomia", "plant_img/peperomia.png", 3),
-        PlantTypeData("Filodendro", "plant_img/filodendro.png", 5),
-        PlantTypeData("Bonsai", "plant_img/bonsai.png", 9),
-        PlantTypeData("Peperomia", "plant_img/peperomia.png", 3),
-        PlantTypeData("Filodendro", "plant_img/filodendro.png", 5),
-        PlantTypeData("Bonsai", "plant_img/bonsai.png", 9),
-    )
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val rv: RecyclerView = view.findViewById(R.id.plantTypesRV)
-        rv.layoutManager = LinearLayoutManager(activity)
-        rv.adapter = PlantTypeAdapter(l)
+        viewModel.db.child("PlantTypes").get().addOnSuccessListener { plantTypesSnapshot ->
+            plantTypesSnapshot.children.forEach {
+                viewModel.plantTypes[it.key.toString()] = PlantTypeData(
+                    it.child("name").value.toString(),
+                    it.child("img").value.toString(),
+                    (it.child("difficulty").value as Long).toInt(),
+                    (it.child("humidity_threshold").value as Long).toInt(),
+                    it.child("description").value.toString(),
+                )
+            }
+
+            val rv: RecyclerView = view.findViewById(R.id.plantTypesRV)
+            rv.layoutManager = LinearLayoutManager(activity)
+            rv.adapter = PlantTypeAdapter(viewModel.plantTypes.values.toList())
+
+        }.addOnFailureListener { defaultFirebaseOnFailureListener }
     }
 }
 
-data class PlantTypeData(val name: String, val image: String, val difficulty: Int)
-
-class PlantTypeAdapter(private val l: List<PlantTypeData>): RecyclerView.Adapter<PlantTypeAdapter.PlantTypeViewHolder>() {
-    class PlantTypeViewHolder(v: View): RecyclerView.ViewHolder(v) {
+class PlantTypeAdapter(private val l: List<PlantTypeData>) :
+    RecyclerView.Adapter<PlantTypeAdapter.PlantTypeViewHolder>() {
+    class PlantTypeViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val ptName: TextView = v.findViewById(R.id.plantTypeName)
         val ptDifficulty: TextView = v.findViewById(R.id.plantTypeDifficulty)
         val ptDifficultyText: TextView = v.findViewById(R.id.difficultyText)
@@ -77,15 +73,19 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>): RecyclerView.Adapter
 
         when {
             l[position].difficulty <= 3 -> {
-                color = ColorStateList.valueOf(holder.ptDifficultyBar.context.getColor(R.color.primary))
+                color =
+                    ColorStateList.valueOf(holder.ptDifficultyBar.context.getColor(R.color.primary))
                 difficultyText = holder.ptDifficultyText.context.getString(R.string.difficulty_easy)
             }
             l[position].difficulty <= 7 -> {
-                color = ColorStateList.valueOf(holder.ptDifficultyBar.context.getColor(R.color.warning))
-                difficultyText = holder.ptDifficultyText.context.getString(R.string.difficulty_medium)
+                color =
+                    ColorStateList.valueOf(holder.ptDifficultyBar.context.getColor(R.color.warning))
+                difficultyText =
+                    holder.ptDifficultyText.context.getString(R.string.difficulty_medium)
             }
             else -> {
-                color = ColorStateList.valueOf(holder.ptDifficultyBar.context.getColor(R.color.danger))
+                color =
+                    ColorStateList.valueOf(holder.ptDifficultyBar.context.getColor(R.color.danger))
                 difficultyText = holder.ptDifficultyText.context.getString(R.string.difficulty_hard)
             }
         }
@@ -98,7 +98,7 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>): RecyclerView.Adapter
         holder.ptDifficultyBar.progressTintList = color
         holder.ptDifficultyText.text = difficultyText
 
-        linkAssetImage(holder.ptImage, l[position].image)
+        linkAssetImage(holder.ptImage, l[position].img)
     }
 
     override fun getItemCount(): Int {

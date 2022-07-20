@@ -4,9 +4,13 @@ import android.content.res.AssetManager
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.util.Log
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import java.io.InputStream
+
+val defaultFirebaseOnFailureListener =
+    { it: Exception -> Log.e("firebase", "Error getting data", it) }
 
 fun linkAssetImage(imageView: ImageView, fileName: String) {
     val assetManager: AssetManager = imageView.context.assets
@@ -29,5 +33,6 @@ fun getConnectionStatusFromTimestamp(timestamp: Int): Boolean {
 fun applyDrawableAndColorToIV(imageView: ImageView, drawableId: Int, colorId: Int) {
     val context = imageView.context
     imageView.setImageDrawable(context.resources.getDrawable(drawableId, context.theme))
-    imageView.imageTintList = ColorStateList.valueOf(context.resources.getColor(colorId, context.theme))
+    imageView.imageTintList =
+        ColorStateList.valueOf(context.resources.getColor(colorId, context.theme))
 }
