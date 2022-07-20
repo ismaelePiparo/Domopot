@@ -41,7 +41,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
     private lateinit var humidityListener: ValueEventListener
 
     val humMap = mutableMapOf<String, Float>()
-    var range = 1
+    var range = 7
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,17 +111,25 @@ class Graph : Fragment(R.layout.graph_fragment) {
         var humidityMean = 0
         var startHour = ""
         var timestampHour = ""
+        var timestampDay = ""
         val sdfhour = java.text.SimpleDateFormat("HH")
+        val sdfday = java.text.SimpleDateFormat("dd")
         var date : Date
         var hourFrom =""
         var hourTo =""
+        var currentTimeStamp = System.currentTimeMillis()
+        var currentDay = sdfday.format(currentTimeStamp).toString()
+        var currentHour = sdfhour.format(currentTimeStamp).toString()
 
-        date = java.util.Date(humMap.toSortedMap(compareBy { it }).firstKey().toLong() * 1000)
-        startHour = sdfhour.format(date).toString()
+        //date = java.util.Date(humMap.toSortedMap(compareBy { it }).firstKey().toLong() * 1000)
+        //startHour = sdfhour.format(date).toString()
         Log.w("start hour",startHour.toString())
         var intervalHour = arrayOf<String>("00", "01", "02","03","04","05","06","07","08","09","10"
             ,"11","12","13","14","15","16","17","18","19","20","21","22","23")
         for (hour in intervalHour.indices step range) {
+            if(currentHour.toInt() <= intervalHour[hour].toInt()+range){
+                break
+            }
             hourFrom = intervalHour[hour];
             if(hour+range >= intervalHour.size){
                 hourTo="24"
@@ -134,8 +142,9 @@ class Graph : Fragment(R.layout.graph_fragment) {
             for ((key, value) in humMap.toSortedMap(compareBy { it })) {
                 date = java.util.Date(key.toLong() * 1000)
                 timestampHour = sdfhour.format(date).toString()
+                timestampDay = sdfday.format(date).toString()
 
-                if (timestampHour.toInt() < hourTo.toInt() && timestampHour.toInt() >= hourFrom.toInt()) {
+                if (timestampHour.toInt() < hourTo.toInt() && timestampHour.toInt() >= hourFrom.toInt() && timestampDay == currentDay) {
                     humidityMean += value.toInt()
                     meanCounter++
                     Log.w("media if", "$humidityMean $meanCounter ${humidityMean/meanCounter}")
@@ -314,7 +323,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
         //set how many bars are visible
         barChart.setVisibleXRangeMaximum(4F)
         //set view to last bar
-        barChart.moveViewToX(5F)
+        barChart.moveViewToX(barCounter.toFloat())
 
     }
 
