@@ -29,7 +29,7 @@ class Details : Fragment(R.layout.details_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        details = view.findViewById<TextView>(R.id.potDetails)
+        details = view.findViewById<TextView>(R.id.mode)
         details.text = viewModel.myPots.getValue(viewModel.currentPot)
         //details.text = viewModel.currentPot
 
