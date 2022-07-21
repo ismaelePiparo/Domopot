@@ -6,8 +6,10 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
 import java.io.InputStream
 
 val defaultFirebaseOnFailureListener =
@@ -63,6 +65,27 @@ fun getDifficultyText(difficulty: Int, context: Context): String {
         }
         else -> {
             context.getString(R.string.difficulty_hard)
+        }
+    }
+}
+
+fun updateHomeLayout(
+    emptyUserPots: Boolean?,
+    mainLayout: ConstraintLayout,
+    noPlantsLayout: ConstraintLayout
+) {
+    when (emptyUserPots) {
+        null -> {
+            mainLayout.visibility = View.GONE
+            noPlantsLayout.visibility = View.GONE
+        }
+        false -> {
+            mainLayout.visibility = View.VISIBLE
+            noPlantsLayout.visibility = View.GONE
+        }
+        else -> {
+            mainLayout.visibility = View.GONE
+            noPlantsLayout.visibility = View.VISIBLE
         }
     }
 }

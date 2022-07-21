@@ -71,6 +71,14 @@
         <item name="android:fontFamily">@font/poppins_light</item>
     </style>
 
+    <style name="TextButtonLabel" >
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/info</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="fontFamily">@font/poppins_regular</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+    </style>
+
     <style name="PrimaryButton" >
         <item name="android:background">@drawable/btn_primary</item>
         <item name="android:textSize">25sp</item>
@@ -80,16 +88,11 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="AddButton" >
-        <item name="android:src">@drawable/ic_add</item>
-        <item name="android:tint">@color/primary</item>
-        <item name="android:backgroundTint">@color/zxing_transparent</item>
-    </style>
-
-    <style name="SearchButton" >
-        <item name="android:src">@drawable/ic_search</item>
+    <style name="CircleIconButton" >
         <item name="android:tint">@color/white</item>
         <item name="android:background">@drawable/circle_primary</item>
+        <item name="android:layout_width">@dimen/circlebutton_size</item>
+        <item name="android:layout_height">@dimen/circlebutton_size</item>
     </style>
 
     <style name="CaretButton" >
