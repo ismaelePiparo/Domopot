@@ -1,6 +1,7 @@
 package com.example.domopotapp.ui.main
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,7 +19,6 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.firebase.database.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class Graph : Fragment(R.layout.graph_fragment) {
@@ -41,7 +41,12 @@ class Graph : Fragment(R.layout.graph_fragment) {
     private lateinit var humidityListener: ValueEventListener
 
     val humMap = mutableMapOf<String, Float>()
-    var range = 7
+    var range = 1
+
+    var ourBarEntries: ArrayList<BarEntry> = ArrayList()
+    //Create Label Array
+    var xLabel = ArrayList<String>()
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,16 +60,25 @@ class Graph : Fragment(R.layout.graph_fragment) {
 
         backBtn = view.findViewById<Button>(R.id.back)
         backBtn.setOnClickListener{
+            barChart.xAxis.valueFormatter = null
+            barChart.invalidate()
+            barChart.clear()
             findNavController().navigate(R.id.graph_to_details)
         }
 
         rangeBtn = view.findViewById<Button>(R.id.range)
+        rangeBtn.text = range.toString()+"h"
         rangeBtn.setOnClickListener{
 
-            range = 2
-
-
+            range++
+            if(range == 4){
+                range = 1
+            }
             rangeBtn.text = range.toString()+"h"
+            barChart.clear()
+            barChart.notifyDataSetChanged()
+            barChart.invalidate()
+
             generateGraph(barChart)
         }
 
@@ -75,27 +89,31 @@ class Graph : Fragment(R.layout.graph_fragment) {
                 //    Log.w("Values", it.key.toString() + "___" + it.value.toString())
                 //}
                 var counter = 0
-                for (item in snapshot.children.reversed()){
-                    Log.w("Values", item.key.toString() + "___" + item.value.toString())
-                    humMap[item.key.toString()] = item.value.toString().toFloat()
-                    counter++
-                    if (counter==5){
-                        for ((key, value) in humMap) {
-                            Log.w("map", "$key = $value")
+                if(snapshot.hasChildren()){
+                    for (item in snapshot.children.reversed()){
+                        Log.w("Values", item.key.toString() + "___" + item.value.toString())
+                        humMap[item.key.toString()] = item.value.toString().toFloat()
+                        counter++
+                        if (counter==5){
+                            for ((key, value) in humMap) {
+                                Log.w("map", "$key = $value")
+                            }
+
+                            break
                         }
-                        generateGraph(barChart)
-                        break
                     }
+                    generateGraph(barChart)
+                }else{
+                    Log.w("NO DATA", "No Humidity Data")
                 }
 
-
             }
-
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
         }
     }
+
 
     //FUNZIONE PER CREARE IL GRAFICO
     private fun generateGraph(barChart: BarChart) {
@@ -103,9 +121,11 @@ class Graph : Fragment(R.layout.graph_fragment) {
         //adding values
         var barCounter = 0
         var itemCounter = 0
-        val ourBarEntries: ArrayList<BarEntry> = ArrayList()
+        var ourBarEntries: ArrayList<BarEntry> = ArrayList()
         //Create Label Array
-        val xLabel  = ArrayList<String>()
+        var xLabel = ArrayList<String>()
+
+
 
         var meanCounter = 0
         var humidityMean = 0
@@ -115,15 +135,16 @@ class Graph : Fragment(R.layout.graph_fragment) {
         val sdfhour = java.text.SimpleDateFormat("HH")
         val sdfday = java.text.SimpleDateFormat("dd")
         var date : Date
-        var hourFrom =""
-        var hourTo =""
+        var hourFrom = ""
+        var hourTo = ""
         var currentTimeStamp = System.currentTimeMillis()
         var currentDay = sdfday.format(currentTimeStamp).toString()
         var currentHour = sdfhour.format(currentTimeStamp).toString()
 
         //date = java.util.Date(humMap.toSortedMap(compareBy { it }).firstKey().toLong() * 1000)
         //startHour = sdfhour.format(date).toString()
-        Log.w("start hour",startHour.toString())
+        //Log.w("start hour",startHour.toString())
+
         var intervalHour = arrayOf<String>("00", "01", "02","03","04","05","06","07","08","09","10"
             ,"11","12","13","14","15","16","17","18","19","20","21","22","23")
         for (hour in intervalHour.indices step range) {
@@ -132,7 +153,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
             }
             hourFrom = intervalHour[hour];
             if(hour+range >= intervalHour.size){
-                hourTo="24"
+                hourTo = "24"
             }else{
                 hourTo=intervalHour[hour+range]
             }
@@ -152,7 +173,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
                     Log.w("ALLERT:","no DATA in this interval" )
                 }
             }
-            xLabel.add("$hourFrom:00/$hourTo:00")
+            xLabel.add("$hourFrom:00-$hourTo:00")
 
             if(meanCounter>0){
                 var mean = humidityMean/meanCounter
@@ -283,25 +304,31 @@ class Graph : Fragment(R.layout.graph_fragment) {
         }
 
         //setting the axis
-        val xAxis: XAxis = barChart.xAxis
+        var xAxis: XAxis = barChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM;
         xAxis.setCenterAxisLabels(false)
         xAxis.granularity = 1f
         xAxis.setDrawAxisLine(true)
         xAxis.setDrawGridLines(false)
+        xAxis.labelRotationAngle = -45f;
         barChart.axisLeft.setDrawAxisLine(true)
         barChart.axisLeft.setDrawGridLines(true)
-        barChart.axisLeft.textSize =10f
+        barChart.axisLeft.textSize = 10f
         barChart.axisLeft.axisMaximum = 100f
         barChart.axisLeft.axisMinimum = 10f
         barChart.axisLeft.granularity = 2f
         barChart.axisRight.isEnabled = false
 
-
         //reformat axis value as label
-        xAxis.textSize =15f
+        xAxis.textSize = 15f
         xAxis.valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
+                //Log.w("Index", value.toInt().toString())
+                return if (value.toInt() < xLabel.size) {
+                    xLabel[value.toInt()]
+                } else {
+                    "0"
+                }
                 return xLabel[value.toInt()]
             }
         }
@@ -315,12 +342,15 @@ class Graph : Fragment(R.layout.graph_fragment) {
         //remove description label
         barChart.description.isEnabled = false
         //fit bars
-        barChart.setFitBars(false);
+        //barChart.setFitBars(true);
         //add animation
         barChart.animateY(3000)
+        //
+        barChart.notifyDataSetChanged()
         //refresh the chart
         barChart.invalidate()
         //set how many bars are visible
+        barChart.setVisibleXRangeMinimum(4f)
         barChart.setVisibleXRangeMaximum(4F)
         //set view to last bar
         barChart.moveViewToX(barCounter.toFloat())
