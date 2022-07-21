@@ -65,10 +65,10 @@ class Home : Fragment(R.layout.home_fragment) {
 
         // GESTIONE BUTTON
         addPlant.setOnClickListener {
-            findNavController().navigate(R.id.Home_to_ConfigStep1)
+            findNavController().navigate(R.id.home2_to_configStep0)
         }
         bigAddPlant.setOnClickListener {
-            findNavController().navigate(R.id.Home_to_ConfigStep1)
+            findNavController().navigate(R.id.home2_to_configStep0)
         }
 
         plantDetail.setOnClickListener {
@@ -119,14 +119,20 @@ class Home : Fragment(R.layout.home_fragment) {
                             Log.i("firebase", "Got pot data from: ${potSnapshot.key}")
                             val plantType = potSnapshot.child("PlantType").value.toString()
 
-                            viewModel.addUserPot(
-                                userPotSnapshot,
-                                potSnapshot,
-                                viewModel.plantTypes[plantType]!!,
-                                plantOverview,
-                                mainLayout,
-                                noPlantsLayout
-                            )
+                            viewModel.db.child("PlantTypes").child(plantType).get()
+                                .addOnSuccessListener { ptSnapshot ->
+
+                                    Log.i("firebase", "Got plant type data from: ${ptSnapshot.key}")
+                                    viewModel.addUserPot(
+                                        userPotSnapshot,
+                                        potSnapshot,
+                                        ptSnapshot,
+                                        plantOverview,
+                                        mainLayout,
+                                        noPlantsLayout
+                                    )
+
+                                }.addOnFailureListener { defaultFirebaseOnFailureListener }
                         }.addOnFailureListener { defaultFirebaseOnFailureListener }
                 }
 
@@ -185,11 +191,12 @@ class Home : Fragment(R.layout.home_fragment) {
 
                 if (viewModel.userPots.containsKey(potId)) {
                     val plantType = potSnapshot.child("PlantType").value.toString()
-                    viewModel.updateUserPot(
-                        potSnapshot,
-                        viewModel.plantTypes[plantType]!!,
-                        plantOverview
-                    )
+                    viewModel.db.child("PlantTypes").child(plantType).get()
+                        .addOnSuccessListener { ptSnapshot ->
+                            Log.i("firebase", "Got plant type data from: ${ptSnapshot.key}")
+
+                            viewModel.updateUserPot(potSnapshot, ptSnapshot, plantOverview)
+                        }.addOnFailureListener { defaultFirebaseOnFailureListener }
                 }
             }
 

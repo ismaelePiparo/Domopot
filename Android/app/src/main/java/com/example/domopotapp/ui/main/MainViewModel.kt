@@ -21,10 +21,11 @@ class MainViewModel : ViewModel() {
     var Pot_ID: String = ""
     var timestamp: Long = 0
     val db = Firebase.database.reference
-    var mAuth = FirebaseAuth.getInstance();
+    var mAuth = FirebaseAuth.getInstance()
     var myPots = mutableMapOf<String, String>()
     var currentPot: String = ""
     var currentPlantType: String = ""
+    var currentWifiSelection: String = ""
     var emptyUserPots: Boolean? = null
 
 
@@ -41,7 +42,7 @@ class MainViewModel : ViewModel() {
     fun addUserPot(
         userPotSnapshot: DataSnapshot,
         potSnapshot: DataSnapshot,
-        ptData: PlantTypeData,
+        ptSnapshot: DataSnapshot,
         plantOverview: ViewPager2,
         mainLayout: ConstraintLayout,
         noPlantsLayout: ConstraintLayout
@@ -50,7 +51,7 @@ class MainViewModel : ViewModel() {
             userPotSnapshot.key.toString(),
             userPotSnapshot.value.toString(),
             potSnapshot,
-            ptData
+            ptSnapshot
         )
         userPots[newPot.id] = newPot
         if (emptyUserPots == null || emptyUserPots == true) {
@@ -72,7 +73,7 @@ class MainViewModel : ViewModel() {
 
     fun updateUserPot(
         potSnapshot: DataSnapshot,
-        ptData: PlantTypeData,
+        ptSnapshot: DataSnapshot,
         plantOverview: ViewPager2
     ) {
         val potId = potSnapshot.key.toString()
@@ -82,7 +83,7 @@ class MainViewModel : ViewModel() {
             return
         }
 
-        val newPot = createPotData(potId, userPots[potId]!!.name, potSnapshot, ptData)
+        val newPot = createPotData(potId, userPots[potId]!!.name, potSnapshot, ptSnapshot)
         userPots[newPot.id] = newPot
         (plantOverview.adapter as PlantOverviewAdapter).submitList(userPots.values.toMutableList())
     }
@@ -110,19 +111,19 @@ class MainViewModel : ViewModel() {
         potId: String,
         potName: String,
         potSnapshot: DataSnapshot,
-        ptData: PlantTypeData,
+        ptSnapshot: DataSnapshot,
     ): PotData {
         val manualMode = potSnapshot.child("Commands").child("Mode").value.toString() != "Humidity"
 
         val humidityThreshold =
             if (manualMode) (potSnapshot.child("Commands").child("Humidity").value as Long).toInt()
-            else ptData.humidityThreshold //(ptSnapshot.child("humidity_threshold").value as Long).toInt()
+            else (ptSnapshot.child("humidity_threshold").value as Long).toInt()
 
         return PotData(
             potId,
             potName,
-            ptData.name,
-            ptData.img,
+            ptSnapshot.child("name").value.toString(),
+            ptSnapshot.child("img").value.toString(),
             manualMode,
             getConnectionStatusFromTimestamp(
                 (potSnapshot.child("OnlineStatus").child("ConnectTime").value as Long).toInt()

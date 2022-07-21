@@ -20,13 +20,9 @@
 
     <ImageButton
         android:id="@+id/guidebackButton"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:layout_marginEnd="@dimen/title_backbutton_right_margin"
-        android:layout_marginBottom="@dimen/title_backbutton_bottom_margin"
-        android:background="@color/zxing_transparent"
-        app:tint="@color/info"
-        app:layout_constraintBottom_toBottomOf="@+id/guidePlantType"
+
+        style="@style/TitleBackButton"
+
         app:layout_constraintEnd_toStartOf="@+id/guidePlantType"
         app:layout_constraintTop_toTopOf="@+id/guidePlantType"
         app:srcCompat="@drawable/ic_chevron_left" />

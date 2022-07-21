@@ -13,14 +13,19 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.*
+import androidx.cardview.widget.CardView
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.AuthFailureError
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.domopotapp.R
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
@@ -29,84 +34,84 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
     private val TAG = ConfigStep2::class.java.name
 
     private val viewModel by activityViewModels<MainViewModel>()
-    private lateinit var tv : TextView
-    private lateinit var pwd : TextView
-    private lateinit var connectBtn : Button
-    private lateinit var back : Button
+
+    private var adapter: WifiSelectAdapter? = null
+    private val availableWifiNetworks = mutableListOf<String>()
+
     private var results: List<ScanResult>? = null
-    private val arrayList = arrayListOf<String>()
-    lateinit var spinner : Spinner
-    private var adapter : ArrayAdapter<*>? = null
-    private var mySSID : String =""
-    private var myPWD : String =""
+    private var mySSID: String = ""
+    private var myPWD: String = ""
     private var mRequestQueue: RequestQueue? = null
     private var initialScanWifi = true
 
+    //private lateinit var wifiCardTitle: TextView
+    private lateinit var loadingIcon: ImageView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)!!
+        if (bottomNav.isVisible) bottomNav.visibility = View.GONE
 
-        back = view.findViewById<Button>(R.id.back_2)
-        connectBtn = view.findViewById(R.id.conect)
-        pwd = view.findViewById<TextView>(R.id.pwd)
-        tv = view.findViewById<TextView>(R.id.textView)
+        val connectBtn: Button = view.findViewById(R.id.configWifiConnectButton)
+        val wifiCardPwdInput: TextView = view.findViewById(R.id.wifiCardPasswordInput)
+        val backButton: ImageButton = view.findViewById(R.id.configBackButton2)
+        val wifiSelectRV: RecyclerView = view.findViewById(R.id.wifiSelectRV)
 
-        tv.text=viewModel.ssid
+        val wifiCard: CardView = view.findViewById(R.id.wifiCardView)
+        val cardTitleBackButton: ImageButton = view.findViewById(R.id.cardTitleBackButton)
+
+        //wifiCardTitle = view.findViewById(R.id.wifiCardTitle)
+        loadingIcon = view.findViewById(R.id.configLoadingIcon)
+
+        loadingIcon.animate().rotation(36000f).setDuration(30000).start()
+
+        //wifiCardTitle.text = viewModel.ssid
         connectBtn.isEnabled = false
 
+        adapter = WifiSelectAdapter(availableWifiNetworks, viewModel, wifiCard)
+        wifiSelectRV.layoutManager = LinearLayoutManager(activity)
+        wifiSelectRV.adapter = adapter
 
-        adapter = activity?.let { ArrayAdapter(it, R.layout.simple_list_item, arrayList) }
-        spinner = view.findViewById<Spinner>(R.id.spinner)
-        spinner.adapter=adapter
-        spinner.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
-                if(spinner.getPositionForView(view)==0){
-                    pwd.isEnabled = false
-                }else{
-                    Toast.makeText(activity, "inserisci la password della rete: " + spinner.getItemAtPosition(i).toString(), Toast.LENGTH_LONG).show()
-                    mySSID=spinner.getItemAtPosition(i).toString()
-                    pwd.isEnabled = true
-                }
-            }
-            override fun onNothingSelected(adapterView: AdapterView<*>?) {
-                return
-            }
-        })
+        backButton.setOnClickListener {
+            findNavController().navigate(R.id.ConfigStep2_to_ConfigStep1)
+        }
 
-        pwd.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+        cardTitleBackButton.setOnClickListener {
+            wifiCard.visibility = View.GONE
+        }
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                connectBtn.isEnabled = !pwd.text.isEmpty()
-                myPWD = pwd.text.toString()
-
-            }
-        })
-
-        connectBtn.setOnClickListener{
+        connectBtn.setOnClickListener {
             //Spostare requestID() al passo precedente e sostituire con sendCredential()
             requestID();
         }
 
-        back.setOnClickListener{
-            findNavController().navigate(R.id.ConfigStep2_to_ConfigStep1)
+        wifiCardPwdInput.setOnFocusChangeListener { v: View, focused: Boolean ->
+            val colorId: Int = if (focused) R.color.primary else R.color.info
+            view.findViewById<TextView>(R.id.wifiCardPasswordLabel).setTextColor(v.resources.getColor(colorId))
         }
+
+        wifiCardPwdInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                connectBtn.isEnabled = !wifiCardPwdInput.text.isEmpty()
+                myPWD = wifiCardPwdInput.text.toString()
+
+            }
+        })
     }
 
     private fun requestID() {
-
         Toast.makeText(activity, "Invio dati in corso...", Toast.LENGTH_LONG).show()
         mRequestQueue = Volley.newRequestQueue(activity)
 
         val id_request: StringRequest = object : StringRequest(
             Method.GET, viewModel.ipWebServer,
             Response.Listener { response ->
-                if(viewModel.Pot_ID.isNullOrEmpty()){
+                if (viewModel.Pot_ID.isNullOrEmpty()) {
                     viewModel.Pot_ID = response
                 }
 
@@ -114,14 +119,13 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
             },
             Response.ErrorListener { error ->
                 Log.i(TAG, "Error :$error")
-                tv.text = "Error"
-            }){}
+                //wifiCardTitle.text = "Error"
+            }) {}
 
         mRequestQueue?.add(id_request)
     }
 
     private fun sendCredentials() {
-
         Toast.makeText(activity, "Invio credenziali in corso...", Toast.LENGTH_LONG).show()
         mRequestQueue = Volley.newRequestQueue(activity)
 
@@ -129,21 +133,21 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
             Method.POST, viewModel.ipWebServer + "/credentials",
             Response.Listener { response ->
                 viewModel.timestamp = System.currentTimeMillis() / 1000
-                Log.w("Timestap ",viewModel.timestamp.toString())
+                Log.w("Timestap ", viewModel.timestamp.toString())
                 findNavController().navigate(R.id.ConfigStep2_to_ConfigStep3)
             },
             Response.ErrorListener { error ->
                 Log.i(TAG, "Error :$error")
-                tv.text = "Error"
-            })
-        {
+                //wifiCardTitle.text = "Error"
+            }) {
             @Throws(AuthFailureError::class)
-            override fun getParams() : Map<String, String> {
-                val params = HashMap<String,String>()
+            override fun getParams(): Map<String, String> {
+                val params = HashMap<String, String>()
                 params["ssid"] = mySSID
                 params["pass"] = myPWD
                 return params
             }
+
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
                 val params: MutableMap<String, String> = HashMap()
@@ -154,41 +158,44 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
 
         mRequestQueue?.add(sr)
         //findNavController().navigate(R.id.ConfigStep2_to_ConfigStep3)
-
     }
 
 
     //BroadcastReceveiver che notifica lo stato della connessione con l'esp
     var linkStatus: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if(!viewModel.wifiManager!!.connectionInfo.ssid.equals(viewModel.ssid)) {
+            if (!viewModel.wifiManager!!.connectionInfo.ssid.equals(viewModel.ssid)) {
                 Toast.makeText(
                     activity,
                     "Si è verificato un errore nel collegamento con il vaso...",
                     Toast.LENGTH_LONG
                 ).show()
-                findNavController().navigate(R.id.ConfigStep2_to_ConfigStep1)
+                // TODO findNavController().navigate(R.id.ConfigStep2_to_ConfigStep1)
             }
-            if(!viewModel.wifiManager!!.isWifiEnabled) {
+            if (!viewModel.wifiManager!!.isWifiEnabled) {
                 Toast.makeText(
                     activity,
                     "Wifi scollegato! Accendere il Wifi...",
                     Toast.LENGTH_LONG
                 ).show()
-                findNavController().navigate(R.id.ConfigStep2_to_ConfigStep1)
+                // TODO findNavController().navigate(R.id.ConfigStep2_to_ConfigStep1)
             }
         }
     }
 
     //Funzione che fa lo scanning delle reti WiFi
     private fun scanWifi() {
-        arrayList.clear()
-        arrayList.add("Choose a Wifi Network...")
-        adapter!!.notifyDataSetChanged()
+        availableWifiNetworks.clear()
+        //availableWifiNetworks.add("Choose a Wifi Network...")
+        //adapter!!.notifyDataSetChanged()
+        adapter!!.submitList(availableWifiNetworks, loadingIcon)
 
-        requireActivity().registerReceiver(wifiReceiver, IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION))
+        requireActivity().registerReceiver(
+            wifiReceiver,
+            IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
+        )
         viewModel.wifiManager!!.startScan()
-        Toast.makeText(activity, "Scanning WiFi ...", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(activity, "Scanning WiFi ...", Toast.LENGTH_SHORT).show()
         initialScanWifi = false
     }
 
@@ -203,9 +210,9 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
                 var wifi_ssid = ""
                 var wifi_ssid_first_nine_characters = ""
 
-                if(scanResult.SSID.isEmpty()){
+                if (scanResult.SSID.isEmpty()) {
                     wifi_ssid = "Rete Nascosta"
-                }else{
+                } else {
                     wifi_ssid = scanResult.SSID
 
                 }
@@ -223,8 +230,9 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
                     "scanResult.SSID: " + scanResult.SSID + ", scanResult.capabilities: " + scanResult.capabilities
                 )
 
-                arrayList.add(wifi_ssid)
-                adapter!!.notifyDataSetChanged()
+                availableWifiNetworks.add(wifi_ssid)
+                //adapter!!.notifyDataSetChanged()
+                adapter!!.submitList(availableWifiNetworks, loadingIcon)
             }
 
 
@@ -233,14 +241,17 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
 
     override fun onResume() {
         super.onResume()
-        if(initialScanWifi){
+        if (initialScanWifi) {
             scanWifi()
         }
         //Inizializzazione dei BroadcastReceiver
-        requireActivity().registerReceiver(linkStatus, IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION))
+        requireActivity().registerReceiver(
+            linkStatus,
+            IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
+        )
     }
 
-    override fun onPause(){
+    override fun onPause() {
         super.onPause()
         //Chiusura dei BroadcastReceiver
         requireActivity().unregisterReceiver(linkStatus)

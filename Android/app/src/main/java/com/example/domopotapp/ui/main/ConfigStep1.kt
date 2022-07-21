@@ -19,22 +19,24 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 
 import com.example.domopotapp.R
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
 import com.google.zxing.client.result.ResultParser
 import com.google.zxing.client.result.WifiParsedResult
 import com.google.zxing.integration.android.IntentIntegrator
 
-class ConfigStep1 : Fragment(R.layout.config_setp_1_fragment) {
+class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
 
     companion object {
         fun newInstance() = ConfigStep1()
@@ -56,14 +58,21 @@ class ConfigStep1 : Fragment(R.layout.config_setp_1_fragment) {
     private lateinit var infoWifi: TextView
     private var defaultText:String="Sei connesso alla rete: "
 
+    // TODO mettere next "automatico"
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)!!
+        if (bottomNav.isVisible) bottomNav.visibility = View.GONE
 
         nextBtn = view.findViewById<Button>(R.id.next_1)
         infoWifi = view.findViewById<TextView>(R.id.current_wifi)
         scanBtn = view.findViewById<Button>(R.id.scanBtn)
         wifiBtn = view.findViewById<Button>(R.id.wifiMenu)
         viewModel.wifiManager = requireActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
+
+        val backButton: ImageButton = view.findViewById(R.id.configBackButton1)
 
         //Apre il menu del WiFi
         wifiBtn.setOnClickListener {
@@ -75,11 +84,15 @@ class ConfigStep1 : Fragment(R.layout.config_setp_1_fragment) {
         }
 
         //Il bottone si abilita solo se si è connessi alla rete DomoPot_WiFi
-        nextBtn.isEnabled = false
+        // TODO nextBtn.isEnabled = false
         nextBtn.setOnClickListener{
             //Sostituire con requestID() e controllare se il vaso sia presente nel DB
             //se presente tornare alla home altrimenti procedere con la configurazione
             findNavController().navigate(R.id.ConfigStep1_to_ConfigStep2)
+        }
+
+        backButton.setOnClickListener {
+            findNavController().navigate(R.id.ConfigStep1_to_Home)
         }
 
     }
@@ -151,8 +164,8 @@ class ConfigStep1 : Fragment(R.layout.config_setp_1_fragment) {
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .setNetworkSpecifier(wifiNetworkSpecifier)
                .build()
-            var connectivityManager = context?.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
-            var networkCallback = object : ConnectivityManager.NetworkCallback() {
+            val connectivityManager = context?.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val networkCallback = object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
                    connectivityManager.bindProcessToNetwork(network)

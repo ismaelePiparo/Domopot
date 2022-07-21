@@ -8,10 +8,12 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.domopotapp.R
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -43,6 +45,9 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)!!
+        if (bottomNav.isVisible) bottomNav.visibility = View.GONE
 
         //disabilita il tasto back
         val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {

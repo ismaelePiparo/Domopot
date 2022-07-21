@@ -31,6 +31,14 @@
         <item name="android:fontFamily">@font/poppins_semi_bold</item>
     </style>
 
+    <style name="TextConfigTitle" >
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+    </style>
+
     <style name="TextSmallCardTitle" >
         <item name="android:textSize">24sp</item>
         <item name="android:textColor">@color/black</item>
@@ -88,6 +96,24 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
+    <style name="SecondaryButton" >
+        <item name="android:background">@drawable/btn_secondary</item>
+        <item name="android:textSize">25sp</item>
+        <item name="fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:textColor">@color/secondary</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="SmallCardPrimaryButton" >
+        <item name="android:background">@drawable/btn_primary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
     <style name="CircleIconButton" >
         <item name="android:tint">@color/white</item>
         <item name="android:background">@drawable/circle_primary</item>
@@ -109,6 +135,28 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:textAlignment">textStart</item>
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="TitleBackButton">
+        <item name="android:src">@drawable/ic_chevron_left</item>
+        <item name="android:tint">@color/info</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginEnd">@dimen/title_backbutton_right_margin</item>
+        <item name="android:layout_marginTop">@dimen/title_backbutton_top_margin</item>
+        <item name="android:background">@color/zxing_transparent</item>
+        <item name="android:minWidth">48dp</item>
+    </style>
+
+    <style name="ConfigTitleBackButton">
+        <item name="android:src">@drawable/ic_chevron_left</item>
+        <item name="android:tint">@color/info</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginEnd">@dimen/title_backbutton_right_margin</item>
+        <item name="android:layout_marginTop">-2dp</item>
+        <item name="android:background">@color/zxing_transparent</item>
+        <item name="android:minWidth">48dp</item>
     </style>
 
 </resources>

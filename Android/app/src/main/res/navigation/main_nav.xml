@@ -33,11 +33,11 @@
         android:label="fragment_home"
         tools:layout="@layout/home_fragment" >
         <action
-            android:id="@+id/Home_to_ConfigStep1"
-            app:destination="@id/configSetp_1" />
-        <action
             android:id="@+id/Home_to_details"
             app:destination="@id/details" />
+        <action
+            android:id="@+id/home2_to_configStep0"
+            app:destination="@id/configStep0" />
     </fragment>
     <fragment
         android:id="@+id/configStep3"
@@ -102,5 +102,16 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/configStep0"
+        android:name="com.example.domopotapp.ui.main.ConfigStep0"
+        android:label="ConfigStep0" >
+        <action
+            android:id="@+id/configStep0_to_configSetp_1"
+            app:destination="@id/configSetp_1" />
+        <action
+            android:id="@+id/configStep0_to_home2"
+            app:destination="@id/home2" />
     </fragment>
 </navigation>
