@@ -100,18 +100,12 @@ class Home : Fragment(R.layout.home_fragment) {
                             Log.i("firebase", "Got pot data from: ${potSnapshot.key}")
                             val plantType = potSnapshot.child("PlantType").value.toString()
 
-                            viewModel.db.child("PlantTypes").child(plantType).get()
-                                .addOnSuccessListener { ptSnapshot ->
-
-                                    Log.i("firebase", "Got plant type data from: ${ptSnapshot.key}")
-                                    viewModel.addUserPot(
-                                        userPotSnapshot,
-                                        potSnapshot,
-                                        ptSnapshot,
-                                        plantOverview
-                                    )
-
-                                }.addOnFailureListener { defaultFirebaseOnFailureListener }
+                            viewModel.addUserPot(
+                                userPotSnapshot,
+                                potSnapshot,
+                                viewModel.plantTypes[plantType]!!,
+                                plantOverview
+                            )
                         }.addOnFailureListener { defaultFirebaseOnFailureListener }
                 }
 
@@ -168,13 +162,11 @@ class Home : Fragment(R.layout.home_fragment) {
 
                 if (viewModel.userPots.containsKey(potId)) {
                     val plantType = potSnapshot.child("PlantType").value.toString()
-
-                    viewModel.db.child("PlantTypes").child(plantType).get()
-                        .addOnSuccessListener { ptSnapshot ->
-                            Log.i("firebase", "Got plant type data from: ${ptSnapshot.key}")
-
-                            viewModel.updateUserPot(potSnapshot, ptSnapshot, plantOverview)
-                        }.addOnFailureListener { defaultFirebaseOnFailureListener }
+                    viewModel.updateUserPot(
+                        potSnapshot,
+                        viewModel.plantTypes[plantType]!!,
+                        plantOverview
+                    )
                 }
             }
 

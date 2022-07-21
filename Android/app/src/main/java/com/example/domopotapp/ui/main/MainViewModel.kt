@@ -42,14 +42,14 @@ class MainViewModel : ViewModel() {
     fun addUserPot(
         userPotSnapshot: DataSnapshot,
         potSnapshot: DataSnapshot,
-        ptSnapshot: DataSnapshot,
+        ptData: PlantTypeData,
         plantOverview: ViewPager2
     ) {
         val newPot = createPotData(
             userPotSnapshot.key.toString(),
             userPotSnapshot.value.toString(),
             potSnapshot,
-            ptSnapshot
+            ptData
         )
         userPots[newPot.id] = newPot
         (plantOverview.adapter as PlantOverviewAdapter).submitList(userPots.values.toMutableList())
@@ -67,7 +67,7 @@ class MainViewModel : ViewModel() {
 
     fun updateUserPot(
         potSnapshot: DataSnapshot,
-        ptSnapshot: DataSnapshot,
+        ptData: PlantTypeData,
         plantOverview: ViewPager2
     ) {
         val potId = potSnapshot.key.toString()
@@ -77,7 +77,7 @@ class MainViewModel : ViewModel() {
             return
         }
 
-        val newPot = createPotData(potId, userPots[potId]!!.name, potSnapshot, ptSnapshot)
+        val newPot = createPotData(potId, userPots[potId]!!.name, potSnapshot, ptData)
         userPots[newPot.id] = newPot
         (plantOverview.adapter as PlantOverviewAdapter).submitList(userPots.values.toMutableList())
     }
@@ -96,20 +96,19 @@ class MainViewModel : ViewModel() {
         potId: String,
         potName: String,
         potSnapshot: DataSnapshot,
-        ptSnapshot: DataSnapshot
+        ptData: PlantTypeData,
     ): PotData {
-        var humidityThreshold: Int
         val manualMode = potSnapshot.child("Commands").child("Mode").value.toString() != "Humidity"
 
-        humidityThreshold =
+        val humidityThreshold =
             if (manualMode) (potSnapshot.child("Commands").child("Humidity").value as Long).toInt()
-            else (ptSnapshot.child("humidity_threshold").value as Long).toInt()
+            else ptData.humidityThreshold //(ptSnapshot.child("humidity_threshold").value as Long).toInt()
 
         return PotData(
             potId,
             potName,
-            ptSnapshot.child("name").value.toString(),
-            ptSnapshot.child("img").value.toString(),
+            ptData.name,
+            ptData.img,
             manualMode,
             getConnectionStatusFromTimestamp(
                 (potSnapshot.child("OnlineStatus").child("ConnectTime").value as Long).toInt()
