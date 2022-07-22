@@ -13,6 +13,7 @@ import com.example.domopotapp.R
 import com.example.domopotapp.getDifficultyColor
 import com.example.domopotapp.getDifficultyText
 import com.example.domopotapp.linkAssetImage
+import com.google.firebase.database.DatabaseReference
 
 class PlantType : Fragment(R.layout.plant_type_fragment) {
     companion object {
@@ -43,6 +44,7 @@ class PlantType : Fragment(R.layout.plant_type_fragment) {
         val pt = viewModel.plantTypes[viewModel.currentPlantType]!!
         val color: ColorStateList = getDifficultyColor(pt.difficulty, v.context)
         val difficultyText: String = getDifficultyText(pt.difficulty, v.context)
+
 
         ptName.text = pt.name
         ptDifficulty.text = pt.difficulty.toString()
