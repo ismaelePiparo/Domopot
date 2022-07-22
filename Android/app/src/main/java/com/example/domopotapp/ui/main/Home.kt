@@ -60,7 +60,7 @@ class Home : Fragment(R.layout.home_fragment) {
         loadingIcon.animate().rotation(36000f).setDuration(30000).start()
         updateHomeLayout(viewModel.emptyUserPots, mainLayout, noPlantsLayout)
 
-        plantOverview.adapter = PlantOverviewAdapter(viewModel.userPots.values.toMutableList())
+        plantOverview.adapter = PlantOverviewAdapter(viewModel.userPots.values.toMutableList(), viewModel)
         dotsIndicator.attachTo(plantOverview)
 
         // GESTIONE BUTTON
