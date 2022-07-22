@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
@@ -16,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.domopotapp.PotData
 import com.example.domopotapp.R
 
-class WifiSelectAdapter(private var l: MutableList<String>, private val viewModel: MainViewModel, private val wifiCard: CardView) :
+class WifiSelectAdapter(private var l: MutableList<String>, private val viewModel: MainViewModel, private val wifiCard: ConstraintLayout) :
     RecyclerView.Adapter<WifiSelectAdapter.WifiSelectViewHolder>() {
 
     class WifiSelectViewHolder(v: View) : RecyclerView.ViewHolder(v) {

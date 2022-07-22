@@ -9,6 +9,7 @@
     <color name="light">#FFCCCCCC</color>
     <color name="dark">#FF4A4A4A</color>
     <color name="bg">#FFF5F5F5</color>
+    <color name="modal_bg">#AAF5F5F5</color>
 
     <color name="purple_200">#ff06c494</color>
     <color name="purple_500">#ff06c494</color>

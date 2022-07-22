@@ -34,7 +34,11 @@ class Guide : Fragment(R.layout.guide_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val title: TextView = view.findViewById(R.id.guideTitle)
         val rv: RecyclerView = view.findViewById(R.id.plantTypesRV)
+
+        if (viewModel.choosePTModeOn) title.text = "Scegli specie"
+
         rv.layoutManager = LinearLayoutManager(activity)
         rv.adapter = PlantTypeAdapter(viewModel.plantTypes.values.toList(), viewModel, this)
     }
@@ -71,9 +75,18 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>, private val viewModel
 
         linkAssetImage(holder.ptImage, l[position].img)
 
-        holder.ptCard.setOnClickListener {
-            viewModel.currentPlantType = l[position].id
-            findNavController(fragment).navigate(R.id.guide_to_plantTypeNav)
+        if (viewModel.choosePTModeOn) {
+            holder.ptCard.setOnClickListener {
+                viewModel.currentPlantType = l[position].id
+                viewModel.choosePTModeOn = false
+                findNavController(fragment).navigate(R.id.action_guide_to_configCompleted)
+            }
+        }
+        else {
+            holder.ptCard.setOnClickListener {
+                viewModel.currentPlantType = l[position].id
+                findNavController(fragment).navigate(R.id.guide_to_plantTypeNav)
+            }
         }
     }
 

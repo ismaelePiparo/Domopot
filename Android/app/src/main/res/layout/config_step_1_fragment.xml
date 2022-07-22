@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/TextDescription"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -15,15 +16,19 @@
 
         <TextView
             android:id="@+id/current_wifi"
-            android:layout_width="wrap_content"
+            style="@style/TextButtonLabel"
+            android:layout_width="0dp"
+
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/title_left_margin"
+            android:layout_marginEnd="@dimen/title_left_margin"
+            android:layout_marginBottom="48dp"
+
             android:gravity="center"
-            android:text="Current wifi:"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:visibility="gone"
+            android:textColor="@color/danger"
+            app:layout_constraintBottom_toTopOf="@+id/configStatusBar1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/next_1"
@@ -64,12 +69,9 @@
             android:id="@+id/scanBtn"
 
             style="@style/PrimaryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="60dp"
             android:text="Scansiona QR"
 
-            app:layout_constraintBottom_toTopOf="@+id/configStatusBar1"
+            app:layout_constraintBottom_toTopOf="@+id/current_wifi"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/configTitle1"
@@ -89,15 +91,12 @@
         <android.widget.Button
             android:id="@+id/wifiMenu"
 
-            style="@style/SecondaryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/SecondaryOutlineButton"
             android:layout_marginTop="24dp"
 
-            android:paddingHorizontal="50dp"
             android:text="Scegli rete WiFi"
-            app:layout_constraintEnd_toEndOf="@+id/scanBtn"
-            app:layout_constraintStart_toStartOf="@+id/scanBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
         <ProgressBar
@@ -111,6 +110,7 @@
             android:max="100"
             android:progress="25"
             android:progressDrawable="@drawable/progress_bar"
+            android:progressTint="@color/secondary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

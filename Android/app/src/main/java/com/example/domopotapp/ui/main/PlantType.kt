@@ -56,6 +56,7 @@ class PlantType : Fragment(R.layout.plant_type_fragment) {
         linkAssetImage(ptImage, pt.img)
 
         backButton.setOnClickListener{
+            viewModel.currentPlantType = ""
             findNavController().navigate(R.id.plantTypeNav_to_guide)
         }
     }

@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -25,6 +26,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.domopotapp.R
+import com.example.domopotapp.updateInputTextFocus
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -54,11 +56,12 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
         if (bottomNav.isVisible) bottomNav.visibility = View.GONE
 
         val connectBtn: Button = view.findViewById(R.id.configWifiConnectButton)
-        val wifiCardPwdInput: TextView = view.findViewById(R.id.wifiCardPasswordInput)
+        val wifiCardPwdInput: EditText = view.findViewById(R.id.wifiCardPasswordInput)
+        val wifiCardPwdLabel: TextView = view.findViewById(R.id.wifiCardPasswordLabel)
         val backButton: ImageButton = view.findViewById(R.id.configBackButton2)
         val wifiSelectRV: RecyclerView = view.findViewById(R.id.wifiSelectRV)
 
-        val wifiCard: CardView = view.findViewById(R.id.wifiCardView)
+        val wifiCard: ConstraintLayout = view.findViewById(R.id.wifiCardLayout)
         val cardTitleBackButton: ImageButton = view.findViewById(R.id.cardTitleBackButton)
 
         //wifiCardTitle = view.findViewById(R.id.wifiCardTitle)
@@ -86,9 +89,8 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
             requestID();
         }
 
-        wifiCardPwdInput.setOnFocusChangeListener { v: View, focused: Boolean ->
-            val colorId: Int = if (focused) R.color.primary else R.color.info
-            view.findViewById<TextView>(R.id.wifiCardPasswordLabel).setTextColor(v.resources.getColor(colorId))
+        wifiCardPwdInput.setOnFocusChangeListener { _: View, focused: Boolean ->
+            updateInputTextFocus(wifiCardPwdInput, wifiCardPwdLabel, focused)
         }
 
         wifiCardPwdInput.addTextChangedListener(object : TextWatcher {
@@ -99,9 +101,12 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
             override fun afterTextChanged(s: Editable?) {
                 connectBtn.isEnabled = !wifiCardPwdInput.text.isEmpty()
                 myPWD = wifiCardPwdInput.text.toString()
-
             }
         })
+
+
+        // TODO rimuovere next
+        view.findViewById<Button>(R.id.config2TestNext).setOnClickListener { findNavController().navigate(R.id.ConfigStep2_to_ConfigStep3) }
     }
 
     private fun requestID() {

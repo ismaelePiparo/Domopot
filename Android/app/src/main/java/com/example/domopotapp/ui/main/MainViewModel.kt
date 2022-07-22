@@ -23,10 +23,13 @@ class MainViewModel : ViewModel() {
     val db = Firebase.database.reference
     var mAuth = FirebaseAuth.getInstance()
     var myPots = mutableMapOf<String, String>()
+
     var currentPot: String = ""
     var currentPlantType: String = ""
     var currentWifiSelection: String = ""
+    var createPlantSelectedName: String = ""
     var emptyUserPots: Boolean? = null
+    var choosePTModeOn: Boolean = false
 
 
     val userPots = mutableMapOf<String, PotData>()

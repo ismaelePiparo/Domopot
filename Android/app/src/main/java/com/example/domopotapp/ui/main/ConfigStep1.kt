@@ -41,7 +41,7 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
     companion object {
         fun newInstance() = ConfigStep1()
 
-        fun newInstanceWithBundle(b: Bundle): ConfigStep1{
+        fun newInstanceWithBundle(b: Bundle): ConfigStep1 {
             val f = ConfigStep1()
             f.arguments = b
             return f
@@ -56,9 +56,9 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
     private lateinit var nextBtn: Button
     private lateinit var wifiBtn: Button
     private lateinit var infoWifi: TextView
-    private var defaultText:String="Sei connesso alla rete: "
+    private var defaultText: String = "Sei connesso a: "
 
-    // TODO mettere next "automatico"
+    // TODO eliminare nextbutton
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,7 +70,8 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
         infoWifi = view.findViewById<TextView>(R.id.current_wifi)
         scanBtn = view.findViewById<Button>(R.id.scanBtn)
         wifiBtn = view.findViewById<Button>(R.id.wifiMenu)
-        viewModel.wifiManager = requireActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
+        viewModel.wifiManager = requireActivity().getApplicationContext()
+            .getSystemService(Context.WIFI_SERVICE) as WifiManager
 
         val backButton: ImageButton = view.findViewById(R.id.configBackButton1)
 
@@ -79,13 +80,13 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
             val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
             startActivity(intent)
         }
-        scanBtn.setOnClickListener{
+        scanBtn.setOnClickListener {
             startWifiQRCodeScanner(requireContext().applicationContext)
         }
 
         //Il bottone si abilita solo se si è connessi alla rete DomoPot_WiFi
-        // TODO nextBtn.isEnabled = false
-        nextBtn.setOnClickListener{
+        // nextBtn.isEnabled = false
+        nextBtn.setOnClickListener {
             //Sostituire con requestID() e controllare se il vaso sia presente nel DB
             //se presente tornare alla home altrimenti procedere con la configurazione
             findNavController().navigate(R.id.ConfigStep1_to_ConfigStep2)
@@ -100,14 +101,15 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
     private fun startWifiQRCodeScanner(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val INTENT_ACTION_WIFI_QR_SCANNER = "android.settings.WIFI_DPP_ENROLLEE_QR_CODE_SCANNER"
-            val wifiManager = context.getSystemService(AppCompatActivity.WIFI_SERVICE) as WifiManager
+            val wifiManager =
+                context.getSystemService(AppCompatActivity.WIFI_SERVICE) as WifiManager
             if (wifiManager.isEasyConnectSupported) {
                 val intent = Intent(INTENT_ACTION_WIFI_QR_SCANNER)
                 resultLauncher.launch(intent)
                 //startActivity(intent)
                 //startActivityForResult(intent, 5000)
             }
-        }else{
+        } else {
             val intentIntegrator = IntentIntegrator(activity)
             intentIntegrator.setBeepEnabled(false)
             intentIntegrator.setCameraId(0)
@@ -118,26 +120,28 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
         }
     }
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                Toast.makeText(activity, "Connessione in corso... ", Toast.LENGTH_LONG).show()
-            }else{
-                val intentResult = IntentIntegrator.parseActivityResult(result.resultCode, result.data)
-                val result = Result(intentResult.contents, null, null, BarcodeFormat.QR_CODE)
-                var parsedResult = ResultParser.parseResult(result) as WifiParsedResult
-                if(parsedResult.password.equals("\"" + "\"")){
-                    connectToWifi(parsedResult.ssid,"")
-                }else{
-                    connectToWifi(parsedResult.ssid,parsedResult.password)
-                }
+    private var resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    Toast.makeText(activity, "Connessione in corso... ", Toast.LENGTH_LONG).show()
+                } else {
+                    val intentResult =
+                        IntentIntegrator.parseActivityResult(result.resultCode, result.data)
+                    val result = Result(intentResult.contents, null, null, BarcodeFormat.QR_CODE)
+                    val parsedResult = ResultParser.parseResult(result) as WifiParsedResult
+                    if (parsedResult.password.equals("\"" + "\"")) {
+                        connectToWifi(parsedResult.ssid, "")
+                    } else {
+                        connectToWifi(parsedResult.ssid, parsedResult.password)
+                    }
 
-                Toast.makeText(activity, "Connessione in corso...", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, "Connessione in corso...", Toast.LENGTH_LONG).show()
+                }
+            } else {
+                Toast.makeText(activity, "Operazione annullata", Toast.LENGTH_LONG).show()
             }
-        }else{
-            Toast.makeText(activity, "Cancelled", Toast.LENGTH_LONG).show()
         }
-    }
 
     private fun connectToWifi(ssid: String, password: String) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -163,12 +167,13 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
             val networkRequest = NetworkRequest.Builder()
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .setNetworkSpecifier(wifiNetworkSpecifier)
-               .build()
-            val connectivityManager = context?.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
+                .build()
+            val connectivityManager =
+                context?.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkCallback = object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
-                   connectivityManager.bindProcessToNetwork(network)
+                    connectivityManager.bindProcessToNetwork(network)
                     Log.e(TAG, "onAvailable")
                 }
 
@@ -201,9 +206,11 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
             when (wifiStateExtra) {
                 WifiManager.WIFI_STATE_ENABLED -> {
                     infoWifi.text = "Connessione in corso..."
+                    infoWifi.setTextColor(resources.getColor(R.color.info))
                 }
                 WifiManager.WIFI_STATE_DISABLED -> {
-                    infoWifi.text = "NO WIFI"
+                    infoWifi.text = "È necessario attivare il WiFi"
+                    infoWifi.setTextColor(resources.getColor(R.color.danger))
                 }
             }
         }
@@ -212,15 +219,21 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
     //BroadcastReceveiver che notifica il cambio di rete Wifi
     var networkStatus: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if(viewModel.wifiManager!!.connectionInfo.ssid.equals("<unknown ssid>") && viewModel.wifiManager!!.isWifiEnabled){
+            if (viewModel.wifiManager!!.connectionInfo.ssid.equals("<unknown ssid>") && viewModel.wifiManager!!.isWifiEnabled) {
                 infoWifi.text = "Connessione in corso..."
-            }else if (!viewModel.wifiManager!!.isWifiEnabled){
-                infoWifi.text = "NO WIFI!!!"
-            }else{
-                infoWifi.text = defaultText + viewModel.wifiManager!!.connectionInfo.ssid
-                if(viewModel.wifiManager!!.connectionInfo.ssid.equals("\"" + "DomoPot_WiFi" + "\"")){
-                    nextBtn.isEnabled = true
+                infoWifi.setTextColor(resources.getColor(R.color.info))
+            } else if (!viewModel.wifiManager!!.isWifiEnabled) {
+                infoWifi.text = "È necessario attivare il WiFi"
+                infoWifi.setTextColor(resources.getColor(R.color.danger))
+            } else {
+                //infoWifi.text = defaultText + viewModel.wifiManager!!.connectionInfo.ssid
+                infoWifi.text = "Non sei connesso alla rete corretta"
+                infoWifi.setTextColor(resources.getColor(R.color.danger))
+                if (viewModel.wifiManager!!.connectionInfo.ssid.equals("\"" + "DomoPot_WiFi" + "\"")) {
+                    infoWifi.setTextColor(resources.getColor(R.color.primary))
+                    //nextBtn.isEnabled = true
                     viewModel.ssid = viewModel.wifiManager!!.connectionInfo.ssid
+                    findNavController().navigate(R.id.ConfigStep1_to_ConfigStep2)
                 }
             }
         }
@@ -229,11 +242,17 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
     override fun onResume() {
         super.onResume()
         //Inizializzazione dei BroadcastReceiver
-        requireActivity().registerReceiver(wifiStatus, IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION))
-        requireActivity().registerReceiver(networkStatus, IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION))
+        requireActivity().registerReceiver(
+            wifiStatus,
+            IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
+        )
+        requireActivity().registerReceiver(
+            networkStatus,
+            IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION)
+        )
     }
 
-    override fun onPause(){
+    override fun onPause() {
         super.onPause()
         //Chiusura dei BroadcastReceiver
         requireActivity().unregisterReceiver(wifiStatus)

@@ -7,7 +7,9 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import java.io.InputStream
@@ -87,5 +89,33 @@ fun updateHomeLayout(
             mainLayout.visibility = View.GONE
             noPlantsLayout.visibility = View.VISIBLE
         }
+    }
+}
+
+fun updateCheckBoxEditText(inputText: EditText, label: TextView, checkboxIsChecked: Boolean) {
+    val resources = inputText.resources
+    if (checkboxIsChecked) {
+        inputText.isEnabled = true
+        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.info))
+        inputText.setHintTextColor(resources.getColor(R.color.info))
+        label.setTextColor(resources.getColor(R.color.info))
+    }
+    else {
+        inputText.isEnabled = false
+        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.light))
+        inputText.setHintTextColor(resources.getColor(R.color.light))
+        label.setTextColor(resources.getColor(R.color.light))
+    }
+}
+
+fun updateInputTextFocus(inputText: EditText, label: TextView, isFocused: Boolean) {
+    val resources = inputText.resources
+    if (isFocused) {
+        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.primary))
+        label.setTextColor(resources.getColor(R.color.primary))
+    }
+    else {
+        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.info))
+        label.setTextColor(resources.getColor(R.color.info))
     }
 }

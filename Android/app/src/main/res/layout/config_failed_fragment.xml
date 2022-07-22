@@ -4,16 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageButton
-        android:id="@+id/configBackButton0"
-
-        style="@style/ConfigTitleBackButton"
-
-        app:layout_constraintEnd_toStartOf="@+id/configTitle0"
-        app:layout_constraintTop_toTopOf="@+id/configTitle0" />
-
     <TextView
-        android:id="@+id/configTitle0"
+        android:id="@+id/configFailedTitle0"
 
         style="@style/TextConfigTitle"
         android:layout_width="0dp"
@@ -22,7 +14,7 @@
 
         android:layout_marginTop="@dimen/title_top_margin"
         android:layout_marginEnd="@dimen/title_left_margin"
-        android:text="@string/title_connect_pot"
+        android:text="Qualcosa è andato storto"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,27 +25,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/plant_config"
-        app:layout_constraintBottom_toTopOf="@+id/startButton"
+        app:layout_constraintBottom_toTopOf="@+id/configFailedBackToHomeBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/configTitle0"
+        app:layout_constraintTop_toBottomOf="@+id/configFailedTitle0"
         app:layout_constraintVertical_bias="0.45" />
 
     <ImageView
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="@dimen/configplanticon_margin_bottom"
-        android:src="@drawable/ic_wifi"
+        android:src="@drawable/ic_close"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:tint="@color/primary" />
+        app:tint="@color/danger" />
 
     <android.widget.Button
-        android:id="@+id/startButton"
+        android:id="@+id/configFailedBackToHomeBtn"
+
+        style="@style/SecondaryOutlineButton"
+        android:text="Torna alla home"
+
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/configFailedRetryBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <android.widget.Button
+        android:id="@+id/configFailedRetryBtn"
 
         style="@style/PrimaryButton"
-        android:text="@string/btn_config_start"
+        android:text="Riprova"
 
         android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toBottomOf="parent"

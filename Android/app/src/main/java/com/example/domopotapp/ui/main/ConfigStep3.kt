@@ -1,10 +1,13 @@
 package com.example.domopotapp.ui.main
 
+import android.animation.TimeInterpolator
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -39,8 +42,8 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
     private lateinit var myListener: ValueEventListener
     private var handler = Handler(Looper.getMainLooper())
     private var runnable = Runnable { Log.w("HANDLER: ","Something went wrong!")
-        Toast.makeText(activity, "Errore nel collegamento! Riprovare...", Toast.LENGTH_LONG).show()
-        findNavController().navigate(R.id.ConfigStep3_to_Home) }
+        //Toast.makeText(activity, "Errore nel collegamento! Riprovare...", Toast.LENGTH_LONG).show()
+        findNavController().navigate(R.id.configStep3_to_configFailed) }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,10 +52,13 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
         val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)!!
         if (bottomNav.isVisible) bottomNav.visibility = View.GONE
 
+        val loadingIcon: ImageView = view.findViewById(R.id.configLoadingIcon3)
+        loadingIcon.animate().rotation(36000f).setDuration(30000).start()
+
         //disabilita il tasto back
         val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             Log.w("BACK PRESSED","Attendere il completamento dell'operazione...")
-            Toast.makeText(activity, "Attendere il completamento dell'operazione...", Toast.LENGTH_LONG).show()
+            //Toast.makeText(activity, "Attendere il completamento dell'operazione...", Toast.LENGTH_LONG).show()
 
         }
 
@@ -63,18 +69,22 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
         //viewModel.Pot_ID = "DomoPot_01"
         //viewModel.timestamp = System.currentTimeMillis() / 1000
 
+        // TODO togliere
+        viewModel.Pot_ID = "DomoPot_02"
+        //
+
         //ref = viewModel.db.child(viewModel.Pot_ID + "/OnlineStatus/ConnectTime")
         ref = viewModel.db.child("Pots/" + viewModel.Pot_ID + "/OnlineStatus/ConnectTime")
         myListener = object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val connctionStatus = snapshot.value.toString()
                 Log.w("connectionStatus: ",connctionStatus)
-                if(connctionStatus.isNullOrEmpty()) {
+                if(connctionStatus == "null" || connctionStatus.isEmpty()) {
                     tv.text = "Attendere..."
                     //getione del tempo di attesa
                     Log.w("start handler timer: ","timer start")
                     handler.postDelayed(runnable, 30000)
-                }else if(!connctionStatus.isNullOrEmpty()){
+                }else if(!(connctionStatus == "null" || connctionStatus.isEmpty())){
                     if(connctionStatus.toLong()>viewModel.timestamp){
                         ref.removeEventListener(myListener)
                         Log.w("stop handler timer: ","timer stop")
@@ -88,18 +98,20 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
                                 .child(it.uid)
                                 .child("pots")
                                 .child(viewModel.Pot_ID)
-                                .setValue(viewModel.Pot_ID)
+                                .setValue("")
                                 .addOnCompleteListener{
                                     if(it.isSuccessful){
                                         Log.w("Assegnato vaso a utente", "vaso assegnato correttamente")
-                                        Toast.makeText(activity, "Associazione riuscita", Toast.LENGTH_LONG).show()
+                                        //Toast.makeText(activity, "Associazione riuscita", Toast.LENGTH_LONG).show()
                                         //ref.removeEventListener(myListener)
+
+                                        viewModel.currentPot = viewModel.Pot_ID
 
                                         // Restetta il POT_ID in modo tale da poter poi associare altri vasi
                                         viewModel.Pot_ID = ""
                                         // _________________________
 
-                                        findNavController().navigate(R.id.ConfigStep3_to_Home)
+                                        findNavController().navigate(R.id.configStep3_to_configCompleted)
                                     }else{
                                         Log.w("ERRORE", "errore nella scrittura sul database")
 
@@ -121,6 +133,10 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
             }
         }
 
+
+        // TODO rimuovere next
+        view.findViewById<Button>(R.id.config3TestNext1).setOnClickListener { findNavController().navigate(R.id.configStep3_to_configCompleted) }
+        view.findViewById<Button>(R.id.config3TestNext2).setOnClickListener { findNavController().navigate(R.id.configStep3_to_configFailed) }
     }
 
     override fun onResume() {

@@ -84,12 +84,11 @@
             android:id="@+id/plantDetails"
 
             style="@style/PrimaryButton"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:paddingHorizontal="60dp"
             android:text="@string/btn_details"
 
+            android:layout_marginBottom="32dp"
+            android:layout_marginHorizontal="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -98,9 +97,9 @@
             android:id="@+id/addPlantButton"
 
             style="@style/CircleIconButton"
-            android:layout_marginEnd="@dimen/title_left_margin"
-
             android:src="@drawable/ic_plus"
+
+            android:layout_marginEnd="@dimen/title_left_margin"
             app:layout_constraintBottom_toBottomOf="@+id/myPlantsTitleTag"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/myPlantsTitleTag" />
