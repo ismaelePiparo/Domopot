@@ -8,6 +8,7 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -31,12 +32,15 @@ class Details : Fragment(R.layout.details_fragment) {
     private lateinit var graphBtn: Button
     private lateinit var modeSwitch: Switch
     private lateinit var waterTag: TextView
-    private lateinit var cardView2: CardView
+    private lateinit var criteriLayout: ConstraintLayout
 
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        criteriLayout = view.findViewById(R.id.criteriLayout)
+        criteriLayout.isVisible=false
 
         details = view.findViewById<TextView>(R.id.plantName)
         details.text = viewModel.myPots.getValue(viewModel.currentPot)
@@ -48,11 +52,12 @@ class Details : Fragment(R.layout.details_fragment) {
         modeSwitch.setOnCheckedChangeListener { compoundButton, b ->
             if (b){
                 modeSwitch.setText("Automatica")
+                criteriLayout.isVisible=false
 
             }
             else{
                 modeSwitch.setText("Manuale")
-
+                criteriLayout.isVisible=true
 
             }
 
