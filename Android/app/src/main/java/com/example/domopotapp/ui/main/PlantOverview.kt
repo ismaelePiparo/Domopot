@@ -1,6 +1,7 @@
 package com.example.domopotapp.ui.main
 
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,14 +9,19 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domopotapp.PotData
 import com.example.domopotapp.R
 import com.example.domopotapp.applyDrawableAndColorToIV
 import com.example.domopotapp.linkAssetImage
+import com.google.firebase.database.DatabaseReference
 
-class PlantOverviewAdapter(var l: MutableList<PotData>) :
+
+class PlantOverviewAdapter(var l: MutableList<PotData>, val viewModel: MainViewModel) :
     RecyclerView.Adapter<PlantOverviewAdapter.PlantOverviewViewHolder>() {
+
+
 
     class PlantOverviewViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val plantName: TextView = v.findViewById(R.id.plantName)
@@ -29,6 +35,11 @@ class PlantOverviewAdapter(var l: MutableList<PotData>) :
         val connectionStatusIcon: ImageView = v.findViewById(R.id.connectionStatusIcon)
         val modeIcon: ImageView = v.findViewById(R.id.modeIcon)
     }
+
+
+
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlantOverviewViewHolder {
         val v =
@@ -52,6 +63,11 @@ class PlantOverviewAdapter(var l: MutableList<PotData>) :
 
         if (pd.commandMode == "Immediate") holder.manualWateringButton.visibility = View.VISIBLE
         else holder.manualWateringButton.visibility = View.GONE
+
+        holder.manualWateringButton.setOnClickListener {
+            Log.w("Annaffia", "Annaffio: ${viewModel.currentPot}")
+            viewModel.db.child("Pots/" + viewModel.currentPot + "/Commands/Immediate/Annaffia").setValue(true)
+        }
 
         if (pd.connectionStatus) {
             applyDrawableAndColorToIV(holder.connectionStatusIcon, R.drawable.ic_wifi, R.color.primary)

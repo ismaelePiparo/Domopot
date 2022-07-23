@@ -1,104 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg"
-    tools:context=".ui.main.Home">
+    tools:context=".ui.main.Home"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/myPlants"
-
-        style="@style/TextTitleTag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-
-        android:text="@string/title_tag_my_plants"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/addPlantButton"
-
-        style="@style/AddButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginEnd="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/myPlants"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/myPlants" />
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/plantOverview"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/plantDetails"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/myPlants">
+        android:layout_height="match_parent">
 
-    </androidx.viewpager2.widget.ViewPager2>
+        <TextView
+            android:id="@+id/myPlantsTitleTag"
 
-    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-        android:id="@+id/dotsIndicator"
+            style="@style/TextTitleTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/title_left_margin"
+            android:layout_marginTop="@dimen/title_top_margin"
+
+            android:text="@string/title_tag_my_plants"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/plantOverview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/plantDetails"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/myPlantsTitleTag">
+
+        </androidx.viewpager2.widget.ViewPager2>
+
+        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+            android:id="@+id/dotsIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="21dp"
+
+            app:dotsColor="@color/light"
+            app:dotsCornerRadius="8dp"
+            app:dotsSize="8dp"
+            app:dotsSpacing="4dp"
+            app:dotsWidthFactor="1"
+            app:layout_constraintBottom_toBottomOf="@+id/plantOverview"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:selectedDotColor="@color/secondary" />
+
+        <ImageButton
+            android:id="@+id/prevPlant"
+
+            style="@style/CaretButton"
+            android:layout_width="48dip"
+            android:layout_height="48dip"
+            android:src="@drawable/ic_caret_left"
+
+            app:layout_constraintBottom_toBottomOf="@+id/plantDetails"
+            app:layout_constraintEnd_toStartOf="@+id/plantDetails"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/plantDetails" />
+
+        <ImageButton
+            android:id="@+id/nextPlant"
+
+            style="@style/CaretButton"
+            android:layout_width="48dip"
+            android:layout_height="48dip"
+            android:src="@drawable/ic_caret_right"
+
+            app:layout_constraintBottom_toBottomOf="@+id/plantDetails"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/plantDetails"
+            app:layout_constraintTop_toBottomOf="@+id/plantOverview" />
+
+        <android.widget.Button
+            android:id="@+id/plantDetails"
+
+            style="@style/PrimaryButton"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_details"
+
+            android:layout_marginBottom="32dp"
+            android:layout_marginHorizontal="80dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/addPlantButton"
+
+            style="@style/CircleIconButton"
+            android:src="@drawable/ic_plus"
+
+            android:layout_marginEnd="@dimen/title_left_margin"
+            app:layout_constraintBottom_toBottomOf="@+id/myPlantsTitleTag"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/myPlantsTitleTag" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/noPlantsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/bigAddPlantButton"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:background="@color/zxing_transparent"
+            android:src="@drawable/ic_big_add"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/primary" />
+
+        <TextView
+            android:id="@+id/bigAddPlantButtonLabel"
+            style="@style/TextButtonLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_plant"
+            app:layout_constraintEnd_toEndOf="@+id/bigAddPlantButton"
+            app:layout_constraintStart_toStartOf="@+id/bigAddPlantButton"
+            app:layout_constraintTop_toBottomOf="@+id/bigAddPlantButton" />
+
+        <TextView
+            android:id="@+id/myPlantsTitle"
+            style="@style/TextTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/title_left_margin"
+            android:layout_marginTop="@dimen/title_top_margin"
+            android:text="@string/title_tag_my_plants"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/loadingIcon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="21dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_loading"
+        app:tint="@color/secondary" />
 
-        app:dotsColor="@color/light"
-        app:selectedDotColor="@color/secondary"
-        app:dotsCornerRadius="8dp"
-        app:dotsSize="8dp"
-        app:dotsSpacing="4dp"
-        app:dotsWidthFactor="1"
-
-        app:layout_constraintBottom_toBottomOf="@+id/plantOverview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/prevPlant"
-
-        style="@style/CaretButton"
-        android:layout_width="48dip"
-        android:layout_height="48dip"
-        android:src="@drawable/ic_caret_left"
-
-        app:layout_constraintBottom_toBottomOf="@+id/plantDetails"
-        app:layout_constraintEnd_toStartOf="@+id/plantDetails"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/plantDetails" />
-
-    <ImageButton
-        android:id="@+id/nextPlant"
-
-        style="@style/CaretButton"
-        android:layout_width="48dip"
-        android:layout_height="48dip"
-        android:src="@drawable/ic_caret_right"
-
-        app:layout_constraintBottom_toBottomOf="@+id/plantDetails"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/plantDetails"
-        app:layout_constraintTop_toBottomOf="@+id/plantOverview" />
-
-    <android.widget.Button
-        android:id="@+id/plantDetails"
-
-        style="@style/PrimaryButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:paddingHorizontal="60dp"
-        android:text="@string/btn_details"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -33,11 +33,11 @@
         android:label="fragment_home"
         tools:layout="@layout/home_fragment" >
         <action
-            android:id="@+id/Home_to_ConfigStep1"
-            app:destination="@id/configSetp_1" />
-        <action
             android:id="@+id/Home_to_details"
             app:destination="@id/details" />
+        <action
+            android:id="@+id/home2_to_configStep0"
+            app:destination="@id/configStep0" />
     </fragment>
     <fragment
         android:id="@+id/configStep3"
@@ -47,6 +47,12 @@
         <action
             android:id="@+id/ConfigStep3_to_Home"
             app:destination="@id/home2" />
+        <action
+            android:id="@+id/configStep3_to_configCompleted"
+            app:destination="@id/configCompleted" />
+        <action
+            android:id="@+id/configStep3_to_configFailed"
+            app:destination="@id/configFailed" />
     </fragment>
     <fragment
         android:id="@+id/guide"
@@ -55,6 +61,9 @@
         <action
             android:id="@+id/guide_to_plantTypeNav"
             app:destination="@id/plantTypeNav" />
+        <action
+            android:id="@+id/action_guide_to_configCompleted"
+            app:destination="@id/configCompleted" />
     </fragment>
     <fragment
         android:id="@+id/settings"
@@ -102,5 +111,38 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/configStep0"
+        android:name="com.example.domopotapp.ui.main.ConfigStep0"
+        android:label="ConfigStep0" >
+        <action
+            android:id="@+id/configStep0_to_configSetp_1"
+            app:destination="@id/configSetp_1" />
+        <action
+            android:id="@+id/configStep0_to_home2"
+            app:destination="@id/home2" />
+    </fragment>
+    <fragment
+        android:id="@+id/configCompleted"
+        android:name="com.example.domopotapp.ui.main.ConfigCompleted"
+        android:label="ConfigCompleted" >
+        <action
+            android:id="@+id/action_configCompleted_to_home2"
+            app:destination="@id/home2" />
+        <action
+            android:id="@+id/action_configCompleted_to_guide"
+            app:destination="@id/guide" />
+    </fragment>
+    <fragment
+        android:id="@+id/configFailed"
+        android:name="com.example.domopotapp.ui.main.ConfigFailed"
+        android:label="ConfigFailed" >
+        <action
+            android:id="@+id/action_configFailed_to_configSetp_1"
+            app:destination="@id/configSetp_1" />
+        <action
+            android:id="@+id/action_configFailed_to_home2"
+            app:destination="@id/home2" />
     </fragment>
 </navigation>

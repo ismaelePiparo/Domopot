@@ -2,12 +2,10 @@ package com.example.domopotapp.ui.main
 
 import android.net.wifi.WifiManager
 import android.util.Log
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModel
 import androidx.viewpager2.widget.ViewPager2
-import com.example.domopotapp.PlantTypeData
-import com.example.domopotapp.PotData
-import com.example.domopotapp.getConnectionStatusFromTimestamp
-import com.example.domopotapp.getLastWateringFromTimestamp
+import com.example.domopotapp.*
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -23,10 +21,15 @@ class MainViewModel : ViewModel() {
     var Pot_ID: String = ""
     var timestamp: Long = 0
     val db = Firebase.database.reference
-    var mAuth = FirebaseAuth.getInstance();
+    var mAuth = FirebaseAuth.getInstance()
     var myPots = mutableMapOf<String, String>()
+
     var currentPot: String = ""
     var currentPlantType: String = ""
+    var currentWifiSelection: String = ""
+    var createPlantSelectedName: String = ""
+    var emptyUserPots: Boolean? = null
+    var choosePTModeOn: Boolean = false
 
 
     val userPots = mutableMapOf<String, PotData>()
@@ -43,7 +46,9 @@ class MainViewModel : ViewModel() {
         userPotSnapshot: DataSnapshot,
         potSnapshot: DataSnapshot,
         ptSnapshot: DataSnapshot,
-        plantOverview: ViewPager2
+        plantOverview: ViewPager2,
+        mainLayout: ConstraintLayout,
+        noPlantsLayout: ConstraintLayout
     ) {
         val newPot = createPotData(
             userPotSnapshot.key.toString(),
@@ -52,6 +57,10 @@ class MainViewModel : ViewModel() {
             ptSnapshot
         )
         userPots[newPot.id] = newPot
+        if (emptyUserPots == null || emptyUserPots == true) {
+            emptyUserPots = false
+            updateHomeLayout(emptyUserPots, mainLayout, noPlantsLayout)
+        }
         (plantOverview.adapter as PlantOverviewAdapter).submitList(userPots.values.toMutableList())
     }
 
@@ -82,13 +91,22 @@ class MainViewModel : ViewModel() {
         (plantOverview.adapter as PlantOverviewAdapter).submitList(userPots.values.toMutableList())
     }
 
-    fun removeUserPot(potId: String, plantOverview: ViewPager2) {
+    fun removeUserPot(
+        potId: String,
+        plantOverview: ViewPager2,
+        mainLayout: ConstraintLayout,
+        noPlantsLayout: ConstraintLayout
+    ) {
         if (!userPots.containsKey(potId)) {
             Log.w("removeUserPot", "Pot with id $potId not found in userPots")
             return
         }
 
         userPots.remove(potId)
+        if ((emptyUserPots == null || emptyUserPots == false) && userPots.isEmpty()) {
+            emptyUserPots = true
+            updateHomeLayout(emptyUserPots, mainLayout, noPlantsLayout)
+        }
         (plantOverview.adapter as PlantOverviewAdapter).submitList(userPots.values.toMutableList())
     }
 
@@ -96,12 +114,11 @@ class MainViewModel : ViewModel() {
         potId: String,
         potName: String,
         potSnapshot: DataSnapshot,
-        ptSnapshot: DataSnapshot
+        ptSnapshot: DataSnapshot,
     ): PotData {
-        var humidityThreshold: Int
         val manualMode = potSnapshot.child("Commands").child("Mode").value.toString() != "Humidity"
 
-        humidityThreshold =
+        val humidityThreshold =
             if (manualMode) (potSnapshot.child("Commands").child("Humidity").value as Long).toInt()
             else (ptSnapshot.child("humidity_threshold").value as Long).toInt()
 

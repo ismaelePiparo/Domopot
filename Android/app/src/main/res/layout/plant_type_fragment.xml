@@ -12,21 +12,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="@dimen/title_left_margin"
+        android:layout_marginTop="@dimen/title_top_margin"
         android:text="@string/title_guide"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/guidebackButton"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:layout_marginEnd="-8dp"
-        android:layout_marginBottom="6dp"
-        android:background="@color/zxing_transparent"
-        app:tint="@color/info"
-        app:layout_constraintBottom_toBottomOf="@+id/guidePlantType"
+
+        style="@style/TitleBackButton"
+
         app:layout_constraintEnd_toStartOf="@+id/guidePlantType"
         app:layout_constraintTop_toTopOf="@+id/guidePlantType"
         app:srcCompat="@drawable/ic_chevron_left" />
@@ -38,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="@dimen/title_left_margin"
         android:text="Peperomia"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guideTitleTag" />
