@@ -58,7 +58,7 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
     private lateinit var infoWifi: TextView
     private var defaultText: String = "Sei connesso a: "
 
-    // TODO eliminare nextbutton
+    // TODO eliminare nextbutton, togliere un po' di toast
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

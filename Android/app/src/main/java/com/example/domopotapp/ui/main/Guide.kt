@@ -79,7 +79,7 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>, private val viewModel
             holder.ptCard.setOnClickListener {
                 viewModel.currentPlantType = l[position].id
                 viewModel.choosePTModeOn = false
-                findNavController(fragment).navigate(R.id.action_guide_to_configCompleted)
+                findNavController(fragment).navigate(viewModel.choosePTAction)
             }
         }
         else {

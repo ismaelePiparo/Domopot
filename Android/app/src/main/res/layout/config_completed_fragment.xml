@@ -132,7 +132,7 @@
                     android:layout_marginStart="65dp"
                     android:layout_marginTop="72dp"
                     android:layout_marginEnd="@dimen/title_left_margin"
-                    android:layout_marginBottom="60dp"
+                    android:layout_marginBottom="80dp"
                     android:backgroundTint="@color/light"
                     android:ems="10"
                     android:enabled="false"
@@ -162,7 +162,7 @@
 
                     style="@style/SmallCardSecondaryButton"
 
-                    android:layout_marginTop="72dp"
+                    android:layout_marginTop="80dp"
                     android:text="Seleziona"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -205,6 +205,19 @@
 
                     android:text="Conferma"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/createPlantCardInfoText"
+                    style="@style/TextButtonLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:text="Seleziona una specie"
+                    android:textColor="@color/danger"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toTopOf="@+id/createPlantCardConfirm"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 

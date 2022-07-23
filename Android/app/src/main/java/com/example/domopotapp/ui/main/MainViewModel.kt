@@ -1,8 +1,11 @@
 package com.example.domopotapp.ui.main
 
 import android.net.wifi.WifiManager
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.viewpager2.widget.ViewPager2
 import com.example.domopotapp.*
@@ -14,6 +17,8 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class MainViewModel : ViewModel() {
+
+    // TODO controllare i reset dei current
 
     var wifiManager: WifiManager? = null
     var ssid: String = ""
@@ -27,10 +32,10 @@ class MainViewModel : ViewModel() {
     var currentPot: String = ""
     var currentPlantType: String = ""
     var currentWifiSelection: String = ""
-    var createPlantSelectedName: String = ""
+    var editPlantSelectedName: String = ""
     var emptyUserPots: Boolean? = null
     var choosePTModeOn: Boolean = false
-
+    var choosePTAction: Int = R.id.action_guide_to_details
 
     val userPots = mutableMapOf<String, PotData>()
     val plantTypes = mutableMapOf<String, PlantTypeData>()
@@ -88,7 +93,27 @@ class MainViewModel : ViewModel() {
 
         val newPot = createPotData(potId, userPots[potId]!!.name, potSnapshot, ptSnapshot)
         userPots[newPot.id] = newPot
+
         (plantOverview.adapter as PlantOverviewAdapter).submitList(userPots.values.toMutableList())
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun updateUserPot(
+        potSnapshot: DataSnapshot,
+        ptSnapshot: DataSnapshot,
+        fragment: Details
+    ) {
+        val potId = potSnapshot.key.toString()
+
+        if (!userPots.containsKey(potId)) {
+            Log.w("updateUserPot", "Pot with id $potId not found in userPots")
+            return
+        }
+
+        val newPot = createPotData(potId, userPots[potId]!!.name, potSnapshot, ptSnapshot)
+        userPots[newPot.id] = newPot
+
+        fragment.updateView()
     }
 
     fun removeUserPot(
@@ -116,7 +141,7 @@ class MainViewModel : ViewModel() {
         potSnapshot: DataSnapshot,
         ptSnapshot: DataSnapshot,
     ): PotData {
-        val manualMode = potSnapshot.child("Commands").child("Mode").value.toString() != "Humidity"
+        val manualMode = !(potSnapshot.child("AutoMode").value as Boolean)
 
         val humidityThreshold =
             if (manualMode) (potSnapshot.child("Commands").child("Humidity").value as Long).toInt()
@@ -125,7 +150,7 @@ class MainViewModel : ViewModel() {
         return PotData(
             potId,
             potName,
-            ptSnapshot.child("name").value.toString(),
+            ptSnapshot.key.toString(),
             ptSnapshot.child("img").value.toString(),
             manualMode,
             getConnectionStatusFromTimestamp(
@@ -140,5 +165,49 @@ class MainViewModel : ViewModel() {
             potSnapshot.child("Commands").child("Mode").value.toString(),
             humidityThreshold
         )
+    }
+
+    fun updateCurrentPot(
+        id: String? = null,
+        name: String? = null,
+        type: String? = null,
+        image: String? = null,
+
+        manualMode: Boolean? = null,
+        connectionStatus: Boolean? = null,
+
+        humidity: Int? = null,
+        waterLevel: Int? = null,
+        temperature: Int? = null,
+        lastWatering: Int? = null,
+
+        commandMode: String? = null,
+        humidityThreshold: Int? = null,
+        programTiming: Int? = null,
+        waterQuantity: Int? = null,
+    ) {
+        if (id != null) userPots[currentPot]!!.id = id
+        if (name != null) userPots[currentPot]!!.name = name
+        if (type != null) userPots[currentPot]!!.type = type
+        if (image != null) userPots[currentPot]!!.image = image
+
+        if (manualMode != null) userPots[currentPot]!!.manualMode = manualMode
+        if (connectionStatus != null) userPots[currentPot]!!.connectionStatus = connectionStatus
+
+        if (humidity != null) userPots[currentPot]!!.humidity = humidity
+        if (waterLevel != null) userPots[currentPot]!!.waterLevel = waterLevel
+        if (temperature != null) userPots[currentPot]!!.temperature = temperature
+        if (lastWatering != null) userPots[currentPot]!!.lastWatering = lastWatering
+
+        if (commandMode != null) userPots[currentPot]!!.commandMode = commandMode
+        if (humidityThreshold != null) userPots[currentPot]!!.humidityThreshold = humidityThreshold
+        if (programTiming != null) userPots[currentPot]!!.programTiming = programTiming
+        if (waterQuantity != null) userPots[currentPot]!!.waterQuantity = waterQuantity
+
+        uploadUserPot(currentPot!!)
+    }
+
+    fun uploadUserPot(potId: String) {
+        // TODO caricare l'intero currentPot su firebase
     }
 }

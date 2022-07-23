@@ -56,6 +56,8 @@ class Home : Fragment(R.layout.home_fragment) {
         val plantOverview: ViewPager2 = view.findViewById(R.id.plantOverview)
         val dotsIndicator = view.findViewById<DotsIndicator>(R.id.dotsIndicator)
 
+        viewModel.currentPlantType = ""
+
         if (!bottomNav.isVisible) bottomNav.visibility = View.VISIBLE
         loadingIcon.animate().rotation(36000f).setDuration(30000).start()
         updateHomeLayout(viewModel.emptyUserPots, mainLayout, noPlantsLayout)
@@ -105,109 +107,8 @@ class Home : Fragment(R.layout.home_fragment) {
             }
         }
 
-        userPotsListener = object : ChildEventListener {
-            override fun onChildAdded(userPotSnapshot: DataSnapshot, previousChildName: String?) {
-                Log.w("Vaso Aggiunto", "onChildAdded:" + userPotSnapshot.key!!)
-                val potId = userPotSnapshot.key.toString()
-
-                if (viewModel.userPots.containsKey(potId)) viewModel.userPots[potId]!!.name =
-                    userPotSnapshot.value.toString()
-                else {
-                    viewModel.db.child("Pots").child(potId).get()
-                        .addOnSuccessListener { potSnapshot ->
-
-                            Log.i("firebase", "Got pot data from: ${potSnapshot.key}")
-                            val plantType = potSnapshot.child("PlantType").value.toString()
-
-                            viewModel.db.child("PlantTypes").child(plantType).get()
-                                .addOnSuccessListener { ptSnapshot ->
-
-                                    Log.i("firebase", "Got plant type data from: ${ptSnapshot.key}")
-                                    viewModel.addUserPot(
-                                        userPotSnapshot,
-                                        potSnapshot,
-                                        ptSnapshot,
-                                        plantOverview,
-                                        mainLayout,
-                                        noPlantsLayout
-                                    )
-
-                                }.addOnFailureListener { defaultFirebaseOnFailureListener }
-                        }.addOnFailureListener { defaultFirebaseOnFailureListener }
-                }
-
-
-
-                viewModel.myPots[potId] = userPotSnapshot.value.toString()
-                Log.w("Map", viewModel.myPots.toString())
-            }
-
-            override fun onChildChanged(userPotSnapshot: DataSnapshot, previousChildName: String?) {
-                Log.w("Vaso Modificato", "onChildChanged:" + userPotSnapshot.key!!)
-                val potId = userPotSnapshot.key.toString()
-                val potName = userPotSnapshot.value.toString()
-
-                if (viewModel.userPots.containsKey(potId)) viewModel.updateUserPot(
-                    potId,
-                    potName,
-                    plantOverview
-                )
-
-
-
-                viewModel.myPots[potId] = potName
-                Log.w("Map", viewModel.myPots.toString())
-            }
-
-            override fun onChildRemoved(userPotSnapshot: DataSnapshot) {
-                Log.w("Vaso eliminato", "onChildRemoved:" + userPotSnapshot.key!!)
-                val potId = userPotSnapshot.key.toString()
-
-                if (viewModel.userPots.containsKey(potId)) viewModel.removeUserPot(
-                    potId,
-                    plantOverview,
-                    mainLayout,
-                    noPlantsLayout
-                )
-
-
-
-                viewModel.myPots.remove(potId)
-                Log.w("Map", viewModel.myPots.toString())
-            }
-
-            override fun onChildMoved(userPotSnapshot: DataSnapshot, previousChildName: String?) {}
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.w("ERRORE", "postComments:onCancelled", databaseError.toException())
-            }
-        }
-
-        globalPotsListener = object : ChildEventListener {
-            override fun onChildAdded(potSnapshot: DataSnapshot, previousChildName: String?) {}
-
-            override fun onChildChanged(potSnapshot: DataSnapshot, previousChildName: String?) {
-                val potId = potSnapshot.key.toString()
-
-                if (viewModel.userPots.containsKey(potId)) {
-                    val plantType = potSnapshot.child("PlantType").value.toString()
-                    viewModel.db.child("PlantTypes").child(plantType).get()
-                        .addOnSuccessListener { ptSnapshot ->
-                            Log.i("firebase", "Got plant type data from: ${ptSnapshot.key}")
-
-                            viewModel.updateUserPot(potSnapshot, ptSnapshot, plantOverview)
-                        }.addOnFailureListener { defaultFirebaseOnFailureListener }
-                }
-            }
-
-            override fun onChildRemoved(potSnapshot: DataSnapshot) {}
-
-            override fun onChildMoved(potSnapshot: DataSnapshot, previousChildName: String?) {}
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.w("ERRORE", "postComments:onCancelled", error.toException())
-            }
-        }
+        userPotsListener = UserPotsListener(viewModel, plantOverview, mainLayout, noPlantsLayout)
+        globalPotsListener = GlobalPotsListener(viewModel, plantOverview)
 
         userPotsRef.addChildEventListener(userPotsListener)
         globalPotsRef.addChildEventListener(globalPotsListener)

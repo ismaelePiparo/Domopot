@@ -17,6 +17,7 @@ data class PotData(
     var commandMode: String = "Humidity",   //accepted values: Humidity, Immediate, Program
     var humidityThreshold: Int,
     var programTiming: Int = -1,
+    var waterQuantity: Int = 50
 )
 
 data class PlantTypeData(

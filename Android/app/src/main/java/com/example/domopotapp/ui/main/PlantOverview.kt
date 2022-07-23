@@ -11,16 +11,12 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domopotapp.PotData
-import com.example.domopotapp.R
-import com.example.domopotapp.applyDrawableAndColorToIV
-import com.example.domopotapp.linkAssetImage
+import com.example.domopotapp.*
 import com.google.firebase.database.DatabaseReference
 
 
 class PlantOverviewAdapter(var l: MutableList<PotData>, val viewModel: MainViewModel) :
     RecyclerView.Adapter<PlantOverviewAdapter.PlantOverviewViewHolder>() {
-
 
 
     class PlantOverviewViewHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -37,10 +33,6 @@ class PlantOverviewAdapter(var l: MutableList<PotData>, val viewModel: MainViewM
     }
 
 
-
-
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlantOverviewViewHolder {
         val v =
             LayoutInflater.from(parent.context).inflate(R.layout.plant_overview_item, parent, false)
@@ -49,46 +41,20 @@ class PlantOverviewAdapter(var l: MutableList<PotData>, val viewModel: MainViewM
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: PlantOverviewViewHolder, position: Int) {
-        val pd = l[position]
-        val context = holder.plantName.context
-
-        if (pd.name == "") {
-            holder.plantName.text = pd.type
-            holder.plantType.text = ""
-        }
-        else {
-            holder.plantName.text = pd.name
-            holder.plantType.text = pd.type
-        }
-
-        if (pd.commandMode == "Immediate") holder.manualWateringButton.visibility = View.VISIBLE
-        else holder.manualWateringButton.visibility = View.GONE
-
-        holder.manualWateringButton.setOnClickListener {
-            Log.w("Annaffia", "Annaffio: ${viewModel.currentPot}")
-            viewModel.db.child("Pots/" + viewModel.currentPot + "/Commands/Immediate/Annaffia").setValue(true)
-        }
-
-        if (pd.connectionStatus) {
-            applyDrawableAndColorToIV(holder.connectionStatusIcon, R.drawable.ic_wifi, R.color.primary)
-        }
-        else {
-            applyDrawableAndColorToIV(holder.connectionStatusIcon, R.drawable.ic_wifi_off, R.color.danger)
-        }
-
-        if (pd.manualMode) {
-            applyDrawableAndColorToIV(holder.modeIcon, R.drawable.ic_face, R.color.warning)
-        }
-        else {
-            applyDrawableAndColorToIV(holder.modeIcon, R.drawable.ic_robot, R.color.secondary)
-        }
-
-        holder.humidity.text = pd.humidity.toString() + "%"
-        holder.temperature.text = pd.temperature.toString() + "°"
-        holder.waterLevel.text = pd.waterLevel.toString() + "%"
-        holder.lastWatering.text = pd.lastWatering.toString() + "h"
-
-        linkAssetImage(holder.plantImage, pd.image)
+        bindMyPlantsView(
+            l[position],
+            viewModel,
+            holder.plantName,
+            holder.plantType,
+            holder.plantImage,
+            holder.manualWateringButton,
+            holder.connectionStatusIcon,
+            holder.modeIcon,
+            holder.humidity,
+            holder.temperature,
+            holder.waterLevel,
+            holder.lastWatering,
+        )
     }
 
     override fun getItemCount(): Int {

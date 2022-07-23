@@ -3,343 +3,719 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/detailsMain"
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:backgroundTint="@color/bg">
 
+    <TextView
+        android:id="@+id/detailsMyPlantsTitleTag"
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/TextTitleTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/title_left_margin"
+        android:layout_marginTop="@dimen/title_top_margin"
+
+        android:text="@string/title_tag_my_plants"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/detailsEditPlantButton"
+
+        style="@style/CircleIconButton"
+        android:layout_marginEnd="@dimen/title_left_margin"
+
+        android:src="@drawable/ic_edit"
+        app:layout_constraintBottom_toBottomOf="@+id/detailsMyPlantsTitleTag"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsMyPlantsTitleTag" />
+
+    <ImageButton
+        android:id="@+id/detailsTitleBackButton"
+
+        style="@style/ConfigTitleBackButton"
+        android:layout_marginTop="@dimen/title_backbutton_top_margin"
+
+        app:layout_constraintEnd_toStartOf="@+id/detailsPlantName"
+        app:layout_constraintTop_toTopOf="@+id/detailsPlantName" />
+
+    <TextView
+        android:id="@+id/detailsPlantName"
+
+        style="@style/TextTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="@dimen/title_left_margin"
+        android:text="Gino"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsMyPlantsTitleTag" />
+
+    <TextView
+        android:id="@+id/detailsPlantType"
+        style="@style/TextPlantType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-12dp"
+        android:text="Basilico"
+        app:layout_constraintStart_toStartOf="@+id/detailsPlantName"
+        app:layout_constraintTop_toBottomOf="@+id/detailsPlantName" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="25dp"
-        tools:layout_editor_absoluteY="0dp">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsPlantType"
+        app:layout_constraintVertical_bias="0.0">
 
-        <TextView
-            android:id="@+id/plantName"
-
-            style="@style/TextTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_marginStart="24dp"
-            android:text="Gino"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/plantType"
-            style="@style/TextPlantType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-12dp"
-            android:text="Basilico"
-            app:layout_constraintStart_toStartOf="@+id/plantName"
-            app:layout_constraintTop_toBottomOf="@+id/plantName" />
-
-        <ImageButton
-            android:id="@+id/editBtn"
-            style="@style/CircleIconButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/plantType"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/plantName"
-            app:srcCompat="@drawable/btn_primary"
-            tools:srcCompat="@drawable/ic_edit" />
-
-        <ScrollView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="-97dp">
+            android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/detailsPlantImage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="-24dp"
+                android:minHeight="300dp"
+                app:layout_constraintBottom_toTopOf="@+id/detailsCardView2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
 
-                <ImageView
-                    android:id="@+id/plantImage"
-                    android:layout_width="256dp"
-                    android:layout_height="295dp"
-                    android:layout_marginTop="82dp"
-                    android:layout_marginBottom="16dp"
-                    app:layout_constraintBottom_toTopOf="@+id/cardView2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:srcCompat="@tools:sample/avatars" />
+            <ImageView
+                android:id="@+id/detailsModeIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintBottom_toTopOf="@+id/detailsCardView2"
+                app:layout_constraintStart_toStartOf="@+id/detailsCardView2"
+                app:srcCompat="@drawable/ic_robot"
+                app:tint="@color/secondary" />
 
-                <ImageView
-                    android:id="@+id/modeIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@+id/plantImage"
-                    app:layout_constraintTop_toBottomOf="@+id/plantImage"
-                    app:srcCompat="@drawable/ic_robot"
-                    app:tint="@color/secondary" />
+            <ImageView
+                android:id="@+id/detailsConnectionStatusIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/detailsModeIcon"
+                app:layout_constraintEnd_toEndOf="@+id/detailsCardView2"
+                app:layout_constraintTop_toTopOf="@+id/detailsModeIcon"
+                app:srcCompat="@drawable/ic_wifi"
+                app:tint="@color/primary" />
 
-                <ImageView
-                    android:id="@+id/connectionStatusIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@+id/plantImage"
-                    app:layout_constraintTop_toBottomOf="@+id/plantImage"
-                    app:srcCompat="@drawable/ic_wifi"
-                    app:tint="@color/primary" />
+            <ImageButton
+                android:id="@+id/detailsManualWateringButton"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:background="@drawable/white_shadow"
+                app:layout_constraintBottom_toBottomOf="@+id/detailsModeIcon"
+                app:layout_constraintEnd_toStartOf="@+id/detailsConnectionStatusIcon"
+                app:layout_constraintStart_toEndOf="@+id/detailsModeIcon"
+                app:layout_constraintTop_toTopOf="@+id/detailsModeIcon"
+                app:srcCompat="@drawable/btn_watering" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView2"
-                    android:layout_width="360dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginBottom="50dp"
-                    app:cardCornerRadius="30dp"
-                    app:cardElevation="20dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/plantImage">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/detailsCardView2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="32dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/detailsCardModeText"
+
+                        style="@style/TextDetailsStatLabel"
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Modalità"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/detailsCardHumidityText"
+
+                        style="@style/TextDetailsStatLabel"
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="4dp"
+                        android:text="Umidità"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/detailsCardModeText" />
+
+                    <TextView
+                        android:id="@+id/detailsCardWaterLevelText"
+
+                        style="@style/TextDetailsStatLabel"
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="4dp"
+                        android:text="Livello acqua"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/detailsCardHumidityText" />
+
+                    <TextView
+                        android:id="@+id/detailsCardTemperatureText"
+
+                        style="@style/TextDetailsStatLabel"
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="4dp"
+                        android:text="Temperatura"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/detailsCardWaterLevelText" />
+
+                    <TextView
+                        android:id="@+id/detailsCardLastWateringText"
+
+                        style="@style/TextDetailsStatLabel"
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="4dp"
+                        android:text="Innaffiato"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/detailsCardTemperatureText" />
+
+                    <Switch
+                        android:id="@+id/detailsCardModeSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginEnd="24dp"
+
+                        android:switchMinWidth="55dp"
+                        android:text="Manuale"
+                        android:textColor="@color/dark"
+                        android:thumbTint="@color/warning"
+                        app:layout_constraintBottom_toBottomOf="@+id/detailsCardModeText"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/detailsCardModeText"
+                        tools:checked="false"
+                        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                    <ProgressBar
+                        android:id="@+id/detailsCardHumidityBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="22dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginEnd="32dp"
+                        android:max="100"
+
+                        android:progress="5"
+                        android:progressDrawable="@drawable/progress_bar"
+                        app:layout_constraintBottom_toBottomOf="@+id/detailsCardHumidityText"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/detailsCardTemperatureText"
+                        app:layout_constraintTop_toTopOf="@+id/detailsCardHumidityText"
+                        app:layout_constraintVertical_bias="0.3" />
+
+                    <ImageView
+                        android:id="@+id/detailsCardHumidityBarIcon"
+
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+
+                        app:layout_constraintBottom_toBottomOf="@+id/detailsCardHumidityBar"
+                        app:layout_constraintEnd_toEndOf="@+id/detailsCardHumidityBar"
+                        app:layout_constraintHorizontal_bias="0.08"
+                        app:layout_constraintStart_toStartOf="@+id/detailsCardHumidityBar"
+                        app:layout_constraintTop_toTopOf="@+id/detailsCardHumidityBar"
+                        app:srcCompat="@drawable/ic_humidity"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        android:id="@+id/detailsCardHumidityValue"
+
+                        style="@style/TextDetailsStatLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginStart="4dp"
+                        android:text="25%"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/detailsCardHumidityBarIcon"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/detailsCardHumidityBarIcon"
+                        app:layout_constraintTop_toTopOf="@+id/detailsCardHumidityBarIcon"
+                        app:layout_constraintVertical_bias="0.28" />
+
+                    <ProgressBar
+                        android:id="@+id/detailsCardWaterLevelBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="22dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginEnd="32dp"
+                        android:max="100"
+
+                        android:progress="0"
+                        android:progressDrawable="@drawable/progress_bar"
+                        app:layout_constraintBottom_toBottomOf="@+id/detailsCardWaterLevelText"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/detailsCardTemperatureText"
+                        app:layout_constraintTop_toTopOf="@+id/detailsCardWaterLevelText"
+                        app:layout_constraintVertical_bias="0.3" />
+
+                    <ImageView
+                        android:id="@+id/detailsCardWaterLevelBarIcon"
+
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+
+                        app:layout_constraintBottom_toBottomOf="@+id/detailsCardWaterLevelBar"
+                        app:layout_constraintEnd_toEndOf="@+id/detailsCardWaterLevelBar"
+                        app:layout_constraintHorizontal_bias="0.08"
+                        app:layout_constraintStart_toStartOf="@+id/detailsCardWaterLevelBar"
+                        app:layout_constraintTop_toTopOf="@+id/detailsCardWaterLevelBar"
+                        app:srcCompat="@drawable/ic_waterlevel"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        android:id="@+id/detailsCardWaterLevelValue"
+
+                        style="@style/TextDetailsStatLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginStart="4dp"
+                        android:text="25%"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/detailsCardWaterLevelBarIcon"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/detailsCardWaterLevelBarIcon"
+                        app:layout_constraintTop_toTopOf="@+id/detailsCardWaterLevelBarIcon"
+                        app:layout_constraintVertical_bias="0.28" />
+
+                    <ProgressBar
+                        android:id="@+id/detailsCardTemperatureBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="22dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginEnd="32dp"
+                        android:max="50"
+
+                        android:progress="5"
+                        android:progressDrawable="@drawable/progress_bar"
+                        app:layout_constraintBottom_toBottomOf="@+id/detailsCardTemperatureText"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/detailsCardTemperatureText"
+                        app:layout_constraintTop_toTopOf="@+id/detailsCardTemperatureText"
+                        app:layout_constraintVertical_bias="0.3" />
+
+                    <ImageView
+                        android:id="@+id/detailsCardTemperatureBarIcon"
+
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+
+                        app:layout_constraintBottom_toBottomOf="@+id/detailsCardTemperatureBar"
+                        app:layout_constraintEnd_toEndOf="@+id/detailsCardTemperatureBar"
+                        app:layout_constraintHorizontal_bias="0.08"
+                        app:layout_constraintStart_toStartOf="@+id/detailsCardTemperatureBar"
+                        app:layout_constraintTop_toTopOf="@+id/detailsCardTemperatureBar"
+                        app:srcCompat="@drawable/ic_temperature"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        android:id="@+id/detailsCardTemperatureValue"
+
+                        style="@style/TextDetailsStatLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginStart="4dp"
+                        android:text="25%"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/detailsCardTemperatureBarIcon"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/detailsCardTemperatureBarIcon"
+                        app:layout_constraintTop_toTopOf="@+id/detailsCardTemperatureBarIcon"
+                        app:layout_constraintVertical_bias="0.28" />
+
+                    <ImageView
+                        android:id="@+id/detailsCardLastWateringDateIcon"
+
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+
+                        android:layout_marginEnd="4dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/detailsCardLastWateringDate"
+                        app:layout_constraintEnd_toStartOf="@+id/detailsCardLastWateringDate"
+                        app:layout_constraintTop_toTopOf="@+id/detailsCardLastWateringDate"
+                        app:layout_constraintVertical_bias="0.35"
+                        app:srcCompat="@drawable/ic_lastwatering"
+                        app:tint="@color/dark" />
+
+                    <TextView
+                        android:id="@+id/detailsCardLastWateringDate"
+
+                        style="@style/TextDetailsStatLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+
+                        android:layout_marginEnd="32dp"
+                        android:text="4 gen 18:30"
+                        android:textColor="@color/dark"
+                        android:textSize="18sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/detailsCardTemperatureText" />
+
+
+                    <android.widget.Button
+                        android:id="@+id/detailsGraph"
+
+                        style="@style/SmallCardPrimaryButton"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="24dp"
+
+                        android:text="Grafici"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/detailsCardLastWateringText"
+                        app:layout_constraintVertical_bias="0" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/detailsCardWateringModeLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/detailsGraph">
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/constraintLayout2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            app:layout_constraintBottom_toTopOf="@+id/criteriLayout"
-                            app:layout_constraintTop_toTopOf="parent">
+                        <TextView
+                            android:id="@+id/detailsCardWateringModeTitle"
 
-                            <TextView
-                                android:id="@+id/temperature"
-                                style="@style/TextLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:text="Temperatura"
-                                android:textAlignment="textEnd"
-                                android:textSize="20sp"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/mode" />
-
-                            <TextView
-                                android:id="@+id/mode"
-                                style="@style/TextLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:layout_marginTop="16dp"
-                                android:text="Modalità"
-                                android:textAlignment="textEnd"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                                android:textSize="20sp"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:id="@+id/waterLevel"
-                                style="@style/TextLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:text="Livello acqua"
-                                android:textAlignment="textEnd"
-                                android:textSize="20sp"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/humidity" />
-
-                            <TextView
-                                android:id="@+id/humidity"
-                                style="@style/TextLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:text="Umidità"
-                                android:textAlignment="textEnd"
-                                android:textSize="20sp"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/temperature" />
-
-                            <TextView
-                                android:id="@+id/lastWatering2"
-                                style="@style/TextLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:text="Innaffiato"
-                                android:textAlignment="textEnd"
-                                android:textSize="20sp"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/waterLevel" />
-
-                            <TextView
-                                android:id="@+id/helper1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.3"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <Button
-                                android:id="@+id/graph"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/btn_primary"
-                                android:text="Grafici"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/lastWatering2" />
-
-                            <TextView
-                                android:id="@+id/helper2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.7"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <Switch
-                                android:id="@+id/modeSwitch"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="50dp"
-                                android:checked="true"
-                                android:minWidth="48dp"
-                                android:minHeight="48dp"
-                                android:text="Automatica"
-                                app:layout_constraintBottom_toBottomOf="@+id/mode"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/mode" />
-
-                            <ProgressBar
-                                android:id="@+id/tempBar"
-                                style="?android:attr/progressBarStyleHorizontal"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="50dp"
-                                app:layout_constraintBottom_toBottomOf="@+id/temperature"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/mode" />
-
-                            <ProgressBar
-                                android:id="@+id/progressBar2"
-                                style="?android:attr/progressBarStyleHorizontal"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="50dp"
-                                app:layout_constraintBottom_toBottomOf="@+id/humidity"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/humidity" />
-
-                            <ProgressBar
-                                android:id="@+id/progressBar3"
-                                style="?android:attr/progressBarStyleHorizontal"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="50dp"
-                                app:layout_constraintBottom_toBottomOf="@+id/waterLevel"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/waterLevel" />
-
-                            <TextView
-                                android:id="@+id/waterTag"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="50dp"
-                                android:text="4 gen 18.30"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/waterLevel" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/criteriLayout"
+                            style="@style/TextDetailsSubtitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
+
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="24dp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:text="Criterio d'innaffiamento"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                            <TextView
-                                android:id="@+id/criteri"
+                        <RadioGroup
+                            android:id="@+id/detailsCardRadioGroup"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/detailsCardWateringModeTitle">
+
+                            <RadioButton
+                                android:id="@+id/detailsCardRadioButtonHumidity"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:text="Criteri d'innaffiamento"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:button="@drawable/ic_humidity"
+                                android:buttonTint="@color/primary" />
 
-                            <RadioGroup
+                            <RadioButton
+                                android:id="@+id/detailsCardRadioButtonProgram"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:layout_marginTop="16dp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/criteri">
+                                android:layout_marginHorizontal="48dp"
+                                android:button="@drawable/ic_lastwatering"
+                                android:buttonTint="@color/light" />
 
-                                <RadioButton
-                                    android:id="@+id/radioHum"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Umidità Terreno" />
+                            <RadioButton
+                                android:id="@+id/detailsCardRadioButtonImmediate"
+                                android:layout_width="40dp"
+                                android:layout_height="wrap_content"
+                                android:button="@drawable/ic_hand"
+                                android:buttonTint="@color/light" />
+                        </RadioGroup>
 
-                                <SeekBar
-                                    android:id="@+id/seekBar"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/detailsCardWateringModeSubtitle"
 
-                                <RadioButton
-                                    android:id="@+id/radioTime"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="Tempo" />
+                            style="@style/TextLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
 
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                            android:layout_marginTop="32dp"
+                            android:text="Umidità terreno"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/detailsCardRadioGroup" />
 
-                                    <TextView
-                                        android:id="@+id/waterEvery"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:text="Innaffia alle ore" />
+                        <SeekBar
+                            android:id="@+id/detailsCardWateringModeSeekBar"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:max="100"
+                            android:progress="25"
+                            android:progressBackgroundTint="@color/info"
+                            android:progressTint="@color/secondary"
+                            android:thumbTint="@color/secondary"
+                            app:layout_constraintEnd_toStartOf="@+id/detailsCardWateringModeSeekBarLabel"
+                            app:layout_constraintStart_toStartOf="@+id/detailsCardWateringModeSubtitle"
+                            app:layout_constraintTop_toBottomOf="@+id/detailsCardWateringModeSubtitle" />
 
-                                    <Spinner
-                                        android:id="@+id/spinner2"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:spinnerMode="dialog" />
+                        <TextView
+                            android:id="@+id/detailsCardWateringModeSeekBarLabel"
 
-                                </LinearLayout>
+                            style="@style/TextDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginEnd="24dp"
 
-                                <RadioButton
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="Innaffia adesso" />
-                            </RadioGroup>
+                            android:text="25%"
+                            android:textColor="@color/info"
+                            android:textSize="18sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/detailsCardWateringModeSeekBar"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/detailsCardWateringModeSeekBar" />
 
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/detailsCardWateringModeDescription"
+
+                            style="@style/TextDescription"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="24dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="32dp"
+
+                            android:text="Imposta un livello di umidità del terreno che sarà mantenuto dal sistema"
+                            android:textColor="@color/info"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/detailsCardWateringModeSeekBar" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.cardview.widget.CardView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/detailsEditCardLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/modal_bg"
+        android:elevation="100dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/detailsEditCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/title_left_margin"
+            android:layout_marginEnd="@dimen/title_left_margin"
+            app:cardCornerRadius="36dp"
+            app:cardElevation="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.45">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <ImageButton
+                    android:id="@+id/detailsEditCardTitleBackButton"
+
+                    style="@style/ConfigTitleBackButton"
+                    android:layout_marginTop="-5dp"
+
+                    app:layout_constraintEnd_toStartOf="@+id/detailsEditCardTitle"
+                    app:layout_constraintTop_toTopOf="@+id/detailsEditCardTitle" />
+
+                <TextView
+                    android:id="@+id/detailsEditCardTitle"
+
+                    style="@style/TextSmallCardTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/title_left_margin"
+
+                    android:layout_marginTop="16dp"
+                    android:text="Modifica pianta"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <CheckBox
+                    android:id="@+id/detailsEditCardCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/detailsEditCardNameLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/detailsEditCardNameLabel"
+                    app:layout_constraintTop_toTopOf="@+id/detailsEditCardNameLabel" />
+
+                <TextView
+                    android:id="@+id/detailsEditCardNameLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nome personalizzato"
+                    android:textColor="@color/light"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toTopOf="@+id/detailsEditCardNameInput"
+                    app:layout_constraintStart_toStartOf="@+id/detailsEditCardNameInput" />
+
+                <EditText
+                    android:id="@+id/detailsEditCardNameInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="65dp"
+                    android:layout_marginTop="72dp"
+                    android:layout_marginEnd="@dimen/title_left_margin"
+                    android:layout_marginBottom="80dp"
+                    android:backgroundTint="@color/light"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:hint="Es. Flora"
+                    android:textColorHighlight="@color/primary"
+                    android:textColorHint="@color/light"
+                    android:textColorLink="@color/primary"
+                    app:layout_constraintBottom_toTopOf="@+id/detailsEditCardConfirm"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/detailsEditCardChooseType" />
+
+                <TextView
+                    android:id="@+id/detailsEditCardTypeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="Specie"
+                    android:textColor="@color/info"
+
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toTopOf="@+id/detailsEditCardChooseType"
+                    app:layout_constraintStart_toStartOf="@+id/detailsEditCardChooseType" />
+
+                <android.widget.Button
+                    android:id="@+id/detailsEditCardChooseType"
+
+                    style="@style/SmallCardSecondaryButton"
+
+                    android:layout_marginTop="80dp"
+                    android:text="Seleziona"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/detailsEditCardTitle" />
+
+                <TextView
+                    android:id="@+id/detailsEditCardType"
+                    style="@style/TextLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Basilico"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="@+id/detailsEditCardTypeLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/detailsEditCardTypeLabel" />
+
+                <ImageButton
+                    android:id="@+id/detailsEditCardEditPlantType"
+
+                    style="@style/CircleIconButton"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="@dimen/title_left_margin"
+
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/circle_secondary"
+                    android:src="@drawable/ic_edit"
+                    app:layout_constraintBottom_toBottomOf="@+id/detailsEditCardType"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/detailsEditCardType"
+                    app:layout_constraintTop_toTopOf="@+id/detailsEditCardChooseType" />
+
+                <android.widget.Button
+                    android:id="@+id/detailsEditCardConfirm"
+
+                    style="@style/SmallCardPrimaryButton"
+                    android:layout_marginBottom="16dp"
+
+                    android:text="Conferma"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

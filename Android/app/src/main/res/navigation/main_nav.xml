@@ -64,6 +64,9 @@
         <action
             android:id="@+id/action_guide_to_configCompleted"
             app:destination="@id/configCompleted" />
+        <action
+            android:id="@+id/action_guide_to_details"
+            app:destination="@id/details" />
     </fragment>
     <fragment
         android:id="@+id/settings"
@@ -91,6 +94,12 @@
         <action
             android:id="@+id/details_to_graph"
             app:destination="@id/graph2" />
+        <action
+            android:id="@+id/action_details_to_guide"
+            app:destination="@id/guide" />
+        <action
+            android:id="@+id/action_details_to_home2"
+            app:destination="@id/home2" />
     </fragment>
     <fragment
         android:id="@+id/graph2"
