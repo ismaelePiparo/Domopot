@@ -57,6 +57,9 @@ class Details : Fragment(R.layout.details_fragment) {
     private lateinit var detailsCardWateringModeSeekBar: SeekBar
     private lateinit var detailsCardWateringModeSeekBarLabel: TextView
     private lateinit var detailsCardWateringModeDescription: TextView
+    private lateinit var detailsCardWateringModeSeekBarTitle: TextView
+    private lateinit var detailsCardWateringModeTimePickerTitle: TextView
+    private lateinit var detailsCardWateringModeTimePickerButton: Button
 
     private lateinit var detailsCardModeSwitch: Switch
     private lateinit var detailsCardTemperatureBar: ProgressBar
@@ -110,6 +113,10 @@ class Details : Fragment(R.layout.details_fragment) {
             if (isOn) vm.uploadCurrentPot(humidityThreshold = vm.plantTypes[vm.userPots[vm.currentPot]!!.type]!!.humidityThreshold)
             vm.uploadCurrentPot(manualMode = !isOn)
             updateView()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Convertire a smoothscroll se si riesce
+                view.findViewById<ScrollView>(R.id.detailsScrollView).scrollToDescendant(detailsCardWateringModeSeekBar)
+            }
         }
 
         graphBtn.setOnClickListener {
@@ -234,15 +241,24 @@ class Details : Fragment(R.layout.details_fragment) {
             detailsCardRadioButtonHumidity.id -> {
                 detailsCardWateringModeSubtitle.text = "Umidità terreno"
                 detailsCardWateringModeDescription.text = "Imposta un livello di umidità del terreno che sarà mantenuto dal sistema."
+                detailsCardWateringModeSeekBarTitle.text = "Livello di umidità"
+                detailsCardWateringModeTimePickerTitle.visibility = View.GONE
+                detailsCardWateringModeTimePickerButton.visibility = View.GONE
             }
             detailsCardRadioButtonProgram.id -> {
                 // TODO aggiungere selettore orario
                 detailsCardWateringModeSubtitle.text = "Tempo"
                 detailsCardWateringModeDescription.text = "Il sistema innaffierà una volta al giorno all'ora prefissata. Usa lo slider per scegliere la quantità d'acqua usata."
+                detailsCardWateringModeSeekBarTitle.text = "Quantità d'acqua"
+                detailsCardWateringModeTimePickerTitle.visibility = View.VISIBLE
+                detailsCardWateringModeTimePickerButton.visibility = View.VISIBLE
             }
             else -> {
                 detailsCardWateringModeSubtitle.text = "Manuale"
                 detailsCardWateringModeDescription.text = "Innaffia manualmente nei momenti che preferisci usando il pulsante apposito. Usa lo slider per scegliere la quantità d'acqua usata."
+                detailsCardWateringModeSeekBarTitle.text = "Quantità d'acqua"
+                detailsCardWateringModeTimePickerTitle.visibility = View.GONE
+                detailsCardWateringModeTimePickerButton.visibility = View.GONE
             }
         }
 
@@ -286,6 +302,9 @@ class Details : Fragment(R.layout.details_fragment) {
             view.findViewById(R.id.detailsCardWateringModeSeekBarLabel)
         detailsCardWateringModeDescription =
             view.findViewById(R.id.detailsCardWateringModeDescription)
+        detailsCardWateringModeSeekBarTitle = view.findViewById(R.id.detailsCardWateringModeSeekBarTitle)
+        detailsCardWateringModeTimePickerTitle = view.findViewById(R.id.detailsCardWateringModeTimePickerTitle)
+        detailsCardWateringModeTimePickerButton = view.findViewById(R.id.detailsCardWateringModeTimePickerButton)
 
         detailsCardModeSwitch = view.findViewById(R.id.detailsCardModeSwitch)
         detailsCardLastWateringDate = view.findViewById(R.id.detailsCardLastWateringDate)

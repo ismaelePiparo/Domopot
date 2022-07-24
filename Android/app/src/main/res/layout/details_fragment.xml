@@ -65,6 +65,7 @@
         app:layout_constraintTop_toBottomOf="@+id/detailsPlantName" />
 
     <ScrollView
+        android:id="@+id/detailsScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -503,11 +504,60 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/detailsCardRadioGroup" />
 
+                        <TextView
+                            android:id="@+id/detailsCardWateringModeTimePickerTitle"
+                            style="@style/TextDescription"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="36dp"
+
+                            android:layout_marginTop="16dp"
+                            android:text="Orario"
+
+                            android:textColor="@color/secondary_light"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/detailsCardWateringModeSubtitle" />
+
+                        <android.widget.Button
+                            android:id="@+id/detailsCardWateringModeTimePickerButton"
+                            style="@style/TimePickerButton"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:layout_marginStart="16dp"
+                            android:paddingHorizontal="40dp"
+                            android:text="12:00"
+
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@+id/detailsCardWateringModeTimePickerTitle"
+                            app:layout_constraintStart_toEndOf="@+id/detailsCardWateringModeTimePickerTitle"
+                            app:layout_constraintTop_toTopOf="@+id/detailsCardWateringModeTimePickerTitle" />
+
+                        <TextView
+                            android:id="@+id/detailsCardWateringModeSeekBarTitle"
+
+                            style="@style/TextDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:layout_marginLeft="36dp"
+                            android:layout_marginTop="16dp"
+
+                            android:text="Livello di umidità"
+                            android:textColor="@color/secondary_light"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/detailsCardWateringModeTimePickerButton" />
+
                         <SeekBar
                             android:id="@+id/detailsCardWateringModeSeekBar"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
                             android:layout_marginEnd="16dp"
                             android:max="100"
                             android:progress="25"
@@ -516,7 +566,7 @@
                             android:thumbTint="@color/secondary"
                             app:layout_constraintEnd_toStartOf="@+id/detailsCardWateringModeSeekBarLabel"
                             app:layout_constraintStart_toStartOf="@+id/detailsCardWateringModeSubtitle"
-                            app:layout_constraintTop_toBottomOf="@+id/detailsCardWateringModeSubtitle" />
+                            app:layout_constraintTop_toBottomOf="@+id/detailsCardWateringModeSeekBarTitle" />
 
                         <TextView
                             android:id="@+id/detailsCardWateringModeSeekBarLabel"
@@ -542,7 +592,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="24dp"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="24dp"
                             android:layout_marginBottom="32dp"
 
                             android:text="Imposta un livello di umidità del terreno che sarà mantenuto dal sistema"
