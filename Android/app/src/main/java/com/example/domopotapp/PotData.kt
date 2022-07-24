@@ -12,7 +12,7 @@ data class PotData(
     var humidity: Int,
     var waterLevel: Int,
     var temperature: Int,
-    var lastWatering: Int,
+    var lastWatering: String,
 
     var commandMode: String = "Humidity",   //accepted values: Humidity, Immediate, Program
     var humidityThreshold: Int,

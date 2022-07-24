@@ -16,6 +16,7 @@ import com.example.domopotapp.ui.main.Details
 import com.example.domopotapp.ui.main.MainViewModel
 import com.google.firebase.database.DatabaseReference
 import java.io.InputStream
+import java.util.*
 
 val defaultFirebaseOnFailureListener =
     { it: Exception -> Log.e("firebase", "Error getting data", it) }
@@ -27,14 +28,22 @@ fun linkAssetImage(imageView: ImageView, fileName: String) {
     imageView.setImageDrawable(d)
 }
 
-fun getLastWateringFromTimestamp(timestamp: Int): Int {
-    //TODO implement function
-    return 2
+fun getLastWateringFromTimestamp(timestamp: Int): String {
+    //TODO test if it works...
+    //Cambiato lastWatering da Int a String
+    val sdf = java.text.SimpleDateFormat("HH:mm")
+    var date : Date
+    date = java.util.Date(timestamp.toLong() * 1000)
+
+    return  sdf.format(date).toString()
 }
 
 fun getConnectionStatusFromTimestamp(timestamp: Int): Boolean {
-    //TODO implement function
-    return true
+    //TODO test if it works...
+    //Controlla se online status è maggiore del tempo corrente - 5 minuti
+    // onlineStatus si aggiorna da ESP ogni 10 secondi
+    Log.w("Current ts -5 min", ((System.currentTimeMillis() / 1000)-250).toString())
+    return timestamp > (System.currentTimeMillis() / 1000)-500
 }
 
 @RequiresApi(Build.VERSION_CODES.M)

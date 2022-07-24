@@ -179,7 +179,7 @@ class MainViewModel : ViewModel() {
         humidity: Int? = null,
         waterLevel: Int? = null,
         temperature: Int? = null,
-        lastWatering: Int? = null,
+        lastWatering: String? = null,
 
         commandMode: String? = null,
         humidityThreshold: Int? = null,

@@ -179,7 +179,19 @@ class Details : Fragment(R.layout.details_fragment) {
 
     override fun onResume() {
         super.onResume()
-
+        if(vm.userPots[vm.currentPot]?.commandMode  == "Immediate"){
+            detailsCardWateringModeSeekBar.progress=vm.userPots[vm.currentPot]!!.waterQuantity
+            updateSeekBarLabel(detailsCardWateringModeSeekBar.progress)
+            detailsCardRadioButtonImmediate.isChecked = true
+        }
+        if(vm.userPots[vm.currentPot]?.commandMode  == "Humidity"){
+            detailsCardRadioButtonHumidity.isChecked = true
+            detailsCardWateringModeSeekBar.progress=vm.userPots[vm.currentPot]!!.humidityThreshold
+            updateSeekBarLabel(detailsCardWateringModeSeekBar.progress)
+        }
+        if(vm.userPots[vm.currentPot]?.commandMode  == "Program"){
+            detailsCardRadioButtonProgram.isChecked = true
+        }
     }
 
     override fun onDestroy() {
@@ -196,21 +208,27 @@ class Details : Fragment(R.layout.details_fragment) {
         if (vm.userPots[vm.currentPot]!!.manualMode) detailsCardWateringModeLayout.visibility = View.VISIBLE
         else detailsCardWateringModeLayout.visibility = View.GONE
 
-        if(vm.userPots[vm.currentPot]?.commandMode  == "Immediate"){
-            //detailsCardWateringModeSeekBar.progress=vm.userPots[vm.currentPot]!!.waterQuantity
-            //updateSeekBarLabel(detailsCardWateringModeSeekBar.progress)
+        /*if(vm.userPots[vm.currentPot]?.commandMode  == "Immediate"){
             detailsCardRadioButtonImmediate.isChecked = true
         }
         if(vm.userPots[vm.currentPot]?.commandMode  == "Humidity"){
-            //detailsCardRadioButtonHumidity.isChecked = true
-            //detailsCardWateringModeSeekBar.progress=vm.userPots[vm.currentPot]!!.humidityThreshold
-            updateSeekBarLabel(detailsCardWateringModeSeekBar.progress)
+            detailsCardRadioButtonHumidity.isChecked = true
         }
         if(vm.userPots[vm.currentPot]?.commandMode  == "Program"){
             detailsCardRadioButtonProgram.isChecked = true
+        }*/
+
+        detailsCardRadioButtonHumidity.setOnClickListener{
+            detailsCardWateringModeSeekBar.progress=vm.userPots[vm.currentPot]!!.humidityThreshold
+            updateSeekBarLabel(detailsCardWateringModeSeekBar.progress)
         }
+        detailsCardRadioButtonImmediate.setOnClickListener{
+            detailsCardWateringModeSeekBar.progress=vm.userPots[vm.currentPot]!!.waterQuantity
+            updateSeekBarLabel(detailsCardWateringModeSeekBar.progress)
+        }
+        detailsCardRadioButtonProgram.setOnClickListener{
 
-
+        }
 
         detailsCardHumidityBar.progress = vm.userPots[vm.currentPot]!!.humidity
         detailsCardWaterLevelBar.progress = vm.userPots[vm.currentPot]!!.waterLevel
