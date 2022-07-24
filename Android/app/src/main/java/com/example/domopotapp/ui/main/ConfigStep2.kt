@@ -104,13 +104,11 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
             }
         })
 
-
-        // TODO rimuovere next
         view.findViewById<Button>(R.id.config2TestNext).setOnClickListener { findNavController().navigate(R.id.ConfigStep2_to_ConfigStep3) }
     }
 
     private fun requestID() {
-        Toast.makeText(activity, "Invio dati in corso...", Toast.LENGTH_LONG).show()
+        //Toast.makeText(activity, "Invio dati in corso...", Toast.LENGTH_LONG).show()
         mRequestQueue = Volley.newRequestQueue(activity)
 
         val id_request: StringRequest = object : StringRequest(
@@ -131,7 +129,7 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
     }
 
     private fun sendCredentials() {
-        Toast.makeText(activity, "Invio credenziali in corso...", Toast.LENGTH_LONG).show()
+        //Toast.makeText(activity, "Invio credenziali in corso...", Toast.LENGTH_LONG).show()
         mRequestQueue = Volley.newRequestQueue(activity)
 
         val sr: StringRequest = object : StringRequest(
@@ -175,7 +173,7 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
                     "Si è verificato un errore nel collegamento con il vaso...",
                     Toast.LENGTH_LONG
                 ).show()
-                // TODO findNavController().navigate(R.id.ConfigStep2_to_ConfigStep1)
+                findNavController().navigate(R.id.ConfigStep2_to_ConfigStep1)
             }
             if (!viewModel.wifiManager!!.isWifiEnabled) {
                 Toast.makeText(
@@ -183,7 +181,7 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
                     "Wifi scollegato! Accendere il Wifi...",
                     Toast.LENGTH_LONG
                 ).show()
-                // TODO findNavController().navigate(R.id.ConfigStep2_to_ConfigStep1)
+                findNavController().navigate(R.id.ConfigStep2_to_ConfigStep1)
             }
         }
     }

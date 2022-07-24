@@ -112,7 +112,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
 
             }
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Log.w("firebase", error.toString())
             }
         }
     }

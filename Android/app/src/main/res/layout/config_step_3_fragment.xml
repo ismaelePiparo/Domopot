@@ -87,6 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Next1"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -98,6 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:text="Next2"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/config3TestNext1"
         app:layout_constraintEnd_toStartOf="@+id/config3TestNext1" />
 

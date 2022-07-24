@@ -69,8 +69,8 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
         //viewModel.Pot_ID = "DomoPot_01"
         //viewModel.timestamp = System.currentTimeMillis() / 1000
 
-        // TODO togliere
-        viewModel.Pot_ID = "DomoPot_02"
+        // TODO debug line
+        //viewModel.Pot_ID = "DomoPot_02"
         //
 
         //ref = viewModel.db.child(viewModel.Pot_ID + "/OnlineStatus/ConnectTime")
@@ -130,11 +130,10 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
                 }
             }
             override fun onCancelled(error: DatabaseError) {
+                Log.w("firebase", error.toString())
             }
         }
 
-
-        // TODO rimuovere next
         view.findViewById<Button>(R.id.config3TestNext1).setOnClickListener { findNavController().navigate(R.id.configStep3_to_configCompleted) }
         view.findViewById<Button>(R.id.config3TestNext2).setOnClickListener { findNavController().navigate(R.id.configStep3_to_configFailed) }
     }

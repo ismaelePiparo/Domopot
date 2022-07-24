@@ -79,6 +79,8 @@ class Details : Fragment(R.layout.details_fragment) {
     private lateinit var detailsSureCardTitleBackButton: ImageButton
     private lateinit var detailsSureCardConfirm: Button
 
+    // TODO tasto elimina
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

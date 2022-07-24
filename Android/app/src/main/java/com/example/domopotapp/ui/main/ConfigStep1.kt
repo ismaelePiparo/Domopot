@@ -58,8 +58,6 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
     private lateinit var infoWifi: TextView
     private var defaultText: String = "Sei connesso a: "
 
-    // TODO eliminare nextbutton, togliere un po' di toast
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -124,7 +122,7 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    Toast.makeText(activity, "Connessione in corso... ", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(activity, "Connessione in corso... ", Toast.LENGTH_LONG).show()
                 } else {
                     val intentResult =
                         IntentIntegrator.parseActivityResult(result.resultCode, result.data)
@@ -136,7 +134,7 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
                         connectToWifi(parsedResult.ssid, parsedResult.password)
                     }
 
-                    Toast.makeText(activity, "Connessione in corso...", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(activity, "Connessione in corso...", Toast.LENGTH_LONG).show()
                 }
             } else {
                 Toast.makeText(activity, "Operazione annullata", Toast.LENGTH_LONG).show()
