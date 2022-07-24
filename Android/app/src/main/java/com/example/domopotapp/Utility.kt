@@ -258,14 +258,27 @@ fun bindMyPlantsView(
         plantType.text = viewModel.plantTypes[pd.type]!!.name
     }
 
-    if (pd.commandMode == "Immediate") manualWateringButton.visibility = View.VISIBLE
-    else manualWateringButton.visibility = View.GONE
+    Log.w("current pot",pd.id + "manual mode: "+ pd.manualMode)
+    //viewModel.db.child("Pots/" + pd.id + "/AutoMode").setValue(pd.manualMode)
 
-    manualWateringButton.setOnClickListener {
-        Log.w("Annaffia", "Annaffio: ${viewModel.currentPot}")
-        viewModel.db.child("Pots/" + viewModel.currentPot + "/Commands/Immediate/Annaffia")
-            .setValue(true)
+    if(pd.manualMode){
+        Log.w("manual mode", pd.manualMode.toString())
+        if (pd.commandMode == "Immediate") manualWateringButton.visibility = View.VISIBLE
+        else manualWateringButton.visibility = View.GONE
+
+        manualWateringButton.setOnClickListener {
+            Log.w("Annaffia", "Annaffio: ${viewModel.currentPot}")
+            viewModel.db.child("Pots/" + viewModel.currentPot + "/Commands/Immediate/Annaffia")
+                .setValue(true)
+        }
+    }else{
+        manualWateringButton.visibility = View.GONE
     }
+
+
+    Log.w("commands mode", pd.commandMode)
+
+
 
     if (pd.connectionStatus) {
         applyDrawableAndColorToIV(
