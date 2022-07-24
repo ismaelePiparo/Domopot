@@ -1,5 +1,7 @@
 package com.example.domopotapp
 
+import java.time.LocalDateTime
+
 data class PotData(
     var id: String,
     var name: String,
@@ -12,11 +14,11 @@ data class PotData(
     var humidity: Int,
     var waterLevel: Int,
     var temperature: Int,
-    var lastWatering: String,
+    var lastWatering: LocalDateTime,
 
     var commandMode: String = "Humidity",   //accepted values: Humidity, Immediate, Program
     var humidityThreshold: Int,
-    var programTiming: Int = -1,
+    var programTiming: Long = -1,
     var waterQuantity: Int = 50
 )
 

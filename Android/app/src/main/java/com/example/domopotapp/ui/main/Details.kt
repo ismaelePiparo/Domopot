@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.domopotapp.*
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DatabaseReference
+import java.time.format.DateTimeFormatter
 
 
 class Details : Fragment(R.layout.details_fragment) {
@@ -35,6 +36,8 @@ class Details : Fragment(R.layout.details_fragment) {
     private lateinit var detailsPlantImage: ImageView
     private lateinit var detailsManualWateringButton: ImageButton
     private lateinit var detailsModeIcon: ImageView
+    private lateinit var detailsTimePickerLayout: ConstraintLayout
+    private lateinit var detailsTimePicker: TimePicker
 
     private lateinit var detailsConnectionStatusIcon: ImageView
     private lateinit var detailsCardLastWateringDate: TextView
@@ -73,7 +76,7 @@ class Details : Fragment(R.layout.details_fragment) {
 
     private lateinit var detailsEditCardConfirm: Button
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -90,6 +93,8 @@ class Details : Fragment(R.layout.details_fragment) {
         linkIds(view)
 
         vm.choosePTAction = R.id.action_guide_to_details
+
+        detailsTimePicker.setIs24HourView(true)
 
         detailsCardModeSwitch.setOnCheckedChangeListener { _, isOn ->
             if (isOn) {
@@ -115,7 +120,8 @@ class Details : Fragment(R.layout.details_fragment) {
             updateView()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 // Convertire a smoothscroll se si riesce
-                view.findViewById<ScrollView>(R.id.detailsScrollView).scrollToDescendant(detailsCardWateringModeSeekBar)
+                view.findViewById<ScrollView>(R.id.detailsScrollView)
+                    .scrollToDescendant(detailsCardWateringModeSeekBar)
             }
         }
 
@@ -143,17 +149,32 @@ class Details : Fragment(R.layout.details_fragment) {
             vm.uploadCurrentPot(commandMode = "Immediate")
         }
 
-        detailsCardWateringModeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        detailsCardWateringModeSeekBar.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
                 updateSeekBarLabel(progress)
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {}
             override fun onStopTrackingTouch(p0: SeekBar?) {
-                if(vm.userPots[vm.currentPot]!!.commandMode == "Humidity") vm.uploadCurrentPot(humidityThreshold = detailsCardWateringModeSeekBar.progress)
+                if (vm.userPots[vm.currentPot]!!.commandMode == "Humidity") vm.uploadCurrentPot(
+                    humidityThreshold = detailsCardWateringModeSeekBar.progress
+                )
                 else vm.uploadCurrentPot(waterQuantity = detailsCardWateringModeSeekBar.progress)
             }
         })
+
+        detailsTimePickerLayout.setOnClickListener {
+            detailsTimePickerLayout.visibility = View.GONE
+        }
+        detailsCardWateringModeTimePickerButton.setOnClickListener {
+            detailsTimePickerLayout.visibility = View.VISIBLE
+        }
+        detailsTimePicker.setOnTimeChangedListener { _, hour, minutes ->
+            val timeString = getHMTimeString(hour, minutes)
+            detailsCardWateringModeTimePickerButton.text = timeString
+            vm.uploadCurrentPot(programTiming = getTimestampFromTimeString(timeString))
+        }
 
         setEditPlantListeners(
             false,
@@ -187,8 +208,11 @@ class Details : Fragment(R.layout.details_fragment) {
             vm.editPlantSelectedName = vm.userPots[vm.currentPot]!!.name
         }
 
-        if (vm.userPots[vm.currentPot]!!.manualMode) detailsCardWateringModeLayout.visibility = View.VISIBLE
+        if (vm.userPots[vm.currentPot]!!.manualMode) detailsCardWateringModeLayout.visibility =
+            View.VISIBLE
         else detailsCardWateringModeLayout.visibility = View.GONE
+
+        detailsCardLastWateringDate.text = vm.userPots[vm.currentPot]!!.lastWatering.minusHours(2).format(DateTimeFormatter.ofPattern("d MMM HH:mm"))
 
         detailsCardHumidityBar.progress = vm.userPots[vm.currentPot]!!.humidity
         detailsCardWaterLevelBar.progress = vm.userPots[vm.currentPot]!!.waterLevel
@@ -206,7 +230,6 @@ class Details : Fragment(R.layout.details_fragment) {
             detailsCardHumidityValue,
             detailsCardTemperatureValue,
             detailsCardWaterLevelValue,
-            detailsCardLastWateringDate,
         )
 
         setEditPlantType(
@@ -235,12 +258,13 @@ class Details : Fragment(R.layout.details_fragment) {
             else vm.userPots[vm.currentPot]!!.humidityThreshold
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.O)
     fun checkRadioButton(currentId: Int, checkedId: Int, view: View) {
         when (checkedId) {
             detailsCardRadioButtonHumidity.id -> {
                 detailsCardWateringModeSubtitle.text = "Umidità terreno"
-                detailsCardWateringModeDescription.text = "Imposta un livello di umidità del terreno che sarà mantenuto dal sistema."
+                detailsCardWateringModeDescription.text =
+                    "Imposta un livello di umidità del terreno che sarà mantenuto dal sistema."
                 detailsCardWateringModeSeekBarTitle.text = "Livello di umidità"
                 detailsCardWateringModeTimePickerTitle.visibility = View.GONE
                 detailsCardWateringModeTimePickerButton.visibility = View.GONE
@@ -248,14 +272,17 @@ class Details : Fragment(R.layout.details_fragment) {
             detailsCardRadioButtonProgram.id -> {
                 // TODO aggiungere selettore orario
                 detailsCardWateringModeSubtitle.text = "Tempo"
-                detailsCardWateringModeDescription.text = "Il sistema innaffierà una volta al giorno all'ora prefissata. Usa lo slider per scegliere la quantità d'acqua usata."
+                detailsCardWateringModeDescription.text =
+                    "Il sistema innaffierà una volta al giorno all'ora prefissata. Usa lo slider per scegliere la quantità d'acqua usata."
                 detailsCardWateringModeSeekBarTitle.text = "Quantità d'acqua"
+                detailsCardWateringModeTimePickerButton.text = getTimeStringFromTimestamp(vm.userPots[vm.currentPot]!!.programTiming)
                 detailsCardWateringModeTimePickerTitle.visibility = View.VISIBLE
                 detailsCardWateringModeTimePickerButton.visibility = View.VISIBLE
             }
             else -> {
                 detailsCardWateringModeSubtitle.text = "Manuale"
-                detailsCardWateringModeDescription.text = "Innaffia manualmente nei momenti che preferisci usando il pulsante apposito. Usa lo slider per scegliere la quantità d'acqua usata."
+                detailsCardWateringModeDescription.text =
+                    "Innaffia manualmente nei momenti che preferisci usando il pulsante apposito. Usa lo slider per scegliere la quantità d'acqua usata."
                 detailsCardWateringModeSeekBarTitle.text = "Quantità d'acqua"
                 detailsCardWateringModeTimePickerTitle.visibility = View.GONE
                 detailsCardWateringModeTimePickerButton.visibility = View.GONE
@@ -273,7 +300,7 @@ class Details : Fragment(R.layout.details_fragment) {
 
     fun updateSeekBarLabel(progress: Int) {
         val end =
-            if(vm.userPots[vm.currentPot]!!.commandMode == "Humidity") "%"
+            if (vm.userPots[vm.currentPot]!!.commandMode == "Humidity") "%"
             else "ml"
 
         detailsCardWateringModeSeekBarLabel.text = progress.toString() + end
@@ -289,6 +316,8 @@ class Details : Fragment(R.layout.details_fragment) {
         detailsTitleBackButton = view.findViewById(R.id.detailsTitleBackButton)
         detailsEditPlantButton = view.findViewById(R.id.detailsEditPlantButton)
         graphBtn = view.findViewById(R.id.detailsGraph)
+        detailsTimePickerLayout = view.findViewById(R.id.detailsTimePickerLayout)
+        detailsTimePicker = view.findViewById(R.id.detailsTimePicker)
 
         detailsCardWateringModeLayout = view.findViewById(R.id.detailsCardWateringModeLayout)
         detailsCardWateringModeTitle = view.findViewById(R.id.detailsCardWateringModeTitle)
@@ -302,9 +331,12 @@ class Details : Fragment(R.layout.details_fragment) {
             view.findViewById(R.id.detailsCardWateringModeSeekBarLabel)
         detailsCardWateringModeDescription =
             view.findViewById(R.id.detailsCardWateringModeDescription)
-        detailsCardWateringModeSeekBarTitle = view.findViewById(R.id.detailsCardWateringModeSeekBarTitle)
-        detailsCardWateringModeTimePickerTitle = view.findViewById(R.id.detailsCardWateringModeTimePickerTitle)
-        detailsCardWateringModeTimePickerButton = view.findViewById(R.id.detailsCardWateringModeTimePickerButton)
+        detailsCardWateringModeSeekBarTitle =
+            view.findViewById(R.id.detailsCardWateringModeSeekBarTitle)
+        detailsCardWateringModeTimePickerTitle =
+            view.findViewById(R.id.detailsCardWateringModeTimePickerTitle)
+        detailsCardWateringModeTimePickerButton =
+            view.findViewById(R.id.detailsCardWateringModeTimePickerButton)
 
         detailsCardModeSwitch = view.findViewById(R.id.detailsCardModeSwitch)
         detailsCardLastWateringDate = view.findViewById(R.id.detailsCardLastWateringDate)

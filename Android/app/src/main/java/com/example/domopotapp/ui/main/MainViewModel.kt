@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.time.LocalDateTime
 
 class MainViewModel : ViewModel() {
 
@@ -134,6 +135,7 @@ class MainViewModel : ViewModel() {
         (plantOverview.adapter as PlantOverviewAdapter).submitList(userPots.values.toMutableList())
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createPotData(
         potId: String,
         potName: String,
@@ -159,11 +161,11 @@ class MainViewModel : ViewModel() {
             (potSnapshot.child("WaterLevel").value as Long).toInt(),
             (potSnapshot.child("Temperature").value as Long).toInt(),
             getLastWateringFromTimestamp(
-                (potSnapshot.child("LastWatering").value as Long).toInt()
+                potSnapshot.child("LastWatering").value as Long
             ),
             potSnapshot.child("Commands").child("Mode").value.toString(),
             humidityThreshold,
-            (potSnapshot.child("Commands/Program/Timing").value as Long).toInt(),
+            potSnapshot.child("Commands/Program/Timing").value as Long,
             (potSnapshot.child("Commands/Program/WaterQuantity").value as Long).toInt()
         )
     }
@@ -180,11 +182,11 @@ class MainViewModel : ViewModel() {
         humidity: Int? = null,
         waterLevel: Int? = null,
         temperature: Int? = null,
-        lastWatering: String? = null,
+        lastWatering: LocalDateTime? = null,
 
         commandMode: String? = null,
         humidityThreshold: Int? = null,
-        programTiming: Int? = null,
+        programTiming: Long? = null,
         waterQuantity: Int? = null,
     ) {
         // TODO aggiungere controlli

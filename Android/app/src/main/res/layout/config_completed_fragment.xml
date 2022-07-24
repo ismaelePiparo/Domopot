@@ -58,6 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/modal_bg"
+        android:onClick="preventClicks"
         android:elevation="100dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

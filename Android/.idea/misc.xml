@@ -35,9 +35,12 @@
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/shadow.xml" value="0.2485" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/switch_thumb.xml" value="0.326" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/switch_track.xml" value="0.326" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/time_picker_bg.xml" value="0.26" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/time_picker_header_bg.xml" value="0.26" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/config_completed_fragment.xml" value="0.264" />
-        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/details_fragment.xml" value="0.536" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/config_step_2_fragment.xml" value="0.28396739130434784" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/details_fragment.xml" value="0.4" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/graph_fragment.xml" value="0.27355072463768115" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/guide_fragment.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/home_fragment.xml" value="0.264" />

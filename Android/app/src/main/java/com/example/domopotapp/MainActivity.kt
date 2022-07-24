@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
@@ -72,4 +73,5 @@ class MainActivity : AppCompatActivity() {
         }.addOnFailureListener { defaultFirebaseOnFailureListener }
     }
 
+    fun preventClicks(view: View?) {}
 }

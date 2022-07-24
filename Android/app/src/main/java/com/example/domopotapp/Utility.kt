@@ -17,6 +17,8 @@ import com.example.domopotapp.ui.main.Details
 import com.example.domopotapp.ui.main.MainViewModel
 import com.google.firebase.database.DatabaseReference
 import java.io.InputStream
+import java.time.*
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 val defaultFirebaseOnFailureListener =
@@ -29,14 +31,30 @@ fun linkAssetImage(imageView: ImageView, fileName: String) {
     imageView.setImageDrawable(d)
 }
 
-@SuppressLint("SimpleDateFormat")
-fun getLastWateringFromTimestamp(timestamp: Int): String {
-    //TODO test if it works...
-    //Cambiato lastWatering da Int a String
-    val sdf = java.text.SimpleDateFormat("HH:mm")
-    val date : Date = java.util.Date(timestamp.toLong() * 1000)
+fun getLastWateringFromTimestamp(timestamp: Long): LocalDateTime {
+    return LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.systemDefault())
+}
 
-    return  sdf.format(date).toString()
+fun getTimeDistanceString(d: LocalDateTime): String {
+    val i = Duration.between(d.minusHours(2), LocalDateTime.now())
+    return when {
+        i.toDays() > 0 -> {
+            "${i.toDays()}g"
+        }
+        i.toHours() > 0 -> {
+            "${i.toHours()}h"
+        }
+        i.toMinutes() > 0 -> {
+            "${i.toMinutes()}m"
+        }
+        else -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                "${i.toSeconds()}s"
+            } else {
+                "${i.toMinutes()}m"
+            }
+        }
+    }
 }
 
 fun getConnectionStatusFromTimestamp(timestamp: Int): Boolean {
@@ -45,6 +63,32 @@ fun getConnectionStatusFromTimestamp(timestamp: Int): Boolean {
     // onlineStatus si aggiorna da ESP ogni 10 secondi
     Log.w("Current ts -5 min", ((System.currentTimeMillis() / 1000)-250).toString())
     return timestamp > (System.currentTimeMillis() / 1000)-500
+}
+
+fun getHMTimeString(hour: Int, minutes: Int): String {
+    val hString =
+        if (hour < 10) "0$hour"
+        else "$hour"
+    val minString =
+        if (minutes < 10) "0$minutes"
+        else "$minutes"
+    return "$hString:$minString"
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun getTimestampFromTimeString(timeString: String): Long {
+    val now = LocalDate.now()
+    val month =
+        if (now.monthValue < 10) "0${now.monthValue}"
+        else "${now.monthValue}"
+    return Instant.parse("${now.year}-$month-${now.dayOfMonth}T$timeString:00.000Z").toEpochMilli()/1000
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun getTimeStringFromTimestamp(timestamp: Long): String {
+    var d = LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.systemDefault())
+    d = d.minusHours(2)
+    return getHMTimeString(d.hour, d.minute)
 }
 
 @SuppressLint("UseCompatLoadingForDrawables")
@@ -260,7 +304,6 @@ fun bindMyPlantsView(
     humidity: TextView,
     temperature: TextView,
     waterLevel: TextView,
-    lastWatering: TextView,
 ) {
     if (pd.name == "") {
         plantName.text = viewModel.plantTypes[pd.type]!!.name
@@ -306,9 +349,6 @@ fun bindMyPlantsView(
     humidity.text = pd.humidity.toString() + "%"
     temperature.text = pd.temperature.toString() + "°"
     waterLevel.text = pd.waterLevel.toString() + "%"
-
-    // TODO impostare lastwatering in base alla pagina
-    lastWatering.text = pd.lastWatering.toString() + "h"
 
     linkAssetImage(plantImage, pd.image)
 }

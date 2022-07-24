@@ -64,6 +64,31 @@
         app:layout_constraintStart_toStartOf="@+id/detailsPlantName"
         app:layout_constraintTop_toBottomOf="@+id/detailsPlantName" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/detailsTimePickerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/modal_bg"
+        android:elevation="100dp"
+        android:visibility="gone">
+
+        <TimePicker
+            android:id="@+id/detailsTimePicker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/time_picker_bg"
+            android:headerBackground="@drawable/time_picker_header_bg"
+            android:numbersSelectorColor="@color/secondary"
+            android:timePickerMode="clock"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <ScrollView
         android:id="@+id/detailsScrollView"
         android:layout_width="match_parent"
@@ -616,6 +641,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/modal_bg"
+        android:onClick="preventClicks"
         android:elevation="100dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

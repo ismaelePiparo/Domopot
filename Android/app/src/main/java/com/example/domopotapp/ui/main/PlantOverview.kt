@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domopotapp.*
 import com.google.firebase.database.DatabaseReference
+import java.time.format.DateTimeFormatter
 
 
 class PlantOverviewAdapter(var l: MutableList<PotData>, val viewModel: MainViewModel) :
@@ -39,8 +40,8 @@ class PlantOverviewAdapter(var l: MutableList<PotData>, val viewModel: MainViewM
         return PlantOverviewViewHolder(v)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: PlantOverviewViewHolder, position: Int) {
+        holder.lastWatering.text = getTimeDistanceString(l[position].lastWatering)
         bindMyPlantsView(
             l[position],
             viewModel,
@@ -53,7 +54,6 @@ class PlantOverviewAdapter(var l: MutableList<PotData>, val viewModel: MainViewM
             holder.humidity,
             holder.temperature,
             holder.waterLevel,
-            holder.lastWatering,
         )
     }
 
@@ -62,7 +62,7 @@ class PlantOverviewAdapter(var l: MutableList<PotData>, val viewModel: MainViewM
     }
 
     fun submitList(newL: MutableList<PotData>) {
-        var removeIndexes: MutableList<Int> = mutableListOf()
+        val removeIndexes: MutableList<Int> = mutableListOf()
 
         l.forEachIndexed { i, old ->
             val index = newL.indexOf(newL.find { it.id == old.id })
