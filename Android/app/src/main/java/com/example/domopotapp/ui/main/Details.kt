@@ -2,7 +2,6 @@ package com.example.domopotapp.ui.main
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.*
@@ -25,7 +24,6 @@ class Details : Fragment(R.layout.details_fragment) {
         }
     }
 
-    private lateinit var potRef: DatabaseReference
     private val vm by activityViewModels<MainViewModel>()
 
     private lateinit var userPotsRef: DatabaseReference
@@ -99,22 +97,18 @@ class Details : Fragment(R.layout.details_fragment) {
                     getColorStateListFromId(R.color.info, context)
 
                 detailsCardWateringModeLayout.visibility = View.GONE
-
-                //messo qui perchè in Utility da problemi...
-                vm.db.child("Pots/" + vm.currentPot + "/AutoMode").setValue(isOn)
-
             } else {
                 detailsCardModeSwitch.text = "Manuale"
                 detailsCardModeSwitch.thumbTintList =
                     getColorStateListFromId(R.color.warning, context)
 
                 detailsCardWateringModeLayout.visibility = View.VISIBLE
-
-                //messo qui perchè in Utility da problemi...
-                vm.db.child("Pots/" + vm.currentPot + "/AutoMode").setValue(isOn)
             }
-
-            vm.updateCurrentPot(manualMode = !isOn)
+        }
+        detailsCardModeSwitch.setOnClickListener {
+            val isOn = detailsCardModeSwitch.isChecked
+            if (isOn) vm.uploadCurrentPot(humidityThreshold = vm.plantTypes[vm.userPots[vm.currentPot]!!.type]!!.humidityThreshold)
+            vm.uploadCurrentPot(manualMode = !isOn)
             updateView()
         }
 
@@ -132,28 +126,26 @@ class Details : Fragment(R.layout.details_fragment) {
 
             updateSeekBarLabel(detailsCardWateringModeSeekBar.progress)
         }
+        detailsCardRadioButtonHumidity.setOnClickListener {
+            vm.uploadCurrentPot(commandMode = "Humidity")
+        }
+        detailsCardRadioButtonProgram.setOnClickListener {
+            vm.uploadCurrentPot(commandMode = "Program")
+        }
+        detailsCardRadioButtonImmediate.setOnClickListener {
+            vm.uploadCurrentPot(commandMode = "Immediate")
+        }
+
         detailsCardWateringModeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
                 updateSeekBarLabel(progress)
-
-                if(vm.userPots[vm.currentPot]!!.commandMode == "Humidity"){
-                    vm.updateCurrentPot(humidityThreshold = progress)
-
-                    //Messo qui perchè in utility dava probelmi...
-                    vm.db.child("Pots/" + vm.currentPot + "/Commands/Humidity").setValue(progress)
-
-                }
-                else{
-                    vm.updateCurrentPot(waterQuantity = progress)
-
-                    //Messo qui perchè in utility dava probelmi...
-                    vm.db.child("Pots/" + vm.currentPot + "/Commands/Immediate/WaterQuantity").setValue(progress)
-
-                }
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {}
-            override fun onStopTrackingTouch(p0: SeekBar?) {}
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+                if(vm.userPots[vm.currentPot]!!.commandMode == "Humidity") vm.uploadCurrentPot(humidityThreshold = detailsCardWateringModeSeekBar.progress)
+                else vm.uploadCurrentPot(waterQuantity = detailsCardWateringModeSeekBar.progress)
+            }
         })
 
         setEditPlantListeners(
@@ -177,23 +169,6 @@ class Details : Fragment(R.layout.details_fragment) {
         updateView()
     }
 
-    override fun onResume() {
-        super.onResume()
-        if(vm.userPots[vm.currentPot]?.commandMode  == "Immediate"){
-            detailsCardWateringModeSeekBar.progress=vm.userPots[vm.currentPot]!!.waterQuantity
-            updateSeekBarLabel(detailsCardWateringModeSeekBar.progress)
-            detailsCardRadioButtonImmediate.isChecked = true
-        }
-        if(vm.userPots[vm.currentPot]?.commandMode  == "Humidity"){
-            detailsCardRadioButtonHumidity.isChecked = true
-            detailsCardWateringModeSeekBar.progress=vm.userPots[vm.currentPot]!!.humidityThreshold
-            updateSeekBarLabel(detailsCardWateringModeSeekBar.progress)
-        }
-        if(vm.userPots[vm.currentPot]?.commandMode  == "Program"){
-            detailsCardRadioButtonProgram.isChecked = true
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         globalPotsRef.removeEventListener(singlePotListener)
@@ -207,28 +182,6 @@ class Details : Fragment(R.layout.details_fragment) {
 
         if (vm.userPots[vm.currentPot]!!.manualMode) detailsCardWateringModeLayout.visibility = View.VISIBLE
         else detailsCardWateringModeLayout.visibility = View.GONE
-
-        /*if(vm.userPots[vm.currentPot]?.commandMode  == "Immediate"){
-            detailsCardRadioButtonImmediate.isChecked = true
-        }
-        if(vm.userPots[vm.currentPot]?.commandMode  == "Humidity"){
-            detailsCardRadioButtonHumidity.isChecked = true
-        }
-        if(vm.userPots[vm.currentPot]?.commandMode  == "Program"){
-            detailsCardRadioButtonProgram.isChecked = true
-        }*/
-
-        detailsCardRadioButtonHumidity.setOnClickListener{
-            detailsCardWateringModeSeekBar.progress=vm.userPots[vm.currentPot]!!.humidityThreshold
-            updateSeekBarLabel(detailsCardWateringModeSeekBar.progress)
-        }
-        detailsCardRadioButtonImmediate.setOnClickListener{
-            detailsCardWateringModeSeekBar.progress=vm.userPots[vm.currentPot]!!.waterQuantity
-            updateSeekBarLabel(detailsCardWateringModeSeekBar.progress)
-        }
-        detailsCardRadioButtonProgram.setOnClickListener{
-
-        }
 
         detailsCardHumidityBar.progress = vm.userPots[vm.currentPot]!!.humidity
         detailsCardWaterLevelBar.progress = vm.userPots[vm.currentPot]!!.waterLevel
@@ -263,43 +216,35 @@ class Details : Fragment(R.layout.details_fragment) {
 
         detailsCardModeSwitch.isChecked = !vm.userPots[vm.currentPot]!!.manualMode
         detailsCardModeSwitch.trackTintList = getColorStateListFromId(R.color.info, context)
+
+        when (vm.userPots[vm.currentPot]!!.commandMode) {
+            "Humidity" -> detailsCardRadioGroup.check(R.id.detailsCardRadioButtonHumidity)
+            "Program" -> detailsCardRadioGroup.check(R.id.detailsCardRadioButtonProgram)
+            else -> detailsCardRadioGroup.check(R.id.detailsCardRadioButtonImmediate)
+        }
+
+        detailsCardWateringModeSeekBar.progress =
+            if (vm.userPots[vm.currentPot]!!.commandMode != "Humidity") vm.userPots[vm.currentPot]!!.waterQuantity
+            else vm.userPots[vm.currentPot]!!.humidityThreshold
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun checkRadioButton(currentId: Int, checkedId: Int, view: View) {
         when (checkedId) {
             detailsCardRadioButtonHumidity.id -> {
-                vm.updateCurrentPot(commandMode = "Humidity")
-
-                //Messo qui perchè in utility dava probelmi...
-                vm.db.child("Pots/" + vm.currentPot + "/Commands/Mode").setValue(vm.userPots[vm.currentPot]!!.commandMode)
-
                 detailsCardWateringModeSubtitle.text = "Umidità terreno"
                 detailsCardWateringModeDescription.text = "Imposta un livello di umidità del terreno che sarà mantenuto dal sistema."
             }
             detailsCardRadioButtonProgram.id -> {
                 // TODO aggiungere selettore orario
-                vm.updateCurrentPot(commandMode = "Program")
-
-                //Messo qui perchè in utility dava probelmi...
-                vm.db.child("Pots/" + vm.currentPot + "/Commands/Mode").setValue(vm.userPots[vm.currentPot]!!.commandMode)
-
-
                 detailsCardWateringModeSubtitle.text = "Tempo"
                 detailsCardWateringModeDescription.text = "Il sistema innaffierà una volta al giorno all'ora prefissata. Usa lo slider per scegliere la quantità d'acqua usata."
             }
             else -> {
-                vm.updateCurrentPot(commandMode = "Immediate")
-
-                //Messo qui perchè in utility dava probelmi...
-                vm.db.child("Pots/" + vm.currentPot + "/Commands/Mode").setValue(vm.userPots[vm.currentPot]!!.commandMode)
-
                 detailsCardWateringModeSubtitle.text = "Manuale"
                 detailsCardWateringModeDescription.text = "Innaffia manualmente nei momenti che preferisci usando il pulsante apposito. Usa lo slider per scegliere la quantità d'acqua usata."
             }
         }
-
-
 
         if (currentId == checkedId) {
             view.findViewById<RadioButton>(currentId).buttonTintList =
@@ -316,8 +261,6 @@ class Details : Fragment(R.layout.details_fragment) {
             else "ml"
 
         detailsCardWateringModeSeekBarLabel.text = progress.toString() + end
-
-
     }
 
     fun linkIds(view: View) {
@@ -362,7 +305,4 @@ class Details : Fragment(R.layout.details_fragment) {
         detailsEditCardEditPlantType = view.findViewById(R.id.detailsEditCardEditPlantType)
         detailsEditCardConfirm = view.findViewById(R.id.detailsEditCardConfirm)
     }
-
-
-
 }

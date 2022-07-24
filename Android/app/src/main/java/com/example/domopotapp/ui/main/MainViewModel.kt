@@ -5,7 +5,6 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.viewpager2.widget.ViewPager2
 import com.example.domopotapp.*
@@ -163,11 +162,13 @@ class MainViewModel : ViewModel() {
                 (potSnapshot.child("LastWatering").value as Long).toInt()
             ),
             potSnapshot.child("Commands").child("Mode").value.toString(),
-            humidityThreshold
+            humidityThreshold,
+            (potSnapshot.child("Commands/Program/Timing").value as Long).toInt(),
+            (potSnapshot.child("Commands/Program/WaterQuantity").value as Long).toInt()
         )
     }
 
-    fun updateCurrentPot(
+    fun uploadCurrentPot(
         id: String? = null,
         name: String? = null,
         type: String? = null,
@@ -186,28 +187,44 @@ class MainViewModel : ViewModel() {
         programTiming: Int? = null,
         waterQuantity: Int? = null,
     ) {
+        // TODO aggiungere controlli
+        val dbRef = db.child("Pots").child(currentPot)
+
         if (id != null) userPots[currentPot]!!.id = id
         if (name != null) userPots[currentPot]!!.name = name
-        if (type != null) userPots[currentPot]!!.type = type
+        if (type != null) {
+            userPots[currentPot]!!.type = type
+            dbRef.child("PlantType").setValue(type)
+        }
         if (image != null) userPots[currentPot]!!.image = image
-
-        if (manualMode != null) userPots[currentPot]!!.manualMode = manualMode
-        if (connectionStatus != null) userPots[currentPot]!!.connectionStatus = connectionStatus
 
         if (humidity != null) userPots[currentPot]!!.humidity = humidity
         if (waterLevel != null) userPots[currentPot]!!.waterLevel = waterLevel
         if (temperature != null) userPots[currentPot]!!.temperature = temperature
         if (lastWatering != null) userPots[currentPot]!!.lastWatering = lastWatering
 
-        if (commandMode != null) userPots[currentPot]!!.commandMode = commandMode
-        if (humidityThreshold != null) userPots[currentPot]!!.humidityThreshold = humidityThreshold
-        if (programTiming != null) userPots[currentPot]!!.programTiming = programTiming
-        if (waterQuantity != null) userPots[currentPot]!!.waterQuantity = waterQuantity
+        if (manualMode != null) {
+            userPots[currentPot]!!.manualMode = manualMode
+            dbRef.child("AutoMode").setValue(!manualMode)
+        }
+        if (connectionStatus != null) userPots[currentPot]!!.connectionStatus = connectionStatus
 
-        uploadUserPot(currentPot!!)
-    }
-
-    fun uploadUserPot(potId: String) {
-        // TODO caricare l'intero currentPot su firebase
+        if (commandMode != null) {
+            userPots[currentPot]!!.commandMode = commandMode
+            dbRef.child("Commands/Mode").setValue(commandMode)
+        }
+        if (humidityThreshold != null) {
+            userPots[currentPot]!!.humidityThreshold = humidityThreshold
+            dbRef.child("Commands/Humidity").setValue(humidityThreshold)
+        }
+        if (programTiming != null) {
+            userPots[currentPot]!!.programTiming = programTiming
+            dbRef.child("Commands/Program/Timing").setValue(programTiming)
+        }
+        if (waterQuantity != null) {
+            userPots[currentPot]!!.waterQuantity = waterQuantity
+            dbRef.child("Commands/Program/WaterQuantity").setValue(waterQuantity)
+            dbRef.child("Commands/Immediate/WaterQuantity").setValue(waterQuantity)
+        }
     }
 }

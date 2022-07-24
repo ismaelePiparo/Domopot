@@ -1,5 +1,6 @@
 package com.example.domopotapp
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.AssetManager
 import android.content.res.ColorStateList
@@ -28,12 +29,12 @@ fun linkAssetImage(imageView: ImageView, fileName: String) {
     imageView.setImageDrawable(d)
 }
 
+@SuppressLint("SimpleDateFormat")
 fun getLastWateringFromTimestamp(timestamp: Int): String {
     //TODO test if it works...
     //Cambiato lastWatering da Int a String
     val sdf = java.text.SimpleDateFormat("HH:mm")
-    var date : Date
-    date = java.util.Date(timestamp.toLong() * 1000)
+    val date : Date = java.util.Date(timestamp.toLong() * 1000)
 
     return  sdf.format(date).toString()
 }
@@ -46,6 +47,7 @@ fun getConnectionStatusFromTimestamp(timestamp: Int): Boolean {
     return timestamp > (System.currentTimeMillis() / 1000)-500
 }
 
+@SuppressLint("UseCompatLoadingForDrawables")
 @RequiresApi(Build.VERSION_CODES.M)
 fun applyDrawableAndColorToIV(imageView: ImageView, drawableId: Int, colorId: Int) {
     val context = imageView.context
@@ -88,7 +90,7 @@ fun getColorStateListFromId(colorId: Int, context: Context?): ColorStateList {
     return ColorStateList.valueOf(
         context!!.resources.getColor(
             colorId,
-            context?.theme
+            context.theme
         )
     )
 }
@@ -244,6 +246,7 @@ fun setEditPlantListeners(
     }
 }
 
+@SuppressLint("SetTextI18n")
 @RequiresApi(Build.VERSION_CODES.M)
 fun bindMyPlantsView(
     pd: PotData,
@@ -267,11 +270,7 @@ fun bindMyPlantsView(
         plantType.text = viewModel.plantTypes[pd.type]!!.name
     }
 
-    Log.w("current pot",pd.id + "manual mode: "+ pd.manualMode)
-    //viewModel.db.child("Pots/" + pd.id + "/AutoMode").setValue(pd.manualMode)
-
     if(pd.manualMode){
-        Log.w("manual mode", pd.manualMode.toString())
         if (pd.commandMode == "Immediate") manualWateringButton.visibility = View.VISIBLE
         else manualWateringButton.visibility = View.GONE
 
@@ -283,11 +282,6 @@ fun bindMyPlantsView(
     }else{
         manualWateringButton.visibility = View.GONE
     }
-
-
-    Log.w("commands mode", pd.commandMode)
-
-
 
     if (pd.connectionStatus) {
         applyDrawableAndColorToIV(
