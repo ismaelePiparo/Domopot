@@ -73,10 +73,12 @@ class Details : Fragment(R.layout.details_fragment) {
     private lateinit var detailsEditCardNameInput: EditText
     private lateinit var detailsEditCardTitleBackButton: ImageButton
     private lateinit var detailsEditCardEditPlantType: ImageButton
-
     private lateinit var detailsEditCardConfirm: Button
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    private lateinit var detailsSureCardLayout: ConstraintLayout
+    private lateinit var detailsSureCardTitleBackButton: ImageButton
+    private lateinit var detailsSureCardConfirm: Button
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -225,6 +227,9 @@ class Details : Fragment(R.layout.details_fragment) {
             detailsPlantType,
             detailsPlantImage,
             detailsManualWateringButton,
+            detailsSureCardLayout,
+            detailsSureCardTitleBackButton,
+            detailsSureCardConfirm,
             detailsConnectionStatusIcon,
             detailsModeIcon,
             detailsCardHumidityValue,
@@ -354,5 +359,9 @@ class Details : Fragment(R.layout.details_fragment) {
         detailsEditCardTitleBackButton = view.findViewById(R.id.detailsEditCardTitleBackButton)
         detailsEditCardEditPlantType = view.findViewById(R.id.detailsEditCardEditPlantType)
         detailsEditCardConfirm = view.findViewById(R.id.detailsEditCardConfirm)
+
+        detailsSureCardLayout = view.findViewById(R.id.detailsSureCardLayout)
+        detailsSureCardTitleBackButton = view.findViewById(R.id.detailsSureCardTitleBackButton)
+        detailsSureCardConfirm = view.findViewById(R.id.detailsSureCardConfirm)
     }
 }

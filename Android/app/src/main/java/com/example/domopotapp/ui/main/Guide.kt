@@ -6,11 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
@@ -36,15 +35,33 @@ class Guide : Fragment(R.layout.guide_fragment) {
 
         val title: TextView = view.findViewById(R.id.guideTitle)
         val rv: RecyclerView = view.findViewById(R.id.plantTypesRV)
+        val searchPlantTypeButton: ImageButton = view.findViewById(R.id.searchPlantTypeButton)
+
+        val guideSearchBar: CardView = view.findViewById(R.id.guideSearchBar)
+        val guideSearchBarClose: ImageButton = view.findViewById(R.id.guideSearchBarClose)
+        val guideSearchBarInput: EditText = view.findViewById(R.id.guideSearchBarInput)
 
         if (viewModel.choosePTModeOn) title.text = "Scegli specie"
 
         rv.layoutManager = LinearLayoutManager(activity)
-        rv.adapter = PlantTypeAdapter(viewModel.plantTypes.values.toList(), viewModel, this)
+        rv.adapter = PlantTypeAdapter(viewModel.plantTypes.values.toMutableList(), viewModel, this)
+
+        searchPlantTypeButton.setOnClickListener {
+            guideSearchBar.visibility = View.VISIBLE
+        }
+        guideSearchBarClose.setOnClickListener {
+            guideSearchBar.visibility = View.GONE
+        }
+        guideSearchBarInput.addTextChangedListener {
+            val result = viewModel.plantTypes.filter {
+                it.value.name.lowercase().contains(guideSearchBarInput.text.toString().lowercase())
+            }
+            (rv.adapter as PlantTypeAdapter).submitList(result.values.toMutableList())
+        }
     }
 }
 
-class PlantTypeAdapter(private val l: List<PlantTypeData>, private val viewModel: MainViewModel, private val fragment: Fragment) :
+class PlantTypeAdapter(private val l: MutableList<PlantTypeData>, private val viewModel: MainViewModel, private val fragment: Fragment) :
     RecyclerView.Adapter<PlantTypeAdapter.PlantTypeViewHolder>() {
     class PlantTypeViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val ptName: TextView = v.findViewById(R.id.plantTypeName)
@@ -92,5 +109,40 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>, private val viewModel
 
     override fun getItemCount(): Int {
         return l.size
+    }
+
+    fun submitList(newL: MutableList<PlantTypeData>) {
+        val removeIndexes: MutableList<Int> = mutableListOf()
+
+        l.forEachIndexed { i, old ->
+            val index = newL.indexOf(newL.find { it.id == old.id })
+            if (index == -1) removeIndexes.add(i)
+        }
+
+        newL.forEach { new ->
+            val index = l.indexOf(l.find { it.id == new.id })
+            if (index >= 0) updateListItem(new, index)
+            else addListItem(new, l.size)
+        }
+
+        removeIndexes.sortDescending()
+        removeIndexes.forEach {
+            removeListItem(it)
+        }
+    }
+
+    private fun addListItem(newData: PlantTypeData, position: Int) {
+        l.add(position, newData)
+        notifyItemInserted(position)
+    }
+
+    private fun removeListItem(position: Int) {
+        l.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    private fun updateListItem(newData: PlantTypeData, position: Int) {
+        l[position] = newData
+        notifyItemChanged(position)
     }
 }

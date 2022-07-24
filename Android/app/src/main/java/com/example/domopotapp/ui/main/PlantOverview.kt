@@ -5,10 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domopotapp.*
@@ -31,6 +33,9 @@ class PlantOverviewAdapter(var l: MutableList<PotData>, val viewModel: MainViewM
         val manualWateringButton: ImageButton = v.findViewById(R.id.manualWateringButton)
         val connectionStatusIcon: ImageView = v.findViewById(R.id.connectionStatusIcon)
         val modeIcon: ImageView = v.findViewById(R.id.modeIcon)
+        val sureCardLayout: ConstraintLayout = v.findViewById(R.id.plantOVSureCardLayout)
+        val sureCardTitleBackButton: ImageButton = v.findViewById(R.id.plantOVSureCardTitleBackButton)
+        val sureCardConfirm: Button = v.findViewById(R.id.plantOVSureCardConfirm)
     }
 
 
@@ -49,6 +54,9 @@ class PlantOverviewAdapter(var l: MutableList<PotData>, val viewModel: MainViewM
             holder.plantType,
             holder.plantImage,
             holder.manualWateringButton,
+            holder.sureCardLayout,
+            holder.sureCardTitleBackButton,
+            holder.sureCardConfirm,
             holder.connectionStatusIcon,
             holder.modeIcon,
             holder.humidity,
@@ -75,6 +83,7 @@ class PlantOverviewAdapter(var l: MutableList<PotData>, val viewModel: MainViewM
             else addListItem(new, l.size)
         }
 
+        removeIndexes.sortDescending()
         removeIndexes.forEach {
             removeListItem(it)
         }

@@ -306,6 +306,9 @@ fun bindMyPlantsView(
     plantType: TextView,
     plantImage: ImageView,
     manualWateringButton: ImageButton,
+    sureCardLayout: ConstraintLayout,
+    sureCardTitleBackButton: ImageButton,
+    sureCardConfirm: Button,
     connectionStatusIcon: ImageView,
     modeIcon: ImageView,
     humidity: TextView,
@@ -325,9 +328,16 @@ fun bindMyPlantsView(
         else manualWateringButton.visibility = View.GONE
 
         manualWateringButton.setOnClickListener {
+            sureCardLayout.visibility = View.VISIBLE
+        }
+        sureCardTitleBackButton.setOnClickListener {
+            sureCardLayout.visibility = View.GONE
+        }
+        sureCardConfirm.setOnClickListener {
             Log.w("Annaffia", "Annaffio: ${viewModel.currentPot}")
             viewModel.db.child("Pots/" + viewModel.currentPot + "/Commands/Immediate/Annaffia")
                 .setValue(true)
+            sureCardLayout.visibility = View.GONE
         }
     }else{
         manualWateringButton.visibility = View.GONE

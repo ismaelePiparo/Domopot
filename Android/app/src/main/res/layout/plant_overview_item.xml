@@ -208,4 +208,92 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/plantOVSureCardLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/zxing_transparent"
+        android:onClick="preventClicks"
+        android:elevation="100dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/plantOVSureCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/title_left_margin"
+            android:layout_marginEnd="@dimen/title_left_margin"
+            app:cardCornerRadius="36dp"
+            app:cardElevation="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.45">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <ImageButton
+                    android:id="@+id/plantOVSureCardTitleBackButton"
+
+                    style="@style/ConfigTitleBackButton"
+                    android:layout_marginTop="-5dp"
+
+                    app:layout_constraintEnd_toStartOf="@+id/plantOVSureCardTitle"
+                    app:layout_constraintTop_toTopOf="@+id/plantOVSureCardTitle" />
+
+                <TextView
+                    android:id="@+id/plantOVSureCardTitle"
+
+                    style="@style/TextSmallCardTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/title_left_margin"
+
+                    android:layout_marginTop="16dp"
+                    android:text="Sei sicuro?"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/plantOVSureCardDescription"
+
+                    style="@style/TextDescription"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="@dimen/title_left_margin"
+
+                    android:text="Stai per innaffiare la tua piata con il quantitativo d'acqua impostato nella sezione 'Criteri d'innaffiamento'"
+
+                    android:textColor="@color/dark"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/plantOVSureCardTitle"
+                    app:layout_constraintTop_toBottomOf="@id/plantOVSureCardTitle" />
+
+                <android.widget.Button
+                    android:id="@+id/plantOVSureCardConfirm"
+
+                    style="@style/SmallCardPrimaryButton"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="28dp"
+
+                    android:text="Conferma"
+                    app:layout_constraintTop_toBottomOf="@+id/plantOVSureCardDescription"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,16 +1,22 @@
 package com.example.domopotapp
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.findNavController
 import com.example.domopotapp.ui.main.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -71,6 +77,26 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }.addOnFailureListener { defaultFirebaseOnFailureListener }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (currentFocus != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+        if (ev.action == MotionEvent.ACTION_DOWN) {
+            val view = currentFocus
+            if (view != null && view is EditText) {
+                val r = Rect()
+                view.getGlobalVisibleRect(r)
+                val rawX = ev.rawX.toInt()
+                val rawY = ev.rawY.toInt()
+                if (!r.contains(rawX, rawY)) {
+                    view.clearFocus()
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
     fun preventClicks(view: View?) {}
