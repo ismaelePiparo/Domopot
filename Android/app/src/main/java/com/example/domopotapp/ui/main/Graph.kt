@@ -1,11 +1,11 @@
 package com.example.domopotapp.ui.main
 
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -33,8 +33,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
 
     private val viewModel by activityViewModels<MainViewModel>()
 
-    private lateinit var currentPot: TextView
-    private lateinit var backBtn: Button
+    private lateinit var backBtn: ImageButton
     private lateinit var rangeBtn: Button
 
     private lateinit var potRef: DatabaseReference
@@ -52,13 +51,17 @@ class Graph : Fragment(R.layout.graph_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        currentPot = view.findViewById<TextView>(R.id.pot)
-        currentPot.text = viewModel.myPots.getValue(viewModel.currentPot)
-
+        val plantName = view.findViewById<TextView>(R.id.graphPlantName)
         val barChart = view.findViewById<BarChart>(R.id.barChart)
 
-        backBtn = view.findViewById<Button>(R.id.back)
+        val pd = viewModel.userPots[viewModel.currentPot]!!
+        if (pd.name == "") {
+            plantName.text = viewModel.plantTypes[pd.type]!!.name
+        } else {
+            plantName.text = pd.name
+        }
+
+        backBtn = view.findViewById(R.id.graphTitleBackButton)
         backBtn.setOnClickListener{
             barChart.xAxis.valueFormatter = null
             barChart.invalidate()

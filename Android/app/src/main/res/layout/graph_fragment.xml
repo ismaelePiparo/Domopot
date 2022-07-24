@@ -7,61 +7,133 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="20dp"
     android:backgroundTint="@color/bg">
 
     <TextView
-        android:id="@+id/pot"
+        android:id="@+id/graphMyPlantsTitleTag"
+
+        style="@style/TextTitleTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.119"
+        android:layout_marginStart="@dimen/title_left_margin"
+        android:layout_marginTop="@dimen/title_top_margin"
+
+        android:text="Grafici"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/graphTitleBackButton"
+
+        style="@style/ConfigTitleBackButton"
+        android:layout_marginTop="@dimen/title_backbutton_top_margin"
+
+        app:layout_constraintEnd_toStartOf="@+id/graphPlantName"
+        app:layout_constraintTop_toTopOf="@+id/graphPlantName" />
+
+    <TextView
+        android:id="@+id/graphPlantName"
+
+        style="@style/TextTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="@dimen/title_left_margin"
+        android:text="Gino"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/graphMyPlantsTitleTag" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView3"
-        android:layout_width="350dp"
-        android:layout_height="500dp"
-        android:layout_marginBottom="20dp"
+        android:layout_width="0dp"
+        android:layout_height="450dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+
+
+        android:layout_marginEnd="24dp"
         app:cardCornerRadius="30dp"
         app:cardElevation="20dp"
-
-
-        app:layout_constraintBottom_toTopOf="@+id/back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pot">
+        app:layout_constraintTop_toBottomOf="@+id/graphPlantName">
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/barChart"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="15dp"
-            android:layout_marginBottom="20dp">
+            android:layout_height="match_parent">
 
-        </com.github.mikephil.charting.charts.BarChart>
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/barChart"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="15dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/range">
+
+            </com.github.mikephil.charting.charts.BarChart>
+
+            <ImageView
+                android:id="@+id/graphCardIcon"
+
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_humidity"
+                app:layout_constraintBottom_toBottomOf="@+id/graphCardTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/graphCardTitle"
+                app:layout_constraintVertical_bias="0.25"
+                app:tint="@color/primary_light" />
+
+            <TextView
+                android:id="@+id/graphCardTitle"
+
+                style="@style/TextSmallCardTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+
+                android:layout_marginTop="16dp"
+                android:text="Umidità"
+                android:textSize="20sp"
+                app:layout_constraintStart_toEndOf="@+id/graphCardIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/graphCardWateringModeTimePickerTitle"
+                style="@style/TextDescription"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginEnd="8dp"
+                android:text="Durata barra"
+                android:textColor="@color/secondary_light"
+                app:layout_constraintBottom_toBottomOf="@+id/range"
+                app:layout_constraintEnd_toStartOf="@+id/range"
+                app:layout_constraintTop_toTopOf="@+id/range" />
+
+            <android.widget.Button
+                android:id="@+id/range"
+                android:layout_width="48dp"
+                android:layout_height="32dp"
+
+                android:layout_marginEnd="16dp"
+
+                android:background="@drawable/btn_secondary_outline_light"
+                android:text="1h"
+                android:textColor="@color/secondary"
+                app:layout_constraintBottom_toBottomOf="@+id/graphCardTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/graphCardTitle" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.cardview.widget.CardView>
 
-    <Button
-        android:id="@+id/back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="32dp"
-        android:text="Back"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/range"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:text="1h"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.915"
-        app:layout_constraintStart_toEndOf="@+id/back" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -162,27 +162,31 @@ fun updateHomeLayout(
 
 fun updateCheckBoxEditText(inputText: EditText, label: TextView, checkboxIsChecked: Boolean) {
     val resources = inputText.resources
+    val context = inputText.context
     if (checkboxIsChecked) {
         inputText.isEnabled = true
-        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.info))
-        inputText.setHintTextColor(resources.getColor(R.color.info))
-        label.setTextColor(resources.getColor(R.color.info))
+        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.info, context.theme))
+        inputText.setHintTextColor(resources.getColor(R.color.info, context.theme))
+        label.setTextColor(resources.getColor(R.color.info, context.theme))
     } else {
         inputText.isEnabled = false
-        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.light))
-        inputText.setHintTextColor(resources.getColor(R.color.light))
-        label.setTextColor(resources.getColor(R.color.light))
+        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.light, context.theme))
+        inputText.setHintTextColor(resources.getColor(R.color.light, context.theme))
+        label.setTextColor(resources.getColor(R.color.light, context.theme))
+        inputText.setText("")
     }
 }
 
 fun updateInputTextFocus(inputText: EditText, label: TextView, isFocused: Boolean) {
     val resources = inputText.resources
+    val context = inputText.context
+
     if (isFocused) {
-        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.primary))
-        label.setTextColor(resources.getColor(R.color.primary))
+        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.primary, context.theme))
+        label.setTextColor(resources.getColor(R.color.primary, context.theme))
     } else {
-        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.info))
-        label.setTextColor(resources.getColor(R.color.info))
+        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.info, context.theme))
+        label.setTextColor(resources.getColor(R.color.info, context.theme))
     }
 }
 
@@ -250,6 +254,7 @@ fun setEditPlantListeners(
 
     cardBackButton.setOnClickListener {
         editPlantLayout.visibility = View.GONE
+        viewModel.currentPlantType = ""
     }
 
     cardNameInput.setOnFocusChangeListener { _, isFocused ->
@@ -258,6 +263,8 @@ fun setEditPlantListeners(
 
     cardCheckBox.setOnCheckedChangeListener { _, isChecked ->
         updateCheckBoxEditText(cardNameInput, cardNameLabel, isChecked)
+
+        if (!isChecked) viewModel.editPlantSelectedName = ""
     }
 
     val choosePlantListener: (View) -> Unit = {

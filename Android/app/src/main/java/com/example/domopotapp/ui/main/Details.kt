@@ -270,7 +270,6 @@ class Details : Fragment(R.layout.details_fragment) {
                 detailsCardWateringModeTimePickerButton.visibility = View.GONE
             }
             detailsCardRadioButtonProgram.id -> {
-                // TODO aggiungere selettore orario
                 detailsCardWateringModeSubtitle.text = "Tempo"
                 detailsCardWateringModeDescription.text =
                     "Il sistema innaffierà una volta al giorno all'ora prefissata. Usa lo slider per scegliere la quantità d'acqua usata."
