@@ -54,7 +54,8 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
 
         val loadingIcon: ImageView = view.findViewById(R.id.configLoadingIcon3)
         loadingIcon.animate().rotation(36000f).setDuration(30000).start()
-
+        Log.w("app timestamp", viewModel.timestamp.toString())
+        Log.w("pot id", viewModel.Pot_ID.toString())
         //disabilita il tasto back
         val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             Log.w("BACK PRESSED","Attendere il completamento dell'operazione...")
@@ -83,7 +84,7 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
                     tv.text = "Attendere..."
                     //getione del tempo di attesa
                     Log.w("start handler timer: ","timer start")
-                    handler.postDelayed(runnable, 30000)
+                    handler.postDelayed(runnable, 50000)
                 }else if(!(connctionStatus == "null" || connctionStatus.isEmpty())){
                     if(connctionStatus.toLong()>viewModel.timestamp){
                         ref.removeEventListener(myListener)

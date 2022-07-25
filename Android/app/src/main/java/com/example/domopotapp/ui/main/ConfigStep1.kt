@@ -85,7 +85,7 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
         }
 
         //Il bottone si abilita solo se si è connessi alla rete DomoPot_WiFi
-        // nextBtn.isEnabled = false
+        nextBtn.isEnabled = false
         nextBtn.setOnClickListener {
             //Sostituire con requestID() e controllare se il vaso sia presente nel DB
             //se presente tornare alla home altrimenti procedere con la configurazione
@@ -95,6 +95,7 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
         backButton.setOnClickListener {
             findNavController().navigate(R.id.ConfigStep1_to_Home)
         }
+
 
     }
 
@@ -231,9 +232,10 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
                 infoWifi.setTextColor(resources.getColor(R.color.danger))
                 if (viewModel.wifiManager!!.connectionInfo.ssid.equals("\"" + "DomoPot_WiFi" + "\"")) {
                     infoWifi.setTextColor(resources.getColor(R.color.primary))
-                    //nextBtn.isEnabled = true
+                    nextBtn.isEnabled = true
                     viewModel.ssid = viewModel.wifiManager!!.connectionInfo.ssid
-                    findNavController().navigate(R.id.ConfigStep1_to_ConfigStep2)
+                    //findNavController().navigate(R.id.ConfigStep1_to_ConfigStep2)
+
                 }
             }
         }

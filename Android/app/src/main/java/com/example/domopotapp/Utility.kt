@@ -61,7 +61,7 @@ fun getConnectionStatusFromTimestamp(timestamp: Int): Boolean {
     //TODO test if it works...
     //Controlla se online status è maggiore del tempo corrente - 5 minuti
     // onlineStatus si aggiorna da ESP ogni 10 secondi
-    Log.w("Current ts -5 min", ((System.currentTimeMillis() / 1000)-250).toString())
+    //Log.w("Current ts -5 min", ((System.currentTimeMillis() / 1000)-250).toString())
     return timestamp > (System.currentTimeMillis() / 1000)-500
 }
 
@@ -205,7 +205,8 @@ fun setEditPlantType(
         cardEditButton?.visibility = View.VISIBLE
         editPlantLayout.visibility = View.VISIBLE
     } else if (!vm.currentPot.isEmpty()) {
-        cardSelectedType.text = vm.plantTypes[vm.userPots[vm.currentPot]!!.type]!!.name
+        //cardSelectedType.text = vm.plantTypes[vm.userPots[vm.currentPot]!!.type]!!.name
+        cardSelectedType.text = "type_001"
     }
 }
 
