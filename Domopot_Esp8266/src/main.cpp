@@ -14,6 +14,7 @@
 #define SSID_OFFSET 32
 #define AP_SSID "DomoPot_WiFi"
 #define AP_PASS ""
+#define PUMP_PIN 3
 
 /* Tenere attivo l'accesspoint in ascolto solo per handle start e credentials
  * 
@@ -89,8 +90,15 @@ bool immediateModeError = false;
 long programModeLastWatering;
 
 void setup() {
+  Serial.println("sono vivo");
   Serial.begin(9600);
   EEPROM.begin(512);
+  pinMode(PUMP_PIN,OUTPUT);
+  digitalWrite(PUMP_PIN, LOW);
+    //test pompa
+  digitalWrite(PUMP_PIN,HIGH);
+  delay(1000 /* *waterAmount */ );
+  digitalWrite(PUMP_PIN,LOW);
   FirebaseSetup();
   Wire.begin();
   //WiFi.mode(WIFI_AP_STA);
@@ -127,6 +135,7 @@ void loop() {
 
     // Scrivi timestamp e dati
     FirebasePrintData();
+    delay(10000);
     // Controlla modalità
     String mode;
     if (Firebase.RTDB.getString(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode", &mode)){
@@ -157,7 +166,9 @@ void ModeImmediate(){
   if(Firebase.RTDB.getBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Immediate/Annaffia", &Annaffia) 
      && Annaffia 
      && !immediateModeError){
-    SendMessageToArduino(pumpWater);
+    digitalWrite(PUMP_PIN,HIGH);
+      delay(1000 /* *waterAmount */ );
+      digitalWrite(PUMP_PIN,LOW);
     immediateModeError = !Firebase.RTDB.setBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Immediate/Annaffia", false);
   } else if (immediateModeError){
     immediateModeError = !Firebase.RTDB.setBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Immediate/Annaffia", false);
@@ -171,7 +182,9 @@ void ModeHumidity(){
   if(Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Humidity", &threshold))
   {
     if (humidity < threshold){
-      SendMessageToArduino(pumpWater);
+      digitalWrite(PUMP_PIN,HIGH);
+      delay(1000 /* *waterAmount */ );
+      digitalWrite(PUMP_PIN,LOW);
     }
   }
 }
@@ -191,10 +204,9 @@ void ModeProgram(){
         && timeClient.getHours() > hour
         && Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/WaterQuantity", &waterAmount))
     {
-      for(int i = waterAmount; i > 0; i--){
-        SendMessageToArduino(pumpWater);
-        delay(2000);
-      }
+      digitalWrite(PUMP_PIN,HIGH);
+      delay(1000 /* *waterAmount */ );
+      digitalWrite(PUMP_PIN,LOW);
       programModeLastWatering = timeClient.getEpochTime();
     }
   }
