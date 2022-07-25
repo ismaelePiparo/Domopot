@@ -215,6 +215,7 @@ class MainViewModel : ViewModel() {
         if (manualMode != null) {
             userPots[currentPot]!!.manualMode = manualMode
             dbRef.child("AutoMode").setValue(!manualMode)
+            dbRef.child("Commands/Mode").setValue("Humidity")
         }
         if (connectionStatus != null) userPots[currentPot]!!.connectionStatus = connectionStatus
 
