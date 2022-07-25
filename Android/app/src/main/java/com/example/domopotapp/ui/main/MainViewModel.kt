@@ -93,12 +93,14 @@ class MainViewModel : ViewModel() {
         }
 
         val newPot = createPotData(potId, userPots[potId]!!.name, potSnapshot, ptSnapshot)
-        userPots[newPot.id] = newPot
 
-        (plantOverview.adapter as PlantOverviewAdapter).submitList(userPots.values.toMutableList())
+        if (userPots[newPot.id] != newPot) {
+            userPots[newPot.id] = newPot
+
+            (plantOverview.adapter as PlantOverviewAdapter).submitList(userPots.values.toMutableList())
+        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     fun updateUserPot(
         potSnapshot: DataSnapshot,
         ptSnapshot: DataSnapshot,
@@ -112,9 +114,12 @@ class MainViewModel : ViewModel() {
         }
 
         val newPot = createPotData(potId, userPots[potId]!!.name, potSnapshot, ptSnapshot)
-        userPots[newPot.id] = newPot
 
-        fragment.updateView()
+        if (userPots[newPot.id] != newPot) {
+            userPots[newPot.id] = newPot
+
+            fragment.updateView()
+        }
     }
 
     fun removeUserPot(
@@ -146,8 +151,8 @@ class MainViewModel : ViewModel() {
         val manualMode = !(potSnapshot.child("AutoMode").value as Boolean)
 
         val humidityThreshold =
-            if (manualMode) (potSnapshot.child("Commands").child("Humidity").value as Long).toInt()
-            else (ptSnapshot.child("humidity_threshold").value as Long).toInt()
+            if (manualMode) (potSnapshot.child("Commands").child("Humidity").value.toString()).toInt()
+            else (ptSnapshot.child("humidity_threshold").value.toString()).toInt()
         //TODO sistemare il fatto che ogni volta che vengono scritti dei valori sul db la scremata si aggiorna
         // possibile soluzione scrivere i dati su db ogni 10/20 minuti???
         return PotData(
@@ -160,15 +165,15 @@ class MainViewModel : ViewModel() {
                 (potSnapshot.child("OnlineStatus").child("ConnectTime").value.toString()).toInt()
             ),
             (potSnapshot.child("Humidity").child("LastHumidity").value.toString()).toInt(),
-            (potSnapshot.child("WaterLevel").value as Long).toInt(),
-            (potSnapshot.child("Temperature").value as Long).toInt(),
+            (potSnapshot.child("WaterLevel").value.toString()).toInt(),
+            (potSnapshot.child("Temperature").value.toString()).toInt(),
             getLastWateringFromTimestamp(
-                potSnapshot.child("LastWatering").value as Long
+                potSnapshot.child("LastWatering").value.toString().toLong()
             ),
             potSnapshot.child("Commands").child("Mode").value.toString(),
             humidityThreshold,
-            potSnapshot.child("Commands/Program/Timing").value as Long,
-            (potSnapshot.child("Commands/Program/WaterQuantity").value as Long).toInt()
+            potSnapshot.child("Commands/Program/Timing").value.toString().toLong(),
+            (potSnapshot.child("Commands/Program/WaterQuantity").value.toString()).toInt()
         )
     }
 

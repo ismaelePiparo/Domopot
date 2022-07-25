@@ -80,6 +80,7 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
         }
         scanBtn.setOnClickListener {
             infoWifi.text = "Connessione in corso..."
+            infoWifi.setTextColor(resources.getColor(R.color.info))
             startWifiQRCodeScanner(requireContext().applicationContext)
         }
 
