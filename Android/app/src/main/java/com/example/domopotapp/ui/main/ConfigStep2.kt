@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
@@ -64,6 +65,12 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
         val wifiCard: ConstraintLayout = view.findViewById(R.id.wifiCardLayout)
         val cardTitleBackButton: ImageButton = view.findViewById(R.id.cardTitleBackButton)
 
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigate(R.id.configStep_2_to_home)
+            }
+        })
+
         //wifiCardTitle = view.findViewById(R.id.wifiCardTitle)
         loadingIcon = view.findViewById(R.id.configLoadingIcon)
 
@@ -100,6 +107,7 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
 
             override fun afterTextChanged(s: Editable?) {
                 connectBtn.isEnabled = !wifiCardPwdInput.text.isEmpty()
+                mySSID= viewModel.currentWifiSelection
                 myPWD = wifiCardPwdInput.text.toString()
             }
         })
