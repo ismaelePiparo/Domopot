@@ -14,6 +14,7 @@
 #define SSID_OFFSET 32
 #define AP_SSID "DomoPot_WiFi"
 #define AP_PASS ""
+#define PUMP_PIN 3
 
 /* Tenere attivo l'accesspoint in ascolto solo per handle start e credentials
  * 
@@ -89,8 +90,15 @@ bool immediateModeError = false;
 long programModeLastWatering;
 
 void setup() {
+  Serial.println("sono vivo");
   Serial.begin(9600);
   EEPROM.begin(512);
+  pinMode(PUMP_PIN,OUTPUT);
+  digitalWrite(PUMP_PIN, LOW);
+    //test pompa
+  digitalWrite(PUMP_PIN,HIGH);
+  delay(1000 /* *waterAmount */ );
+  digitalWrite(PUMP_PIN,LOW);
   FirebaseSetup();
   Wire.begin();
   //WiFi.mode(WIFI_AP_STA);
@@ -111,6 +119,7 @@ void setup() {
   SendMessageToArduino(ledState = Led_connected);
   //ESP CONNESSO
   onLine = true;
+  FirebaseSetup();
   
 }
 
@@ -122,13 +131,18 @@ void loop() {
   }else{
     //Led dell'esp acceso per vedere che è connesso ad internet in fase di debug
     digitalWrite(LED_BUILTIN,LOW);
-    requestData(); //richede e stampa i dati di arduino
+
+    //Commentati perche impallano l'esp al momento....
+    //requestData(); //richede e stampa i dati di arduino
+
     timeClient.update();
 
     // Scrivi timestamp e dati
     FirebasePrintData();
+    delay(10000);
     // Controlla modalità
-    String mode;
+    // --> Al momento tutto commentato per test cono solo ESP
+    /*String mode;
     if (Firebase.RTDB.getString(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode", &mode)){
       switch(mode[0]){
         case 'i':
@@ -143,7 +157,9 @@ void loop() {
         default:
           break;
       }
-    }
+    }*/
+
+    
   }
 }
 
@@ -157,7 +173,9 @@ void ModeImmediate(){
   if(Firebase.RTDB.getBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Immediate/Annaffia", &Annaffia) 
      && Annaffia 
      && !immediateModeError){
-    SendMessageToArduino(pumpWater);
+    digitalWrite(PUMP_PIN,HIGH);
+      delay(1000 /* *waterAmount */ );
+      digitalWrite(PUMP_PIN,LOW);
     immediateModeError = !Firebase.RTDB.setBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Immediate/Annaffia", false);
   } else if (immediateModeError){
     immediateModeError = !Firebase.RTDB.setBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Immediate/Annaffia", false);
@@ -171,7 +189,9 @@ void ModeHumidity(){
   if(Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Humidity", &threshold))
   {
     if (humidity < threshold){
-      SendMessageToArduino(pumpWater);
+      digitalWrite(PUMP_PIN,HIGH);
+      delay(1000 /* *waterAmount */ );
+      digitalWrite(PUMP_PIN,LOW);
     }
   }
 }
@@ -191,14 +211,15 @@ void ModeProgram(){
         && timeClient.getHours() > hour
         && Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/WaterQuantity", &waterAmount))
     {
-      for(int i = waterAmount; i > 0; i--){
-        SendMessageToArduino(pumpWater);
-        delay(2000);
-      }
+      digitalWrite(PUMP_PIN,HIGH);
+      delay(1000 /* *waterAmount */ );
+      digitalWrite(PUMP_PIN,LOW);
       programModeLastWatering = timeClient.getEpochTime();
     }
   }
 }
+
+
 
 int epochToDay(int epoch){
   return  (epoch / 86400L) + 4;
@@ -432,32 +453,10 @@ void RestoreWiFiCreds(){
 #pragma endregion
 
 void FirebaseSetup(){
-  config.host = PROJECT_ID;
-  config.api_key = FIREBASE_AUTH;
-  Firebase.begin(&config, &auth);
   config.database_url = DATABASE_URL;
-
   config.signer.test_mode = true;
-
-  /**
-   Set the database rules to allow public read and write.
-
-      {
-      "rules": {
-        ".read": true,
-        ".write": true
-      }
-      }
-
-  */
-
   Firebase.reconnectWiFi(true);
-
-  /* Initialize the library with the Firebase authen and config */
   Firebase.begin(&config, &auth);
-
-  //Or use legacy authenticate method
-  //Firebase.begin(DATABASE_URL, DATABASE_SECRET);
 }
 
 void FirebasePrintData(){
@@ -470,7 +469,7 @@ void FirebasePrintData(){
   Firebase.RTDB.setString(&fbdo, "/Pots/"+Pot_ID+"/OnlineStatus/ConnectTime", String(time));
   //umidità
   Firebase.RTDB.setFloat(&fbdo, "/Pots/"+Pot_ID+"/Humidity/LastHumidity",humidity);
-  Firebase.RTDB.pushFloat(&fbdo, "/Pots/"+Pot_ID+"/Humidity/HistoryHumidity/"+String(time),humidity);
+  Firebase.RTDB.setFloat(&fbdo, "/Pots/"+Pot_ID+"/Humidity/HistoryHumidity/"+String(time),humidity);
   //livello acqua
   Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"/WaterLevel",waterLvl);
   //ultima innaffiata
