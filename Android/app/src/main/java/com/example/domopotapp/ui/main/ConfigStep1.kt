@@ -79,6 +79,7 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
             startActivity(intent)
         }
         scanBtn.setOnClickListener {
+            infoWifi.text = "Connessione in corso..."
             startWifiQRCodeScanner(requireContext().applicationContext)
         }
 

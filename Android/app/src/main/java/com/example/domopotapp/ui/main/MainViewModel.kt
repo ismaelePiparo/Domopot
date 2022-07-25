@@ -28,6 +28,7 @@ class MainViewModel : ViewModel() {
     val db = Firebase.database.reference
     var mAuth = FirebaseAuth.getInstance()
     var myPots = mutableMapOf<String, String>()
+    var onLine : Boolean = false
 
     var currentPot: String = ""
     var currentPlantType: String = ""
@@ -147,7 +148,8 @@ class MainViewModel : ViewModel() {
         val humidityThreshold =
             if (manualMode) (potSnapshot.child("Commands").child("Humidity").value as Long).toInt()
             else (ptSnapshot.child("humidity_threshold").value as Long).toInt()
-
+        //TODO sistemare il fatto che ogni volta che vengono scritti dei valori sul db la scremata si aggiorna
+        // possibile soluzione scrivere i dati su db ogni 10/20 minuti???
         return PotData(
             potId,
             potName,
@@ -155,9 +157,9 @@ class MainViewModel : ViewModel() {
             ptSnapshot.child("img").value.toString(),
             manualMode,
             getConnectionStatusFromTimestamp(
-                (potSnapshot.child("OnlineStatus").child("ConnectTime").value as Long).toInt()
+                (potSnapshot.child("OnlineStatus").child("ConnectTime").value.toString()).toInt()
             ),
-            (potSnapshot.child("Humidity").child("LastHumidity").value as Long).toInt(),
+            (potSnapshot.child("Humidity").child("LastHumidity").value.toString()).toInt(),
             (potSnapshot.child("WaterLevel").value as Long).toInt(),
             (potSnapshot.child("Temperature").value as Long).toInt(),
             getLastWateringFromTimestamp(

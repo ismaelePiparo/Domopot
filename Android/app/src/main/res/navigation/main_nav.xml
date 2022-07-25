@@ -26,6 +26,9 @@
         <action
             android:id="@+id/ConfigStep2_to_ConfigStep3"
             app:destination="@id/configStep3" />
+        <action
+            android:id="@+id/configStep_2_to_home"
+            app:destination="@id/home2" />
     </fragment>
     <fragment
         android:id="@+id/home2"
