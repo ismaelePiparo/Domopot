@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primary">#ff06c494</color>
+    <color name="primary_light">#FF9BE7D4</color>
+    <color name="secondary">#FF1A535C</color>
+    <color name="secondary_light">#991A535C</color>
     <color name="warning">#FFF9C80E</color>
     <color name="danger">#EE6352</color>
     <color name="info">#FF808080</color>
     <color name="light">#FFCCCCCC</color>
+    <color name="dark">#FF4A4A4A</color>
     <color name="bg">#FFF5F5F5</color>
+    <color name="modal_bg">#AAF5F5F5</color>
 
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="purple_200">#ff06c494</color>
+    <color name="purple_500">#ff06c494</color>
+    <color name="purple_700">#ff06c494</color>
+    <color name="teal_200">#ff06c494</color>
+    <color name="teal_700">#ff06c494</color>
 
-    <color name="black">#FF000000</color>
+    <color name="black">#FF1C1C1C</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/guideTitleTag"
+
+        style="@style/TextTitleTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="@dimen/title_left_margin"
+        android:layout_marginTop="@dimen/title_top_margin"
+        android:text="@string/title_guide"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/guidebackButton"
+
+        style="@style/TitleBackButton"
+
+        app:layout_constraintEnd_toStartOf="@+id/guidePlantType"
+        app:layout_constraintTop_toTopOf="@+id/guidePlantType"
+        app:srcCompat="@drawable/ic_chevron_left" />
+
+    <TextView
+        android:id="@+id/guidePlantType"
+
+        style="@style/TextTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="@dimen/title_left_margin"
+        android:text="Peperomia"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideTitleTag" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guidePlantType">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/guidePlantImage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="-24dp"
+                android:minHeight="300dp"
+                app:layout_constraintBottom_toTopOf="@+id/cardView2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView2"
+                android:layout_width="360dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/helper"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/guideDifficultyText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="Facile"
+                        app:layout_constraintBottom_toTopOf="@+id/guideDescription"
+                        app:layout_constraintEnd_toStartOf="@+id/guidePtDifficulty"
+                        app:layout_constraintStart_toStartOf="@+id/helper"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/guidePtDifficulty"
+                        style="@style/TextSemiBold"
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginStart="20dp"
+                        android:text="3"
+                        app:layout_constraintBottom_toBottomOf="@+id/guideDifficultyText"
+                        app:layout_constraintEnd_toStartOf="@+id/guideDifficultyBar"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/guideDifficultyText"
+                        app:layout_constraintTop_toTopOf="@+id/guideDifficultyText" />
+
+                    <ProgressBar
+                        android:id="@+id/guideDifficultyBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="100dp"
+                        android:layout_height="4dp"
+                        android:layout_marginStart="8dp"
+                        android:max="10"
+                        android:progress="5"
+                        android:progressDrawable="@drawable/progress_bar"
+                        app:layout_constraintBottom_toBottomOf="@+id/guidePtDifficulty"
+                        app:layout_constraintEnd_toEndOf="@+id/helper"
+                        app:layout_constraintStart_toEndOf="@+id/guidePtDifficulty"
+                        app:layout_constraintTop_toTopOf="@+id/guidePtDifficulty"
+                        app:layout_constraintVertical_bias="0.45" />
+
+                    <TextView
+                        android:id="@+id/guideDescription"
+                        style="@style/TextDescription"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="28dp"
+                        android:layout_marginEnd="28dp"
+                        android:text="Tra le piante sempreverdi merita attenzione anche la peperomia, appartenente alla famiglia delle Piperaceae. È originaria dell’America meridionale, ma oramai la troviamo un po’ ovunque.  Il termine deriva dal greco piper (pepe) e omolos (simile), in quanto ricorda nell’aspetto la pianta del pepe.  Si presenta con fiori bianchi o gialli, piccolini, radunati in spighe. Fiorisce in estate. Le foglie variano in funzione della specie, sia nelle forme che nei colori. Si distinguono sicuramente per essere molto carnose. Le radici sono modeste, mentre i fusti sono succulenti.  Questa pianta comprende diverse specie, molto differenti anche per portamento. Se ne contano anche più di 1000."
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

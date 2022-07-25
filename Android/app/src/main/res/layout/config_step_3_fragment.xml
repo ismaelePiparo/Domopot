@@ -14,8 +14,93 @@
         android:gravity="center"
         android:text="TextView"
         android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/configBackButton3"
+
+        style="@style/ConfigTitleBackButton"
+
+        app:layout_constraintEnd_toStartOf="@+id/configTitle3"
+        app:layout_constraintTop_toTopOf="@+id/configTitle3" />
+
+    <TextView
+        android:id="@+id/configTitle3"
+
+        style="@style/TextConfigTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/title_left_margin"
+
+        android:layout_marginTop="@dimen/title_top_margin"
+        android:layout_marginEnd="@dimen/title_left_margin"
+        android:text="Collegamento in corso..."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/plant_config"
+        app:layout_constraintBottom_toTopOf="@+id/configStatusBar3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/configTitle3"
+        app:layout_constraintVertical_bias="0.45" />
+
+    <ImageView
+        android:id="@+id/configLoadingIcon3"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="@dimen/configplanticon_margin_bottom"
+        android:src="@drawable/ic_loading"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:tint="@color/secondary" />
+
+    <ProgressBar
+        android:id="@+id/configStatusBar3"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        android:layout_marginStart="@dimen/title_left_margin"
+        android:layout_marginEnd="@dimen/title_left_margin"
+        android:layout_marginBottom="60dp"
+        android:max="100"
+        android:progress="75"
+        android:progressDrawable="@drawable/progress_bar"
+        android:progressTint="@color/secondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/config3TestNext1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next1"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.86" />
+
+    <Button
+        android:id="@+id/config3TestNext2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:text="Next2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/config3TestNext1"
+        app:layout_constraintEnd_toStartOf="@+id/config3TestNext1" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

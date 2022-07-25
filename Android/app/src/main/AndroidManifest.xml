@@ -36,6 +36,11 @@
             android:screenOrientation="portrait"
             tools:replace="android:screenOrientation"
             />
+
+        <activity
+            android:name=".test.TestActivity"
+            android:exported="true"
+            />
     </application>
 
 </manifest>

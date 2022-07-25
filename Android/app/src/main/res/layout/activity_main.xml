@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_bottom_nav"
+        app:itemIconSize="32dp"
         android:elevation="20dp"
         android:visibility="gone"
         app:labelVisibilityMode="unlabeled"

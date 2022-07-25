@@ -119,6 +119,7 @@ void setup() {
   SendMessageToArduino(ledState = Led_connected);
   //ESP CONNESSO
   onLine = true;
+  FirebaseSetup();
   
 }
 
@@ -130,14 +131,17 @@ void loop() {
   }else{
     //Led dell'esp acceso per vedere che è connesso ad internet in fase di debug
     digitalWrite(LED_BUILTIN,LOW);
-    requestData(); //richede e stampa i dati di arduino
+
+    //Commentati perche impallano l'esp al momento....
+    //requestData(); //richede e stampa i dati di arduino
+
     timeClient.update();
 
     // Scrivi timestamp e dati
     FirebasePrintData();
     delay(10000);
     // Controlla modalità
-    String mode;
+    /*String mode;
     if (Firebase.RTDB.getString(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode", &mode)){
       switch(mode[0]){
         case 'i':
@@ -152,7 +156,7 @@ void loop() {
         default:
           break;
       }
-    }
+    }*/
   }
 }
 
@@ -444,32 +448,10 @@ void RestoreWiFiCreds(){
 #pragma endregion
 
 void FirebaseSetup(){
-  config.host = PROJECT_ID;
-  config.api_key = FIREBASE_AUTH;
-  Firebase.begin(&config, &auth);
   config.database_url = DATABASE_URL;
-
   config.signer.test_mode = true;
-
-  /**
-   Set the database rules to allow public read and write.
-
-      {
-      "rules": {
-        ".read": true,
-        ".write": true
-      }
-      }
-
-  */
-
   Firebase.reconnectWiFi(true);
-
-  /* Initialize the library with the Firebase authen and config */
   Firebase.begin(&config, &auth);
-
-  //Or use legacy authenticate method
-  //Firebase.begin(DATABASE_URL, DATABASE_SECRET);
 }
 
 void FirebasePrintData(){
@@ -482,7 +464,7 @@ void FirebasePrintData(){
   Firebase.RTDB.setString(&fbdo, "/Pots/"+Pot_ID+"/OnlineStatus/ConnectTime", String(time));
   //umidità
   Firebase.RTDB.setFloat(&fbdo, "/Pots/"+Pot_ID+"/Humidity/LastHumidity",humidity);
-  Firebase.RTDB.pushFloat(&fbdo, "/Pots/"+Pot_ID+"/Humidity/HistoryHumidity/"+String(time),humidity);
+  Firebase.RTDB.setFloat(&fbdo, "/Pots/"+Pot_ID+"/Humidity/HistoryHumidity/"+String(time),humidity);
   //livello acqua
   Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"/WaterLevel",waterLvl);
   //ultima innaffiata

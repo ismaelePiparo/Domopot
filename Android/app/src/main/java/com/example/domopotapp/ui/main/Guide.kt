@@ -1,29 +1,27 @@
 package com.example.domopotapp.ui.main
 
-import android.content.res.AssetManager
 import android.content.res.ColorStateList
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domopotapp.R
-import java.io.InputStream
+import com.example.domopotapp.*
 
 
 class Guide : Fragment(R.layout.guide_fragment) {
     companion object {
         fun newInstance() = Guide()
-        fun newInstanceWithBundle(b: Bundle): Guide{
+        fun newInstanceWithBundle(b: Bundle): Guide {
             val f = Guide()
             f.arguments = b
             return f
@@ -32,40 +30,46 @@ class Guide : Fragment(R.layout.guide_fragment) {
 
     private val viewModel by activityViewModels<MainViewModel>()
 
-    // TODO prendere i dati da Firebase
-    val l: List<PlantTypeData> = listOf(
-        PlantTypeData("Peperomia", "plant_img/peperomia.png", 3),
-        PlantTypeData("Filodendro", "plant_img/filodendro.png", 5),
-        PlantTypeData("Bonsai", "plant_img/bonsai.png", 9),
-        PlantTypeData("Peperomia", "plant_img/peperomia.png", 3),
-        PlantTypeData("Filodendro", "plant_img/filodendro.png", 5),
-        PlantTypeData("Bonsai", "plant_img/bonsai.png", 9),
-        PlantTypeData("Peperomia", "plant_img/peperomia.png", 3),
-        PlantTypeData("Filodendro", "plant_img/filodendro.png", 5),
-        PlantTypeData("Bonsai", "plant_img/bonsai.png", 9),
-        PlantTypeData("Peperomia", "plant_img/peperomia.png", 3),
-        PlantTypeData("Filodendro", "plant_img/filodendro.png", 5),
-        PlantTypeData("Bonsai", "plant_img/bonsai.png", 9),
-    )
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val title: TextView = view.findViewById(R.id.guideTitle)
         val rv: RecyclerView = view.findViewById(R.id.plantTypesRV)
+        val searchPlantTypeButton: ImageButton = view.findViewById(R.id.searchPlantTypeButton)
+
+        val guideSearchBar: CardView = view.findViewById(R.id.guideSearchBar)
+        val guideSearchBarClose: ImageButton = view.findViewById(R.id.guideSearchBarClose)
+        val guideSearchBarInput: EditText = view.findViewById(R.id.guideSearchBarInput)
+
+        if (viewModel.choosePTModeOn) title.text = "Scegli specie"
+
         rv.layoutManager = LinearLayoutManager(activity)
-        rv.adapter = PlantTypeAdapter(l)
+        rv.adapter = PlantTypeAdapter(viewModel.plantTypes.values.toMutableList(), viewModel, this)
+
+        searchPlantTypeButton.setOnClickListener {
+            guideSearchBar.visibility = View.VISIBLE
+        }
+        guideSearchBarClose.setOnClickListener {
+            guideSearchBar.visibility = View.GONE
+        }
+        guideSearchBarInput.addTextChangedListener {
+            val result = viewModel.plantTypes.filter {
+                it.value.name.lowercase().contains(guideSearchBarInput.text.toString().lowercase())
+            }
+            (rv.adapter as PlantTypeAdapter).submitList(result.values.toMutableList())
+        }
     }
 }
 
-data class PlantTypeData(val name: String, val image: String, val difficulty: Int)
-
-class PlantTypeAdapter(private val l: List<PlantTypeData>): RecyclerView.Adapter<PlantTypeAdapter.PlantTypeViewHolder>() {
-    class PlantTypeViewHolder(v: View): RecyclerView.ViewHolder(v) {
+class PlantTypeAdapter(private val l: MutableList<PlantTypeData>, private val viewModel: MainViewModel, private val fragment: Fragment) :
+    RecyclerView.Adapter<PlantTypeAdapter.PlantTypeViewHolder>() {
+    class PlantTypeViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val ptName: TextView = v.findViewById(R.id.plantTypeName)
         val ptDifficulty: TextView = v.findViewById(R.id.plantTypeDifficulty)
         val ptDifficultyText: TextView = v.findViewById(R.id.difficultyText)
         val ptDifficultyBar: ProgressBar = v.findViewById(R.id.difficultyBar)
         val ptImage: ImageView = v.findViewById(R.id.plantTypeImage)
+        val ptCard: CardView = v.findViewById(R.id.ptCardView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlantTypeViewHolder {
@@ -75,23 +79,8 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>): RecyclerView.Adapter
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: PlantTypeViewHolder, position: Int) {
-        var color: ColorStateList
-        var difficultyText: String
-
-        when {
-            l[position].difficulty <= 3 -> {
-                color = ColorStateList.valueOf(holder.ptDifficultyBar.context.getColor(R.color.primary))
-                difficultyText = holder.ptDifficultyText.context.getString(R.string.difficulty_easy)
-            }
-            l[position].difficulty <= 7 -> {
-                color = ColorStateList.valueOf(holder.ptDifficultyBar.context.getColor(R.color.warning))
-                difficultyText = holder.ptDifficultyText.context.getString(R.string.difficulty_medium)
-            }
-            else -> {
-                color = ColorStateList.valueOf(holder.ptDifficultyBar.context.getColor(R.color.danger))
-                difficultyText = holder.ptDifficultyText.context.getString(R.string.difficulty_hard)
-            }
-        }
+        val color: ColorStateList = getDifficultyColor(l[position].difficulty, holder.ptName.context)
+        val difficultyText: String = getDifficultyText(l[position].difficulty, holder.ptName.context)
 
         holder.ptName.text = l[position].name
         holder.ptDifficulty.text = l[position].difficulty.toString()
@@ -101,13 +90,59 @@ class PlantTypeAdapter(private val l: List<PlantTypeData>): RecyclerView.Adapter
         holder.ptDifficultyBar.progressTintList = color
         holder.ptDifficultyText.text = difficultyText
 
-        val assetManager: AssetManager = holder.ptImage.context.assets
-        val ims: InputStream = assetManager.open(l[position].image)
-        val d = Drawable.createFromStream(ims, null)
-        holder.ptImage.setImageDrawable(d)
+        linkAssetImage(holder.ptImage, l[position].img)
+
+        if (viewModel.choosePTModeOn) {
+            holder.ptCard.setOnClickListener {
+                viewModel.currentPlantType = l[position].id
+                viewModel.choosePTModeOn = false
+                findNavController(fragment).navigate(viewModel.choosePTAction)
+            }
+        }
+        else {
+            holder.ptCard.setOnClickListener {
+                viewModel.currentPlantType = l[position].id
+                findNavController(fragment).navigate(R.id.guide_to_plantTypeNav)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
         return l.size
+    }
+
+    fun submitList(newL: MutableList<PlantTypeData>) {
+        val removeIndexes: MutableList<Int> = mutableListOf()
+
+        l.forEachIndexed { i, old ->
+            val index = newL.indexOf(newL.find { it.id == old.id })
+            if (index == -1) removeIndexes.add(i)
+        }
+
+        newL.forEach { new ->
+            val index = l.indexOf(l.find { it.id == new.id })
+            if (index >= 0) updateListItem(new, index)
+            else addListItem(new, l.size)
+        }
+
+        removeIndexes.sortDescending()
+        removeIndexes.forEach {
+            removeListItem(it)
+        }
+    }
+
+    private fun addListItem(newData: PlantTypeData, position: Int) {
+        l.add(position, newData)
+        notifyItemInserted(position)
+    }
+
+    private fun removeListItem(position: Int) {
+        l.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    private fun updateListItem(newData: PlantTypeData, position: Int) {
+        l[position] = newData
+        notifyItemChanged(position)
     }
 }

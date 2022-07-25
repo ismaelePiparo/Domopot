@@ -12,8 +12,8 @@
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="@dimen/title_left_margin"
+        android:layout_marginTop="@dimen/title_top_margin"
         android:text="@string/title_guide"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,14 +21,74 @@
     <ImageButton
         android:id="@+id/searchPlantTypeButton"
 
-        style="@style/SearchButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:src="@drawable/ic_search"
+        style="@style/CircleIconButton"
 
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="@dimen/title_left_margin"
         app:layout_constraintBottom_toBottomOf="@+id/guideTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideTitle" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/guideSearchBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:cardCornerRadius="36dp"
+        app:cardElevation="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/searchPlantTypeButton"
+        app:layout_constraintEnd_toEndOf="@+id/searchPlantTypeButton"
+        app:layout_constraintStart_toStartOf="@+id/guideTitle"
+        app:layout_constraintTop_toTopOf="@+id/searchPlantTypeButton">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/guideSearchBarClose"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:background="@color/zxing_transparent"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageView6"
+                app:srcCompat="@drawable/ic_close_small"
+                app:tint="@color/info" />
+
+            <EditText
+                android:id="@+id/guideSearchBarInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:ems="10"
+                android:hint="Nome pianta"
+                android:textColorHighlight="@color/primary"
+                android:textColorHint="@color/light"
+                android:textColorLink="@color/primary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageView6"
+                app:layout_constraintStart_toEndOf="@+id/guideSearchBarClose"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_search"
+                app:tint="@color/primary" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/plantTypesRV"

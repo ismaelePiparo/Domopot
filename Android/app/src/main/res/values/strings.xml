@@ -6,16 +6,22 @@
     <string name="title_guide">Guida</string>
     <string name="title_settings">Impostazioni</string>
     <string name="title_tag_my_plants">Le mie piante</string>
+    <string name="title_connect_pot">Collega un vaso</string>
+    <string name="title_connect_pot_wifi">Collegati alla rete \"DomoPot_WiFi\"</string>
+    <string name="title_choose_network">Seleziona la rete a cui collegare il vaso</string>
 
     <!-- Buttons -->
     <string name="btn_details">Dettagli</string>
     <string name="btn_login">Login</string>
     <string name="btn_logout">Logout</string>
+    <string name="btn_config_start">Inizia</string>
+    <string name="btn_connect">Collega</string>
 
     <string name="welcome_text">Non riesci a far sopravvivere le tue piante più di una settimana?\nDa oggi le cose cambieranno</string>
     <string name="difficulty_easy">Facile</string>
     <string name="difficulty_medium">Medio</string>
     <string name="difficulty_hard">Difficile</string>
+    <string name="add_plant">Aggiungi pianta</string>
 
 
 

@@ -99,7 +99,7 @@ class Login : Fragment(R.layout.login_fragment) {
                     Log.d("SignInActivity", "signInWithCredential:success")
                     val user = viewModel.mAuth.currentUser
                     if (user != null) {
-                        writeUserInBD(user)
+                        writeUserInDB(user)
                     } else {
                         Log.w("SignInActivity", "signInWithCredential:failure")
                     }
@@ -107,7 +107,7 @@ class Login : Fragment(R.layout.login_fragment) {
             }
     }
 
-    fun writeUserInBD(user: FirebaseUser)  {
+    private fun writeUserInDB(user: FirebaseUser)  {
         ref = viewModel.db.child("Users")
         myListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

@@ -4,7 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Ismaele/Desktop/polito/Laurea_Magistrale/2° anno/Digital Interaction Design/Progetto DID/Domopot/Android/app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/Ismaele/Desktop/polito/Laurea_Magistrale/2° anno/Digital Interaction Design/Progetto DID/Domopot/Android/app/src/main/res/layout/config_completed_fragment.xml" value="0.1" />
         <entry key="..\:/Users/Ismaele/Desktop/polito/Laurea_Magistrale/2° anno/Digital Interaction Design/Progetto DID/Domopot/Android/app/src/main/res/layout/config_setp_1_fragment.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/Ismaele/Desktop/polito/Laurea_Magistrale/2° anno/Digital Interaction Design/Progetto DID/Domopot/Android/app/src/main/res/layout/config_step_0_fragment.xml" value="0.13177083333333334" />
+        <entry key="..\:/Users/Ismaele/Desktop/polito/Laurea_Magistrale/2° anno/Digital Interaction Design/Progetto DID/Domopot/Android/app/src/main/res/layout/config_step_1_fragment.xml" value="0.22" />
         <entry key="..\:/Users/Ismaele/Desktop/polito/Laurea_Magistrale/2° anno/Digital Interaction Design/Progetto DID/Domopot/Android/app/src/main/res/layout/config_step_2_fragment.xml" value="0.25" />
         <entry key="..\:/Users/Ismaele/Desktop/polito/Laurea_Magistrale/2° anno/Digital Interaction Design/Progetto DID/Domopot/Android/app/src/main/res/layout/config_step_3_fragment.xml" value="0.18" />
         <entry key="..\:/Users/Ismaele/Desktop/polito/Laurea_Magistrale/2° anno/Digital Interaction Design/Progetto DID/Domopot/Android/app/src/main/res/layout/fragment_config_setp_1.xml" value="0.20416666666666666" />
@@ -13,18 +16,43 @@
         <entry key="..\:/Users/Ismaele/Desktop/polito/Laurea_Magistrale/2° anno/Digital Interaction Design/Progetto DID/Domopot/Android/app/src/main/res/layout/fragment_home.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Ismaele/Desktop/polito/Laurea_Magistrale/2° anno/Digital Interaction Design/Progetto DID/Domopot/Android/app/src/main/res/layout/home_fragment.xml" value="0.22" />
         <entry key="..\:/Users/Ismaele/Desktop/polito/Laurea_Magistrale/2° anno/Digital Interaction Design/Progetto DID/Domopot/Android/app/src/main/res/layout/simple_list_item.xml" value="0.1" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2485" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/bg_bottom_nav.xml" value="0.254" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/btn_primary.xml" value="0.254" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/btn_radio_humidity.xml" value="0.2635" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/btn_secondary_outline.xml" value="0.1045" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/btn_secondary_outline_light.xml" value="0.1045" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/btn_settings.xml" value="0.254" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/btn_watering.xml" value="0.2485" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/circle_primary.xml" value="0.254" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/ic_add.xml" value="0.254" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/ic_app_icon.xml" value="0.2485" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/ic_baseline_wifi_off_24.xml" value="0.2485" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/ic_guide.xml" value="0.2485" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/ic_guide_outline.xml" value="0.2485" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/ic_home.xml" value="0.2485" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2485" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.2485" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/ic_settings.xml" value="0.254" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/progress_bar.xml" value="0.254" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/shadow.xml" value="0.2485" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/switch_thumb.xml" value="0.326" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/switch_track.xml" value="0.326" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/time_picker_bg.xml" value="0.26" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/drawable/time_picker_header_bg.xml" value="0.26" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/activity_main.xml" value="0.264" />
-        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/details_fragment.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/guide_fragment.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/home_fragment.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/config_completed_fragment.xml" value="0.264" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/config_step_1_fragment.xml" value="0.11302083333333333" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/config_step_2_fragment.xml" value="0.28396739130434784" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/config_step_3_fragment.xml" value="0.11302083333333333" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/details_fragment.xml" value="0.264" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/graph_fragment.xml" value="0.4" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/guide_fragment.xml" value="0.4" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/home_fragment.xml" value="0.264" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/login_fragment.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/plant_overview_fragment.xml" value="0.2269021739130435" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/plant_overview_item.xml" value="0.4" />
+        <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/plant_type_fragment.xml" value="0.264" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/plant_type_item.xml" value="0.6" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/settings_fragment.xml" value="0.264" />
         <entry key="..\:/Users/giang/Desktop/Progetti/Universitari/_WIP/DID-DomoPot/Domopot/Android/app/src/main/res/layout/simple_list_item.xml" value="0.25416666666666665" />

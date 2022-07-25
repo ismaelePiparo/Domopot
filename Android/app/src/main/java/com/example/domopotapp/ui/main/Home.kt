@@ -5,21 +5,27 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.example.domopotapp.R
+import com.example.domopotapp.defaultFirebaseOnFailureListener
+import com.example.domopotapp.updateHomeLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.*
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 
 class Home : Fragment(R.layout.home_fragment) {
     companion object {
         fun newInstance() = Home()
-        fun newInstanceWithBundle(b: Bundle): Home{
+        fun newInstanceWithBundle(b: Bundle): Home {
             val f = Home()
             f.arguments = b
             return f
@@ -28,199 +34,89 @@ class Home : Fragment(R.layout.home_fragment) {
 
     private val viewModel by activityViewModels<MainViewModel>()
 
-    private lateinit var bottomNav: BottomNavigationView
-
-    private lateinit var plantName: TextView
-    private lateinit var prevPlant: ImageButton
-    private lateinit var nextPlant: ImageButton
-    private lateinit var plantDetail: Button
-    private lateinit var humidity: TextView
-    private lateinit var waterLevel: TextView
-    private lateinit var temperature: TextView
-    private lateinit var lastWatering: TextView
-
-
-
-
-    var pageCounter = 0;
-
-    //private lateinit var myPotsListener: ValueEventListener
-    private lateinit var myPotsListener: ChildEventListener
-    private lateinit var userRef: DatabaseReference
-    private lateinit var potRef: DatabaseReference
-    private lateinit var myPlantListener: ValueEventListener
-
-    private lateinit var user: FirebaseUser
-
-
+    private lateinit var userPotsRef: DatabaseReference
+    private lateinit var globalPotsRef: DatabaseReference
+    private lateinit var userPotsListener: ChildEventListener
+    private lateinit var globalPotsListener: ChildEventListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val add = view.findViewById<ImageButton>(R.id.addPlantButton)
 
-        bottomNav = activity?.findViewById(R.id.bottom_navigation)!!
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)!!
 
-        plantName = view.findViewById<TextView>(R.id.plantName)
-        nextPlant = view.findViewById<ImageButton>(R.id.nextPlant)
-        prevPlant = view.findViewById<ImageButton>(R.id.prevPlant)
-        humidity = view.findViewById<TextView>(R.id.humidity)
-        waterLevel = view.findViewById<TextView>(R.id.waterLevel)
-        plantDetail = view.findViewById<Button>(R.id.plantDetails)
+        val mainLayout: ConstraintLayout = view.findViewById(R.id.main)
+        val noPlantsLayout: ConstraintLayout = view.findViewById(R.id.noPlantsLayout)
+        val loadingIcon: ImageView = view.findViewById(R.id.loadingIcon)
 
-        user = viewModel.mAuth.currentUser!!
+        val addPlant = view.findViewById<ImageButton>(R.id.addPlantButton)
+        val bigAddPlant = view.findViewById<ImageButton>(R.id.bigAddPlantButton)
+        val nextPlant = view.findViewById<ImageButton>(R.id.nextPlant)
+        val prevPlant = view.findViewById<ImageButton>(R.id.prevPlant)
+        val plantDetail = view.findViewById<Button>(R.id.plantDetails)
+        val plantOverview: ViewPager2 = view.findViewById(R.id.plantOverview)
+        val dotsIndicator = view.findViewById<DotsIndicator>(R.id.dotsIndicator)
+
+        viewModel.currentPlantType = ""
 
         if (!bottomNav.isVisible) bottomNav.visibility = View.VISIBLE
+        loadingIcon.animate().rotation(36000f).setDuration(30000).start()
+        updateHomeLayout(viewModel.emptyUserPots, mainLayout, noPlantsLayout)
 
-        // GESTICE IL CARICAMENTO DEI VASI DELL'UTENTE
-        userRef = user?.let { viewModel.db.child("Users")
-                                    .child(it.uid)
-                                    .child("pots") }!!
-       /* myPotsListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val plants = snapshot.value.toString()
-                if(plants == "0"){
-                    Log.w("Caricamento vasi utente","NO PLANTS!")
-                    plantName.text="No Plants!!!"
-                }else{
-                    snapshot.children.forEach{
-                        Log.w("Caricamento vasi utente","---")
-                        var pot = it.key.toString()
-                        var name = it.value.toString()
-                        viewModel.myPots[pot] = name
-                        Log.w("Map",viewModel.myPots.toString())
-                        Log.w("Element in position 0",viewModel.myPots.keys.elementAt(0).toString())
-
-                        Log.w("Caricamento vasi utente",it.value.toString())
-                        updateView()
-                    }
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Log.w("DB REsponse: ", "Failed to read value.", error.toException())
-            }
-        }*/
-
-        myPotsListener = object : ChildEventListener {
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.w("Vaso Aggiunto", "onChildAdded:" + snapshot.key!!)
-                var pot = snapshot.key.toString()
-                var name = snapshot.value.toString()
-                viewModel.myPots[pot] = name
-                Log.w("Map", viewModel.myPots.toString())
-
-                updateView(0)
-        }
-
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.w("Vaso Modificato", "onChildAdded:" + snapshot.key!!)
-                var pot = snapshot.key.toString()
-                var name = snapshot.value.toString()
-                viewModel.myPots[pot] = name
-                Log.w("Map", viewModel.myPots.toString())
-
-                updateView(0)
-
-            }
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                Log.w("Vaso eliminato", "onChildAdded:" + snapshot.key!!)
-                var pot = snapshot.key.toString()
-                viewModel.myPots.remove(pot)
-                Log.w("Map", viewModel.myPots.toString())
-                updateView(0)
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.w("ERRORE", "postComments:onCancelled", databaseError.toException())
-                Toast.makeText(context, "Failed to load comments.",
-                    Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        myPlantListener = object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                var hum = snapshot.child("Humidity").child("LastHumidity").value.toString()
-                humidity.text = "Humidity: " + hum
-                Log.w("Humidity", hum.toString())
-                var wL = snapshot.child("WaterLevel").value.toString()
-                waterLevel.text = "W level : " + wL
-                Log.w("Water Level", wL.toString())
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Log.w("ERRORE", "postComments:onCancelled", error.toException())
-                Toast.makeText(context, "Failed to load comments.",
-                    Toast.LENGTH_SHORT).show()
-            }
-        }
-
+        plantOverview.adapter = PlantOverviewAdapter(viewModel.userPots.values.toMutableList(), viewModel)
+        dotsIndicator.attachTo(plantOverview)
 
         // GESTIONE BUTTON
-        add.setOnClickListener{
-           findNavController().navigate(R.id.Home_to_ConfigStep1)
+        addPlant.setOnClickListener {
+            findNavController().navigate(R.id.home2_to_configStep0)
+        }
+        bigAddPlant.setOnClickListener {
+            findNavController().navigate(R.id.home2_to_configStep0)
         }
 
-        nextPlant.setOnClickListener{
-            if(pageCounter < viewModel.myPots.size - 1){
-                pageCounter++
-            }
-            else pageCounter = 0
-
-            updateView(pageCounter)
-        }
-
-        prevPlant.setOnClickListener{
-            if(pageCounter > 0){
-                pageCounter--
-            }
-            else pageCounter = viewModel.myPots.size - 1
-
-            updateView(pageCounter)
-        }
-
-        plantDetail.setOnClickListener{
+        plantDetail.setOnClickListener {
             findNavController().navigate(R.id.Home_to_details)
-
         }
-    }
 
-
-    // AGGIORNA LA VISTA
-    private fun updateView(page: Int){
-
-        potRef.removeEventListener(myPlantListener)
-        Log.w("UpdateView", "page "+ page.toString())
-        if(viewModel.myPots.isEmpty()){
-            plantName.text="No Pots!!!"
-        }else{
-            viewModel.currentPot = viewModel.myPots.keys.elementAt(page)
-            plantName.text=viewModel.myPots.values.elementAt(page)
-            potRef = viewModel.db.child("Pots")
-                .child(viewModel.currentPot)
-            potRef.addValueEventListener(myPlantListener)
-            Log.w("Current pot", viewModel.currentPot)
+        nextPlant.setOnClickListener {
+            plantOverview.currentItem++
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        potRef = viewModel.db.child("Pots")
-        userRef.addChildEventListener(myPotsListener)
-    }
+        prevPlant.setOnClickListener {
+            plantOverview.currentItem--
+        }
 
-    override fun onPause(){
-        super.onPause()
-        userRef.removeEventListener(myPotsListener)
-        potRef.removeEventListener(myPlantListener)
+        plantOverview.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                viewModel.currentPot =
+                    (plantOverview.adapter as PlantOverviewAdapter).l[position].id
+                super.onPageSelected(position)
+            }
+        })
+
+        userPotsRef = viewModel.mAuth.currentUser!!.let {
+            viewModel.db.child("Users")
+                .child(it.uid)
+                .child("pots")
+        }
+        globalPotsRef = viewModel.db.child("Pots")
+
+        if (viewModel.emptyUserPots == null) {
+            userPotsRef.get().addOnSuccessListener {
+                viewModel.emptyUserPots = it.childrenCount.toInt() == 0
+                updateHomeLayout(viewModel.emptyUserPots, mainLayout, noPlantsLayout)
+            }
+        }
+
+        userPotsListener = UserPotsListener(viewModel, plantOverview, mainLayout, noPlantsLayout)
+        globalPotsListener = GlobalPotsListener(viewModel, plantOverview)
+
+        userPotsRef.addChildEventListener(userPotsListener)
+        globalPotsRef.addChildEventListener(globalPotsListener)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        userRef.removeEventListener(myPotsListener)
-        potRef.removeEventListener(myPlantListener)
+        userPotsRef.removeEventListener(userPotsListener)
+        globalPotsRef.removeEventListener(globalPotsListener)
     }
 }
-

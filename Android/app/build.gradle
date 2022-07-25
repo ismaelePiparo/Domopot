@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.domopotapp"
-        minSdk 22
+        minSdk 26
         targetSdk 31
         versionCode 1
         versionName "1.0"
@@ -57,7 +57,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx:20.0.5'
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
     implementation 'com.google.zxing:core:3.4.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
 
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
+
+    implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
+    implementation 'im.dacer:AndroidCharts:1.0.4'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    implementation("com.tbuonomo:dotsindicator:4.3")
 
 }
