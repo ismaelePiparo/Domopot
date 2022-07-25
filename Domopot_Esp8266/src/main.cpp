@@ -82,6 +82,7 @@ void FirebasePrintData();
 void ModeImmediate();
 void ModeHumidity();
 void ModeProgram();
+void ModeAuto(String plantType);
 // conversione epoch
 int epochToDay(int epoch);
 //flag delle modalità di innaffiamento
@@ -133,22 +134,32 @@ void loop() {
     FirebasePrintData();
     
     // Controlla modalità
-    /*String mode;
-    if (Firebase.RTDB.getString(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode", &mode)){
-      switch(mode[0]){
-        case 'i':
-          ModeImmediate();
-          break;
-        case 'h':
-          ModeHumidity();
-          break;
-        case 'p':
-          ModeProgram();
-          break;
-        default:
-          break;
+    // --> Al momento tutto commentato per test cono solo ESP
+    /*bool autoMode;
+    Firebase.RTDB.getBool(&fbdo, "/Pots/"+Pot_ID+"/AutoMode", &autoMode);
+    if(autoMode){
+      String plantType;
+      Firebase.RTDB.getString(&fbdo, "/Pots/"+Pot_ID+"/PlantType", &plantType);
+      ModeAuto(plantType);
+    }else{
+      String mode;
+      if (Firebase.RTDB.getString(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode", &mode)){
+        switch(mode[0]){
+          case 'i':
+            ModeImmediate();
+            break;
+          case 'h':
+            ModeHumidity();
+            break;
+          case 'p':
+            ModeProgram();
+            break;
+          default:
+            break;
+        }
       }
     }*/
+    
   }
 }
 
@@ -201,6 +212,18 @@ void ModeProgram(){
         delay(2000);
       }
       programModeLastWatering = timeClient.getEpochTime();
+    }
+  }
+}
+
+// 	AutoMode:
+// 		Legge nel db relativo ai tipi di piante il valore di umidità da settare
+void ModeProgram(String plantType){
+  int threshold;
+  if(Firebase.RTDB.getInt(&fbdo, "/PlantTypes/"+plantType+"/humidity_threshold", &threshold))
+  {
+    if (humidity < threshold){
+      SendMessageToArduino(pumpWater);
     }
   }
 }
