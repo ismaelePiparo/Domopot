@@ -401,7 +401,6 @@ void handle_Credentials()
     }
    
   } 
-
   if(message=="ERROR"){
     message = "Invalid Arguments";
     Serial.println(message);
