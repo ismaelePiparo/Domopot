@@ -14,7 +14,8 @@
 #define SSID_OFFSET 32
 #define AP_SSID "DomoPot_WiFi"
 #define AP_PASS ""
-#define PUMP_PIN 4
+#define PUMP_PIN 12  
+#define PUMP_LED_PIN 14
 
 /* Tenere attivo l'accesspoint in ascolto solo per handle start e credentials
  * 
@@ -88,17 +89,20 @@ int epochToDay(int epoch);
 //flag delle modalità di innaffiamento
 bool immediateModeError = false;
 long programModeLastWatering;
+void pumpOn(bool pumpIsOn);
 
 void setup() {
   Serial.println("sono vivo");
   Serial.begin(9600);
   EEPROM.begin(512);
   pinMode(PUMP_PIN,OUTPUT);
-  digitalWrite(PUMP_PIN, LOW);
-    //test pompa
-  digitalWrite(PUMP_PIN,HIGH);
-  delay(1000 /* *waterAmount */ );
   digitalWrite(PUMP_PIN,LOW);
+  pinMode(PUMP_LED_PIN, OUTPUT);
+  pumpOn(false);
+    //test pompa
+  pumpOn(true);
+  delay(1000 /* *waterAmount */ );
+  pumpOn(false);
   FirebaseSetup();
   Wire.begin();
   //WiFi.mode(WIFI_AP_STA);
@@ -170,14 +174,14 @@ void loop() {
 void ModeImmediate(){
   bool Annaff = false;
   bool dbRead = Firebase.RTDB.getBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Immediate/Annaffia", &Annaff);
-  Serial.println(Annaff);
-  Serial.println("dbRead: "+ dbRead);
+
   if( dbRead
      && Annaff 
      && !immediateModeError){
-      digitalWrite(PUMP_PIN,HIGH);
-      delay(1000 /* *waterAmount */ );
-      digitalWrite(PUMP_PIN,LOW);
+      Serial.println("sto inffaffiando...");
+      pumpOn(true);
+      delay(10000);
+      pumpOn(false);
     immediateModeError = !Firebase.RTDB.setBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Immediate/Annaffia", false);
   } else if (immediateModeError){
     immediateModeError = !Firebase.RTDB.setBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Immediate/Annaffia", false);
@@ -191,9 +195,9 @@ void ModeHumidity(){
   if(Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Humidity", &threshold))
   {
     if (humidity < threshold){
-      digitalWrite(PUMP_PIN,HIGH);
+      pumpOn(true);
       delay(1000 /* *waterAmount */ );
-      digitalWrite(PUMP_PIN,LOW);
+      pumpOn(false);
     }
   }
 }
@@ -213,9 +217,9 @@ void ModeProgram(){
         && timeClient.getHours() > hour
         && Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Program/WaterQuantity", &waterAmount))
     {
-      digitalWrite(PUMP_PIN,HIGH);
+      pumpOn(true);
       delay(1000 /* *waterAmount */ );
-      digitalWrite(PUMP_PIN,LOW);
+      pumpOn(false);
       programModeLastWatering = timeClient.getEpochTime();
     }
   }
@@ -479,4 +483,13 @@ void FirebasePrintData(){
   Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"/WaterLevel",waterPercent);
   //ultima innaffiata
   Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"/LastWatering",programModeLastWatering);
+}
+
+void pumpOn(bool pumpIsOn){
+  Serial.println("pompa pumpIsOn");
+
+  digitalWrite(PUMP_PIN, pumpIsOn?HIGH:LOW);
+  
+  digitalWrite(PUMP_LED_PIN, pumpIsOn?HIGH:LOW);
+  return;
 }
