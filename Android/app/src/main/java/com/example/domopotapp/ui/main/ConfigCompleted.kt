@@ -2,8 +2,10 @@ package com.example.domopotapp.ui.main
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -26,6 +28,11 @@ class ConfigCompleted : Fragment(R.layout.config_completed_fragment) {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //disabilita il tasto back
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            Log.w("BACK PRESSED","Attendere il completamento dell'operazione...")
+        }
 
         val userPotsRef = viewModel.mAuth.currentUser!!.let {
             viewModel.db.child("Users")

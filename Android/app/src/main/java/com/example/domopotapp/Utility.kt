@@ -13,13 +13,14 @@ import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.viewpager2.widget.ViewPager2
 import com.example.domopotapp.ui.main.Details
 import com.example.domopotapp.ui.main.MainViewModel
 import com.google.firebase.database.DatabaseReference
 import java.io.InputStream
 import java.time.*
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 val defaultFirebaseOnFailureListener =
     { it: Exception -> Log.e("firebase", "Error getting data", it) }
@@ -29,6 +30,19 @@ fun linkAssetImage(imageView: ImageView, fileName: String) {
     val ims: InputStream = assetManager.open(fileName)
     val d = Drawable.createFromStream(ims, null)
     imageView.setImageDrawable(d)
+}
+
+fun setSupportsChangeAnimations(viewPager: ViewPager2, enable: Boolean) {
+    for (i in 0 until viewPager.childCount) {
+        val view = viewPager.getChildAt(i)
+        if (view is RecyclerView) {
+            val animator = view.itemAnimator
+            if (animator != null) {
+                (animator as SimpleItemAnimator).supportsChangeAnimations = enable
+            }
+            break
+        }
+    }
 }
 
 fun getLastWateringFromTimestamp(timestamp: Long): LocalDateTime {
@@ -62,16 +76,17 @@ fun getConnectionStatusFromTimestamp(timestamp: Int): Boolean {
     //Controlla se online status è maggiore del tempo corrente - 5 minuti
     // onlineStatus si aggiorna da ESP ogni 10 secondi
     //Log.w("Current ts -5 min", ((System.currentTimeMillis() / 1000)-250).toString())
-    return timestamp > (System.currentTimeMillis() / 1000)-500
+    return timestamp > (System.currentTimeMillis() / 1000) - 500
+}
+
+fun getTwoDigitsNumber(num: Int): String {
+    return if (num < 10) "0$num"
+    else "$num"
 }
 
 fun getHMTimeString(hour: Int, minutes: Int): String {
-    val hString =
-        if (hour < 10) "0$hour"
-        else "$hour"
-    val minString =
-        if (minutes < 10) "0$minutes"
-        else "$minutes"
+    val hString = getTwoDigitsNumber(hour)
+    val minString = getTwoDigitsNumber(minutes)
     return "$hString:$minString"
 }
 
@@ -81,7 +96,8 @@ fun getTimestampFromTimeString(timeString: String): Long {
     val month =
         if (now.monthValue < 10) "0${now.monthValue}"
         else "${now.monthValue}"
-    return Instant.parse("${now.year}-$month-${now.dayOfMonth}T$timeString:00.000Z").toEpochMilli()/1000
+    return Instant.parse("${now.year}-$month-${now.dayOfMonth}T$timeString:00.000Z")
+        .toEpochMilli() / 1000
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -165,12 +181,14 @@ fun updateCheckBoxEditText(inputText: EditText, label: TextView, checkboxIsCheck
     val context = inputText.context
     if (checkboxIsChecked) {
         inputText.isEnabled = true
-        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.info, context.theme))
+        inputText.backgroundTintList =
+            ColorStateList.valueOf(resources.getColor(R.color.info, context.theme))
         inputText.setHintTextColor(resources.getColor(R.color.info, context.theme))
         label.setTextColor(resources.getColor(R.color.info, context.theme))
     } else {
         inputText.isEnabled = false
-        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.light, context.theme))
+        inputText.backgroundTintList =
+            ColorStateList.valueOf(resources.getColor(R.color.light, context.theme))
         inputText.setHintTextColor(resources.getColor(R.color.light, context.theme))
         label.setTextColor(resources.getColor(R.color.light, context.theme))
         inputText.setText("")
@@ -182,10 +200,12 @@ fun updateInputTextFocus(inputText: EditText, label: TextView, isFocused: Boolea
     val context = inputText.context
 
     if (isFocused) {
-        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.primary, context.theme))
+        inputText.backgroundTintList =
+            ColorStateList.valueOf(resources.getColor(R.color.primary, context.theme))
         label.setTextColor(resources.getColor(R.color.primary, context.theme))
     } else {
-        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.info, context.theme))
+        inputText.backgroundTintList =
+            ColorStateList.valueOf(resources.getColor(R.color.info, context.theme))
         label.setTextColor(resources.getColor(R.color.info, context.theme))
     }
 }
@@ -197,16 +217,16 @@ fun setEditPlantType(
     cardChooseTypeButton: Button? = null,
     cardEditButton: ImageButton? = null
 ) {
-    if (!vm.currentPlantType.isEmpty()) {
+    if (vm.currentPlantType.isNotEmpty()) {
         cardSelectedType.text = vm.plantTypes[vm.currentPlantType]!!.name
 
         cardChooseTypeButton?.visibility = View.INVISIBLE
         cardSelectedType.visibility = View.VISIBLE
         cardEditButton?.visibility = View.VISIBLE
         editPlantLayout.visibility = View.VISIBLE
-    } else if (!vm.currentPot.isEmpty()) {
-        //cardSelectedType.text = vm.plantTypes[vm.userPots[vm.currentPot]!!.type]!!.name
-        cardSelectedType.text = "type_001"
+    } else if (vm.currentPot.isNotEmpty() && !vm.userPots[vm.currentPot]?.type.isNullOrEmpty()) {
+        // TODO testare
+        cardSelectedType.text = vm.plantTypes[vm.userPots[vm.currentPot]!!.type]!!.name
     }
 }
 
@@ -248,9 +268,8 @@ fun setEditPlantListeners(
     }
 
     editPlantButton?.setOnClickListener {
-        editPlantLayout.visibility = View.VISIBLE
-
         viewModel.currentPlantType = viewModel.userPots[viewModel.currentPot]!!.type!!
+        editPlantLayout.visibility = View.VISIBLE
     }
 
     cardBackButton.setOnClickListener {
@@ -324,7 +343,7 @@ fun bindMyPlantsView(
         plantType.text = viewModel.plantTypes[pd.type]!!.name
     }
 
-    if(pd.manualMode){
+    if (pd.manualMode) {
         if (pd.commandMode == "Immediate") manualWateringButton.visibility = View.VISIBLE
         else manualWateringButton.visibility = View.GONE
 
@@ -340,7 +359,7 @@ fun bindMyPlantsView(
                 .setValue(true)
             sureCardLayout.visibility = View.GONE
         }
-    }else{
+    } else {
         manualWateringButton.visibility = View.GONE
     }
 

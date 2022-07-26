@@ -5,12 +5,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.CalendarView
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.domopotapp.R
+import com.example.domopotapp.getTwoDigitsNumber
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -18,6 +21,7 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.firebase.database.*
+import java.time.Instant
 import java.util.*
 
 
@@ -54,11 +58,34 @@ class Graph : Fragment(R.layout.graph_fragment) {
         val plantName = view.findViewById<TextView>(R.id.graphPlantName)
         val barChart = view.findViewById<BarChart>(R.id.barChart)
 
+        val calendarLayout = view.findViewById<ConstraintLayout>(R.id.graphCalendarLayout)
+        val calendarView = view.findViewById<CalendarView>(R.id.graphCalendarView)
+        val chooseDayButton = view.findViewById<Button>(R.id.graphChooseDay)
+
+        var currentDayTimestamp = Instant.now().toEpochMilli()
+
         val pd = viewModel.userPots[viewModel.currentPot]!!
         if (pd.name == "") {
             plantName.text = viewModel.plantTypes[pd.type]!!.name
         } else {
             plantName.text = pd.name
+        }
+
+        chooseDayButton.setOnClickListener {
+            calendarLayout.visibility = View.VISIBLE
+        }
+        calendarLayout.setOnClickListener {
+            calendarLayout.visibility = View.GONE
+        }
+        calendarView.setOnDateChangeListener { _, year, month, day ->
+            currentDayTimestamp = Instant.parse(
+                "$year-${getTwoDigitsNumber(month)}-${getTwoDigitsNumber(day)}T12:00:00.000Z"
+            ).toEpochMilli()
+
+            barChart.clear()
+            barChart.notifyDataSetChanged()
+            barChart.invalidate()
+            generateGraph(barChart, currentDayTimestamp)
         }
 
         backBtn = view.findViewById(R.id.graphTitleBackButton)
@@ -78,11 +105,12 @@ class Graph : Fragment(R.layout.graph_fragment) {
                 range = 1
             }
             rangeBtn.text = range.toString()+"h"
+
             barChart.clear()
             barChart.notifyDataSetChanged()
             barChart.invalidate()
 
-            generateGraph(barChart)
+            generateGraph(barChart, currentDayTimestamp)
         }
 
         //Get values from db
@@ -97,7 +125,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
                         Log.w("Values", item.key.toString() + "___" + item.value.toString())
                         humMap[item.key.toString()] = item.value.toString().toFloat()
                         counter++
-                        if (counter==5){
+                        if (counter==9000){
                             for ((key, value) in humMap) {
                                 Log.w("map", "$key = $value")
                             }
@@ -105,7 +133,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
                             break
                         }
                     }
-                    generateGraph(barChart)
+                    generateGraph(barChart, currentDayTimestamp)
                 }else{
                     Log.w("NO DATA", "No Humidity Data")
                 }
@@ -119,7 +147,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
 
 
     //FUNZIONE PER CREARE IL GRAFICO
-    private fun generateGraph(barChart: BarChart) {
+    private fun generateGraph(barChart: BarChart, selectedDayTimestamp: Long?) {
 
         //adding values
         var barCounter = 0
@@ -140,7 +168,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
         var date : Date
         var hourFrom = ""
         var hourTo = ""
-        var currentTimeStamp = System.currentTimeMillis()
+        var currentTimeStamp = selectedDayTimestamp ?: System.currentTimeMillis()
         var currentDay = sdfday.format(currentTimeStamp).toString()
         var currentHour = sdfhour.format(currentTimeStamp).toString()
 
@@ -151,9 +179,9 @@ class Graph : Fragment(R.layout.graph_fragment) {
         var intervalHour = arrayOf<String>("00", "01", "02","03","04","05","06","07","08","09","10"
             ,"11","12","13","14","15","16","17","18","19","20","21","22","23")
         for (hour in intervalHour.indices step range) {
-            if(currentHour.toInt() <= intervalHour[hour].toInt()+range){
+            /*if(currentHour.toInt() <= intervalHour[hour].toInt()+range){
                 break
-            }
+            }*/
             hourFrom = intervalHour[hour];
             if(hour+range >= intervalHour.size){
                 hourTo = "24"
@@ -296,7 +324,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
 
         val barDataSet = BarDataSet(ourBarEntries, "")
         //set a template coloring
-        barDataSet.setColors(Color.rgb(203, 203, 203))
+        barDataSet.setColors(Color.parseColor("#9BE7D4"))
         //set label size
         barDataSet.valueTextSize = 15F
         //reformat label

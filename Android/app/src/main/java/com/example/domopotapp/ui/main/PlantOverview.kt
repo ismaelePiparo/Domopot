@@ -1,7 +1,5 @@
 package com.example.domopotapp.ui.main
 
-import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +7,12 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domopotapp.*
-import com.google.firebase.database.DatabaseReference
-import java.time.format.DateTimeFormatter
+import com.example.domopotapp.PotData
+import com.example.domopotapp.R
+import com.example.domopotapp.bindMyPlantsView
+import com.example.domopotapp.getTimeDistanceString
 
 
 class PlantOverviewAdapter(var l: MutableList<PotData>, val viewModel: MainViewModel) :

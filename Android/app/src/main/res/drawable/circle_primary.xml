@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
-
-    <solid android:color="@color/primary" />
-
-</shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false">
+        <shape android:shape="oval">
+            <solid android:color="@color/light" />
+        </shape>
+    </item>
+    <item android:state_pressed="true" >
+        <inset
+            android:insetTop="2dp"
+            android:insetLeft="2dp"
+            android:insetRight="2dp"
+            android:insetBottom="2dp"
+            >
+            <shape android:shape="oval">
+                <solid android:color="@color/primary" />
+            </shape>
+        </inset>
+    </item>
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/primary" />
+        </shape>
+    </item>
+</selector>

@@ -93,12 +93,13 @@ class MainViewModel : ViewModel() {
         }
 
         val newPot = createPotData(potId, userPots[potId]!!.name, potSnapshot, ptSnapshot)
-
-        if (userPots[newPot.id] != newPot) {
+        Log.i("updateUserPot", "newPot creato")
+        //if (userPots[newPot.id] != newPot) {
             userPots[newPot.id] = newPot
 
             (plantOverview.adapter as PlantOverviewAdapter).submitList(userPots.values.toMutableList())
-        }
+            Log.i("updateUserPot", "plantOverview aggiornato")
+        //}
     }
 
     fun updateUserPot(
@@ -115,11 +116,13 @@ class MainViewModel : ViewModel() {
 
         val newPot = createPotData(potId, userPots[potId]!!.name, potSnapshot, ptSnapshot)
 
-        if (userPots[newPot.id] != newPot) {
+        Log.i("updateUserPot", "newPot creato")
+        //if (userPots[newPot.id] != newPot) {
             userPots[newPot.id] = newPot
 
             fragment.updateView()
-        }
+            Log.i("updateUserPot", "Details aggiornato")
+        //}
     }
 
     fun removeUserPot(

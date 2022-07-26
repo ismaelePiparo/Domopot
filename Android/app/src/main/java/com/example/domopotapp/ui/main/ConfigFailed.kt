@@ -1,8 +1,10 @@
 package com.example.domopotapp.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.domopotapp.R
@@ -20,6 +22,11 @@ class ConfigFailed : Fragment(R.layout.config_failed_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //disabilita il tasto back
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            Log.w("BACK PRESSED","Attendere il completamento dell'operazione...")
+        }
 
         val backToHomeButton: Button = view.findViewById(R.id.configFailedBackToHomeBtn)
         val retryButton: Button = view.findViewById(R.id.configFailedRetryBtn)

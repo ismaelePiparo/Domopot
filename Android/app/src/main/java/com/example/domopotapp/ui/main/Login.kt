@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.domopotapp.MainActivity
@@ -43,6 +44,10 @@ class Login : Fragment(R.layout.login_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            Log.w("BACK PRESSED","Attendere il completamento dell'operazione...")
+        }
 
         Log.w("Current user: ", viewModel.mAuth.currentUser.toString())
 
