@@ -323,10 +323,22 @@ void connectToWifi (String ssid, String pass)
       //WiFi.softAPdisconnect(false); //disconnette i client dall'ap senza spegnerlo
       break;
     }
-    if(WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_NO_SSID_AVAIL){
+    if(WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_NO_SSID_AVAIL || WiFi.status() == WL_IDLE_STATUS){
       Serial.println("Connection failed");
       break;
     }
+    /*
+    Serial.println(WiFi.status());
+    Possibles WiFi Status Code:
+    WL_NO_SHIELD        = 255,   // for compatibility with WiFi Shield library
+    WL_IDLE_STATUS      = 0,
+    WL_NO_SSID_AVAIL    = 1,
+    WL_SCAN_COMPLETED   = 2,
+    WL_CONNECTED        = 3,
+    WL_CONNECT_FAILED   = 4,
+    WL_CONNECTION_LOST  = 5,
+    WL_DISCONNECTED     = 6
+    */
   }
   
 
