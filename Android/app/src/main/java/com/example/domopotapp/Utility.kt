@@ -211,16 +211,16 @@ fun setEditPlantType(
     cardChooseTypeButton: Button? = null,
     cardEditButton: ImageButton? = null
 ) {
-    if (!vm.currentPlantType.isEmpty()) {
+    if (vm.currentPlantType.isNotEmpty()) {
         cardSelectedType.text = vm.plantTypes[vm.currentPlantType]!!.name
 
         cardChooseTypeButton?.visibility = View.INVISIBLE
         cardSelectedType.visibility = View.VISIBLE
         cardEditButton?.visibility = View.VISIBLE
         editPlantLayout.visibility = View.VISIBLE
-    } else if (!vm.currentPot.isEmpty()) {
-        //cardSelectedType.text = vm.plantTypes[vm.userPots[vm.currentPot]!!.type]!!.name
-        cardSelectedType.text = "type_001"
+    } else if (vm.currentPot.isNotEmpty() && !vm.userPots[vm.currentPot]!!.type.isNullOrEmpty()) {
+        // TODO testare
+        cardSelectedType.text = vm.plantTypes[vm.userPots[vm.currentPot]!!.type]!!.name
     }
 }
 
@@ -262,9 +262,8 @@ fun setEditPlantListeners(
     }
 
     editPlantButton?.setOnClickListener {
-        editPlantLayout.visibility = View.VISIBLE
-
         viewModel.currentPlantType = viewModel.userPots[viewModel.currentPot]!!.type!!
+        editPlantLayout.visibility = View.VISIBLE
     }
 
     cardBackButton.setOnClickListener {

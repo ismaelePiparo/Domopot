@@ -1,5 +1,6 @@
 package com.example.domopotapp.ui.main
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -49,8 +50,8 @@ class Details : Fragment(R.layout.details_fragment) {
     private lateinit var detailsTitleBackButton: ImageButton
     private lateinit var detailsEditPlantButton: ImageButton
     private lateinit var graphBtn: Button
-
     private lateinit var detailsCardWateringModeLayout: ConstraintLayout
+
     private lateinit var detailsCardWateringModeTitle: TextView
     private lateinit var detailsCardRadioGroup: RadioGroup
     private lateinit var detailsCardRadioButtonHumidity: RadioButton
@@ -63,8 +64,8 @@ class Details : Fragment(R.layout.details_fragment) {
     private lateinit var detailsCardWateringModeSeekBarTitle: TextView
     private lateinit var detailsCardWateringModeTimePickerTitle: TextView
     private lateinit var detailsCardWateringModeTimePickerButton: Button
-
     private lateinit var detailsCardModeSwitch: Switch
+
     private lateinit var detailsCardTemperatureBar: ProgressBar
     private lateinit var detailsEditCardLayout: ConstraintLayout
     private lateinit var detailsEditCardType: TextView
@@ -73,14 +74,20 @@ class Details : Fragment(R.layout.details_fragment) {
     private lateinit var detailsEditCardNameInput: EditText
     private lateinit var detailsEditCardTitleBackButton: ImageButton
     private lateinit var detailsEditCardEditPlantType: ImageButton
+    private lateinit var detailsEditCardDeletePlant: ImageButton
     private lateinit var detailsEditCardConfirm: Button
 
     private lateinit var detailsSureCardLayout: ConstraintLayout
     private lateinit var detailsSureCardTitleBackButton: ImageButton
     private lateinit var detailsSureCardConfirm: Button
 
+    private lateinit var detailsDeleteSureCardLayout: ConstraintLayout
+    private lateinit var detailsDeleteSureCardTitleBackButton: ImageButton
+    private lateinit var detailsDeleteSureCardConfirm: Button
+
     // TODO tasto elimina
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -122,8 +129,9 @@ class Details : Fragment(R.layout.details_fragment) {
             if (isOn) vm.uploadCurrentPot(humidityThreshold = vm.plantTypes[vm.userPots[vm.currentPot]!!.type]!!.humidityThreshold)
             vm.uploadCurrentPot(manualMode = !isOn)
             updateView()
+            detailsEditCardLayout.visibility = View.GONE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // Convertire a smoothscroll se si riesce
+                // TODO Convertire a smoothscroll se si riesce
                 view.findViewById<ScrollView>(R.id.detailsScrollView)
                     .scrollToDescendant(detailsCardWateringModeSeekBar)
             }
@@ -178,6 +186,19 @@ class Details : Fragment(R.layout.details_fragment) {
             val timeString = getHMTimeString(hour, minutes)
             detailsCardWateringModeTimePickerButton.text = timeString
             vm.uploadCurrentPot(programTiming = getTimestampFromTimeString(timeString))
+        }
+
+        detailsEditCardDeletePlant.setOnClickListener {
+            detailsEditCardLayout.visibility = View.GONE
+            detailsDeleteSureCardLayout.visibility = View.VISIBLE
+        }
+        detailsDeleteSureCardTitleBackButton.setOnClickListener {
+            detailsDeleteSureCardLayout.visibility = View.GONE
+        }
+        detailsDeleteSureCardConfirm.setOnClickListener {
+            userPotsRef.child(vm.currentPot).removeValue().addOnSuccessListener {
+                findNavController().navigate(R.id.action_details_to_home2)
+            }
         }
 
         setEditPlantListeners(
@@ -369,10 +390,15 @@ class Details : Fragment(R.layout.details_fragment) {
         detailsEditCardNameInput = view.findViewById(R.id.detailsEditCardNameInput)
         detailsEditCardTitleBackButton = view.findViewById(R.id.detailsEditCardTitleBackButton)
         detailsEditCardEditPlantType = view.findViewById(R.id.detailsEditCardEditPlantType)
+        detailsEditCardDeletePlant  = view.findViewById(R.id.detailsEditCardDeletePlant)
         detailsEditCardConfirm = view.findViewById(R.id.detailsEditCardConfirm)
 
         detailsSureCardLayout = view.findViewById(R.id.detailsSureCardLayout)
         detailsSureCardTitleBackButton = view.findViewById(R.id.detailsSureCardTitleBackButton)
         detailsSureCardConfirm = view.findViewById(R.id.detailsSureCardConfirm)
+
+        detailsDeleteSureCardLayout = view.findViewById(R.id.detailsDeleteSureCardLayout)
+        detailsDeleteSureCardTitleBackButton = view.findViewById(R.id.detailsDeleteSureCardTitleBackButton)
+        detailsDeleteSureCardConfirm = view.findViewById(R.id.detailsDeleteSureCardConfirm)
     }
 }

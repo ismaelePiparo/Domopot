@@ -641,8 +641,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/modal_bg"
-        android:onClick="preventClicks"
         android:elevation="100dp"
+        android:onClick="preventClicks"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -690,6 +690,22 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageButton
+                    android:id="@+id/detailsEditCardDeletePlant"
+
+                    style="@style/CircleIconButton"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="@dimen/title_left_margin"
+
+                    android:background="@drawable/circle_danger"
+                    android:src="@drawable/ic_delete"
+                    app:layout_constraintBottom_toBottomOf="@+id/detailsEditCardTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/detailsEditCardTitle"
+                    app:layout_constraintTop_toTopOf="@+id/detailsEditCardTitle" />
+
                 <CheckBox
                     android:id="@+id/detailsEditCardCheckBox"
                     android:layout_width="wrap_content"
@@ -716,7 +732,7 @@
                     android:layout_marginStart="65dp"
                     android:layout_marginTop="72dp"
                     android:layout_marginEnd="@dimen/title_left_margin"
-                    android:layout_marginBottom="80dp"
+                    android:layout_marginBottom="60dp"
                     android:backgroundTint="@color/light"
                     android:ems="10"
                     android:enabled="false"
@@ -874,6 +890,95 @@
 
                     android:text="Conferma"
                     app:layout_constraintTop_toBottomOf="@+id/detailsSureCardDescription"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/detailsDeleteSureCardLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/modal_bg"
+        android:onClick="preventClicks"
+        android:elevation="100dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/detailsDeleteSureCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/title_left_margin"
+            android:layout_marginEnd="@dimen/title_left_margin"
+            app:cardCornerRadius="36dp"
+            app:cardElevation="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.45">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <ImageButton
+                    android:id="@+id/detailsDeleteSureCardTitleBackButton"
+
+                    style="@style/ConfigTitleBackButton"
+                    android:layout_marginTop="-5dp"
+
+                    app:layout_constraintEnd_toStartOf="@+id/detailsDeleteSureCardTitle"
+                    app:layout_constraintTop_toTopOf="@+id/detailsDeleteSureCardTitle" />
+
+                <TextView
+                    android:id="@+id/detailsDeleteSureCardTitle"
+
+                    style="@style/TextSmallCardTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/title_left_margin"
+
+                    android:layout_marginTop="16dp"
+                    android:text="Sei sicuro?"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/detailsDeleteSureCardDescription"
+
+                    style="@style/TextDescription"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="@dimen/title_left_margin"
+
+                    android:text="Stai per eliminare questa pianta dalla sezione 'Le mie piante'"
+
+                    android:textColor="@color/dark"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/detailsDeleteSureCardTitle"
+                    app:layout_constraintTop_toBottomOf="@id/detailsDeleteSureCardTitle" />
+
+                <android.widget.Button
+                    android:id="@+id/detailsDeleteSureCardConfirm"
+
+                    style="@style/SmallCardPrimaryButton"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="28dp"
+                    android:background="@drawable/btn_danger"
+
+                    android:text="Elimina"
+                    app:layout_constraintTop_toBottomOf="@+id/detailsDeleteSureCardDescription"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />

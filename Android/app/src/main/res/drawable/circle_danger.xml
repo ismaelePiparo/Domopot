@@ -13,13 +13,13 @@
             android:insetBottom="2dp"
             >
             <shape android:shape="oval">
-                <solid android:color="@color/secondary" />
+                <solid android:color="@color/danger" />
             </shape>
         </inset>
     </item>
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/secondary" />
+            <solid android:color="@color/danger" />
         </shape>
     </item>
 </selector>
