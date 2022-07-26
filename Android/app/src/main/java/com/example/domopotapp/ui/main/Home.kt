@@ -36,10 +36,12 @@ class Home : Fragment(R.layout.home_fragment) {
     private lateinit var userPotsListener: ChildEventListener
     private lateinit var globalPotsListener: ChildEventListener
 
+    private lateinit var bottomNav: BottomNavigationView
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)!!
+        bottomNav = activity?.findViewById(R.id.bottom_navigation)!!
 
         val mainLayout: ConstraintLayout = view.findViewById(R.id.main)
         val noPlantsLayout: ConstraintLayout = view.findViewById(R.id.noPlantsLayout)
@@ -114,6 +116,7 @@ class Home : Fragment(R.layout.home_fragment) {
 
     override fun onResume() {
         super.onResume()
+        bottomNav.menu.getItem(1).isChecked = true
         userPotsRef.addChildEventListener(userPotsListener)
         globalPotsRef.addChildEventListener(globalPotsListener)
     }

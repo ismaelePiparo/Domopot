@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -16,6 +17,7 @@ import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domopotapp.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class Guide : Fragment(R.layout.guide_fragment) {
@@ -30,8 +32,12 @@ class Guide : Fragment(R.layout.guide_fragment) {
 
     private val viewModel by activityViewModels<MainViewModel>()
 
+    private lateinit var bottomNav: BottomNavigationView
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        bottomNav = activity?.findViewById(R.id.bottom_navigation)!!
 
         val title: TextView = view.findViewById(R.id.guideTitle)
         val rv: RecyclerView = view.findViewById(R.id.plantTypesRV)
@@ -40,6 +46,8 @@ class Guide : Fragment(R.layout.guide_fragment) {
         val guideSearchBar: CardView = view.findViewById(R.id.guideSearchBar)
         val guideSearchBarClose: ImageButton = view.findViewById(R.id.guideSearchBarClose)
         val guideSearchBarInput: EditText = view.findViewById(R.id.guideSearchBarInput)
+
+        if (!bottomNav.isVisible) bottomNav.visibility = View.VISIBLE
 
         if (viewModel.choosePTModeOn) title.text = "Scegli specie"
 
@@ -58,6 +66,11 @@ class Guide : Fragment(R.layout.guide_fragment) {
             }
             (rv.adapter as PlantTypeAdapter).submitList(result.values.toMutableList())
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bottomNav.menu.getItem(0).isChecked = true
     }
 }
 
