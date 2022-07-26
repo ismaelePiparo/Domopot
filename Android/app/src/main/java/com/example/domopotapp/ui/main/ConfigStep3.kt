@@ -57,10 +57,8 @@ class ConfigStep3 : Fragment(R.layout.config_step_3_fragment) {
         Log.w("app timestamp", viewModel.timestamp.toString())
         Log.w("pot id", viewModel.Pot_ID.toString())
         //disabilita il tasto back
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             Log.w("BACK PRESSED","Attendere il completamento dell'operazione...")
-            //Toast.makeText(activity, "Attendere il completamento dell'operazione...", Toast.LENGTH_LONG).show()
-
         }
 
 

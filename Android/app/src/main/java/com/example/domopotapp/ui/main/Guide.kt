@@ -3,10 +3,12 @@ package com.example.domopotapp.ui.main
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
@@ -49,7 +51,12 @@ class Guide : Fragment(R.layout.guide_fragment) {
 
         if (!bottomNav.isVisible) bottomNav.visibility = View.VISIBLE
 
-        if (viewModel.choosePTModeOn) title.text = "Scegli specie"
+        if (viewModel.choosePTModeOn) {
+            title.text = "Scegli specie"
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+                Log.w("BACK PRESSED","Attendere il completamento dell'operazione...")
+            }
+        }
 
         rv.layoutManager = LinearLayoutManager(activity)
         rv.adapter = PlantTypeAdapter(viewModel.plantTypes.values.toMutableList(), viewModel, this)

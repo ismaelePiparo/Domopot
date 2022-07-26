@@ -24,10 +24,8 @@ class ConfigFailed : Fragment(R.layout.config_failed_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         //disabilita il tasto back
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             Log.w("BACK PRESSED","Attendere il completamento dell'operazione...")
-            //Toast.makeText(activity, "Attendere il completamento dell'operazione...", Toast.LENGTH_LONG).show()
-
         }
 
         val backToHomeButton: Button = view.findViewById(R.id.configFailedBackToHomeBtn)
