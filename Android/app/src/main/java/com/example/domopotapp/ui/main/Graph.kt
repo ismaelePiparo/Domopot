@@ -324,7 +324,7 @@ class Graph : Fragment(R.layout.graph_fragment) {
 
         val barDataSet = BarDataSet(ourBarEntries, "")
         //set a template coloring
-        barDataSet.setColors(resources.getColor(R.color.primary_light, requireContext().theme))
+        barDataSet.setColors(Color.parseColor("#9BE7D4"))
         //set label size
         barDataSet.valueTextSize = 15F
         //reformat label
