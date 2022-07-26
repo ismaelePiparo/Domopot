@@ -14,7 +14,7 @@
 #define SSID_OFFSET 32
 #define AP_SSID "DomoPot_WiFi"
 #define AP_PASS ""
-#define PUMP_PIN 3
+#define PUMP_PIN 4
 
 /* Tenere attivo l'accesspoint in ascolto solo per handle start e credentials
  * 
@@ -105,12 +105,12 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN,HIGH);
 
-  //RestoreWiFiCreds();           //recupera credenziali dalla EEPROM se ci sono
+  RestoreWiFiCreds();           //recupera credenziali dalla EEPROM se ci sono
   connectToWifi(ssid,pass);     //tentativo di connessione
-  Serial.println("Attivazione AP");
-  AccessPoint(AP_SSID, AP_PASS);
-
+  
   if(WiFi.status() != WL_CONNECTED){
+    Serial.println("Attivazione AP");
+    AccessPoint(AP_SSID, AP_PASS);
     SendMessageToArduino(ledState = Led_accessPoint);
     Serial.println("Entro in ConfigurationPhase");
     ConfigurationPhase();       //non ritorna finché non si è connessi all'AP
@@ -133,7 +133,7 @@ void loop() {
     digitalWrite(LED_BUILTIN,LOW);
 
     //Commentati perche impallano l'esp al momento....
-    //requestData(); //richede e stampa i dati di arduino
+    requestData(); //richede e stampa i dati di arduino
 
     timeClient.update();
 
@@ -141,25 +141,24 @@ void loop() {
     FirebasePrintData();
     delay(10000);
     // Controlla modalità
-    // --> Al momento tutto commentato per test cono solo ESP
-    /*String mode;
+    String mode;
     if (Firebase.RTDB.getString(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode", &mode)){
-      switch(mode[0]){
-        case 'i':
+      Serial.println(mode);
+      switch(char(mode[0])){
+        case 'I':
           ModeImmediate();
+          Serial.println(immediateModeError);
           break;
-        case 'h':
+        case 'H':
           ModeHumidity();
           break;
-        case 'p':
+        case 'P':
           ModeProgram();
           break;
         default:
           break;
       }
-    }*/
-
-    
+    }
   }
 }
 
@@ -169,16 +168,19 @@ void loop() {
 // 			cancella comando
 // 			innaffia
 void ModeImmediate(){
-  bool Annaffia;
-  if(Firebase.RTDB.getBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Immediate/Annaffia", &Annaffia) 
-     && Annaffia 
+  bool Annaff = false;
+  bool dbRead = Firebase.RTDB.getBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Immediate/Annaffia", &Annaff);
+  Serial.println(Annaff);
+  Serial.println("dbRead: "+ dbRead);
+  if( dbRead
+     && Annaff 
      && !immediateModeError){
-    digitalWrite(PUMP_PIN,HIGH);
+      digitalWrite(PUMP_PIN,HIGH);
       delay(1000 /* *waterAmount */ );
       digitalWrite(PUMP_PIN,LOW);
-    immediateModeError = !Firebase.RTDB.setBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Immediate/Annaffia", false);
+    immediateModeError = !Firebase.RTDB.setBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Immediate/Annaffia", false);
   } else if (immediateModeError){
-    immediateModeError = !Firebase.RTDB.setBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Immediate/Annaffia", false);
+    immediateModeError = !Firebase.RTDB.setBool(&fbdo, "/Pots/"+Pot_ID+"/Commands/Immediate/Annaffia", false);
   }
 }
 // 	humidity
@@ -186,7 +188,7 @@ void ModeImmediate(){
 // 			innaffia
 void ModeHumidity(){
   int threshold;
-  if(Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Humidity", &threshold))
+  if(Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Humidity", &threshold))
   {
     if (humidity < threshold){
       digitalWrite(PUMP_PIN,HIGH);
@@ -204,12 +206,12 @@ void ModeHumidity(){
 
 void ModeProgram(){
   int hour;
-  if(Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/Timing", &hour))
+  if(Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Program/Timing", &hour))
   {
     int waterAmount;
     if (epochToDay(timeClient.getEpochTime()) != epochToDay(programModeLastWatering)
         && timeClient.getHours() > hour
-        && Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Mode/WaterQuantity", &waterAmount))
+        && Firebase.RTDB.getInt(&fbdo, "/Pots/"+Pot_ID+"/Commands/Program/WaterQuantity", &waterAmount))
     {
       digitalWrite(PUMP_PIN,HIGH);
       delay(1000 /* *waterAmount */ );
@@ -392,7 +394,7 @@ void handle_Credentials()
     connectToWifi(ssid,pass);
   }
   if(WiFi.status() == WL_CONNECTED){
-    //SaveWiFiCreds();
+    SaveWiFiCreds();
   }
 }
 
@@ -468,10 +470,13 @@ void FirebasePrintData(){
   long time = timeClient.getEpochTime();
   Firebase.RTDB.setString(&fbdo, "/Pots/"+Pot_ID+"/OnlineStatus/ConnectTime", String(time));
   //umidità
-  Firebase.RTDB.setFloat(&fbdo, "/Pots/"+Pot_ID+"/Humidity/LastHumidity",humidity);
-  Firebase.RTDB.setFloat(&fbdo, "/Pots/"+Pot_ID+"/Humidity/HistoryHumidity/"+String(time),humidity);
+  float x = 1.0/(0.00001+humidity);
+  int humPercent = int(100*( x) - 1.0625);
+  Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"/Humidity/LastHumidity",humPercent);
+  Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"/Humidity/HistoryHumidity/"+String(time),humPercent);
   //livello acqua
-  Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"/WaterLevel",waterLvl);
+  int waterPercent = waterLvl > 25 ? 0 : (100 - (waterLvl * 4));
+  Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"/WaterLevel",waterPercent);
   //ultima innaffiata
   Firebase.RTDB.setInt(&fbdo, "/Pots/"+Pot_ID+"/LastWatering",programModeLastWatering);
 }
