@@ -53,7 +53,7 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
     private val TAG = ConfigStep1::class.java.name
 
     private lateinit var scanBtn: Button
-    private lateinit var nextBtn: Button
+    private lateinit var nextBtn: ImageButton
     private lateinit var wifiBtn: Button
     private lateinit var infoWifi: TextView
     private var defaultText: String = "Sei connesso a: "
@@ -64,10 +64,10 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
         val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)!!
         if (bottomNav.isVisible) bottomNav.visibility = View.GONE
 
-        nextBtn = view.findViewById<Button>(R.id.next_1)
-        infoWifi = view.findViewById<TextView>(R.id.current_wifi)
-        scanBtn = view.findViewById<Button>(R.id.scanBtn)
-        wifiBtn = view.findViewById<Button>(R.id.wifiMenu)
+        nextBtn =view.findViewById(R.id.next_1)
+        infoWifi = view.findViewById(R.id.current_wifi)
+        scanBtn = view.findViewById(R.id.scanBtn)
+        wifiBtn = view.findViewById(R.id.wifiMenu)
         viewModel.wifiManager = requireActivity().getApplicationContext()
             .getSystemService(Context.WIFI_SERVICE) as WifiManager
 
@@ -231,7 +231,8 @@ class ConfigStep1 : Fragment(R.layout.config_step_1_fragment) {
                 infoWifi.text = "Non sei connesso alla rete corretta"
                 infoWifi.setTextColor(resources.getColor(R.color.danger))
                 if (viewModel.wifiManager!!.connectionInfo.ssid.equals("\"" + "DomoPot_WiFi" + "\"")) {
-                    infoWifi.setTextColor(resources.getColor(R.color.primary))
+                    infoWifi.text = "Sei connesso correttamente"
+                    infoWifi.setTextColor(resources.getColor(R.color.primary, context.theme))
                     nextBtn.isEnabled = true
                     viewModel.ssid = viewModel.wifiManager!!.connectionInfo.ssid
                     //findNavController().navigate(R.id.ConfigStep1_to_ConfigStep2)

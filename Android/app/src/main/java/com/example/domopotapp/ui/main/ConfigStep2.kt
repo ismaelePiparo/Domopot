@@ -225,7 +225,6 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
                     wifi_ssid = "Rete Nascosta"
                 } else {
                     wifi_ssid = scanResult.SSID
-
                 }
 
                 Log.d("WIFIScannerActivity", "WIFI SSID: $wifi_ssid")
@@ -241,7 +240,7 @@ class ConfigStep2 : Fragment(R.layout.config_step_2_fragment) {
                     "scanResult.SSID: " + scanResult.SSID + ", scanResult.capabilities: " + scanResult.capabilities
                 )
 
-                availableWifiNetworks.add(wifi_ssid)
+                if (wifi_ssid != "DomoPot_WiFi") availableWifiNetworks.add(wifi_ssid)
                 //adapter!!.notifyDataSetChanged()
                 adapter!!.submitList(availableWifiNetworks, loadingIcon)
             }

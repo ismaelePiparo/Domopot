@@ -13,13 +13,14 @@ import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.viewpager2.widget.ViewPager2
 import com.example.domopotapp.ui.main.Details
 import com.example.domopotapp.ui.main.MainViewModel
 import com.google.firebase.database.DatabaseReference
 import java.io.InputStream
 import java.time.*
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 val defaultFirebaseOnFailureListener =
     { it: Exception -> Log.e("firebase", "Error getting data", it) }
@@ -29,6 +30,19 @@ fun linkAssetImage(imageView: ImageView, fileName: String) {
     val ims: InputStream = assetManager.open(fileName)
     val d = Drawable.createFromStream(ims, null)
     imageView.setImageDrawable(d)
+}
+
+fun setSupportsChangeAnimations(viewPager: ViewPager2, enable: Boolean) {
+    for (i in 0 until viewPager.childCount) {
+        val view = viewPager.getChildAt(i)
+        if (view is RecyclerView) {
+            val animator = view.itemAnimator
+            if (animator != null) {
+                (animator as SimpleItemAnimator).supportsChangeAnimations = enable
+            }
+            break
+        }
+    }
 }
 
 fun getLastWateringFromTimestamp(timestamp: Long): LocalDateTime {

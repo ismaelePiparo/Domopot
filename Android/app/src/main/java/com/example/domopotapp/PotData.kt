@@ -21,7 +21,7 @@ data class PotData(
     var programTiming: Long = -1,
     var waterQuantity: Int = 50
 ) {
-    override fun equals(other: Any?): Boolean {
+    /*override fun equals(other: Any?): Boolean {
         val o = other as PotData
         //Log.i("PotData", this.toString() + "\n" + o.toString())
         return when {
@@ -41,7 +41,7 @@ data class PotData(
             waterQuantity != o.waterQuantity -> false
             else -> true
         }
-    }
+    }*/
 
     override fun toString(): String {
         return "$id\n" +

@@ -1,7 +1,6 @@
 package com.example.domopotapp.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
@@ -13,12 +12,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.domopotapp.R
-import com.example.domopotapp.defaultFirebaseOnFailureListener
+import com.example.domopotapp.setSupportsChangeAnimations
 import com.example.domopotapp.updateHomeLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 
@@ -63,6 +60,7 @@ class Home : Fragment(R.layout.home_fragment) {
         updateHomeLayout(viewModel.emptyUserPots, mainLayout, noPlantsLayout)
 
         plantOverview.adapter = PlantOverviewAdapter(viewModel.userPots.values.toMutableList(), viewModel)
+        setSupportsChangeAnimations(plantOverview, false)
         dotsIndicator.attachTo(plantOverview)
 
         // GESTIONE BUTTON
@@ -112,6 +110,18 @@ class Home : Fragment(R.layout.home_fragment) {
 
         userPotsRef.addChildEventListener(userPotsListener)
         globalPotsRef.addChildEventListener(globalPotsListener)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        userPotsRef.addChildEventListener(userPotsListener)
+        globalPotsRef.addChildEventListener(globalPotsListener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        userPotsRef.removeEventListener(userPotsListener)
+        globalPotsRef.removeEventListener(globalPotsListener)
     }
 
     override fun onDestroy() {

@@ -201,12 +201,21 @@ class Details : Fragment(R.layout.details_fragment) {
         updateView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        globalPotsRef.addChildEventListener(singlePotListener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        globalPotsRef.removeEventListener(singlePotListener)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         globalPotsRef.removeEventListener(singlePotListener)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     fun updateView() {
         if (vm.editPlantSelectedName.isEmpty()) {
             vm.editPlantSelectedName = vm.userPots[vm.currentPot]!!.name
