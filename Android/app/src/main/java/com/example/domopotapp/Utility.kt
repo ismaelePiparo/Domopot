@@ -218,7 +218,7 @@ fun setEditPlantType(
         cardSelectedType.visibility = View.VISIBLE
         cardEditButton?.visibility = View.VISIBLE
         editPlantLayout.visibility = View.VISIBLE
-    } else if (vm.currentPot.isNotEmpty() && !vm.userPots[vm.currentPot]!!.type.isNullOrEmpty()) {
+    } else if (vm.currentPot.isNotEmpty() && !vm.userPots[vm.currentPot]?.type.isNullOrEmpty()) {
         // TODO testare
         cardSelectedType.text = vm.plantTypes[vm.userPots[vm.currentPot]!!.type]!!.name
     }
