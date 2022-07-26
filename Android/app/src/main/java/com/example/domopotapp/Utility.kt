@@ -76,16 +76,17 @@ fun getConnectionStatusFromTimestamp(timestamp: Int): Boolean {
     //Controlla se online status è maggiore del tempo corrente - 5 minuti
     // onlineStatus si aggiorna da ESP ogni 10 secondi
     //Log.w("Current ts -5 min", ((System.currentTimeMillis() / 1000)-250).toString())
-    return timestamp > (System.currentTimeMillis() / 1000)-500
+    return timestamp > (System.currentTimeMillis() / 1000) - 500
+}
+
+fun getTwoDigitsNumber(num: Int): String {
+    return if (num < 10) "0$num"
+    else "$num"
 }
 
 fun getHMTimeString(hour: Int, minutes: Int): String {
-    val hString =
-        if (hour < 10) "0$hour"
-        else "$hour"
-    val minString =
-        if (minutes < 10) "0$minutes"
-        else "$minutes"
+    val hString = getTwoDigitsNumber(hour)
+    val minString = getTwoDigitsNumber(minutes)
     return "$hString:$minString"
 }
 
@@ -95,7 +96,8 @@ fun getTimestampFromTimeString(timeString: String): Long {
     val month =
         if (now.monthValue < 10) "0${now.monthValue}"
         else "${now.monthValue}"
-    return Instant.parse("${now.year}-$month-${now.dayOfMonth}T$timeString:00.000Z").toEpochMilli()/1000
+    return Instant.parse("${now.year}-$month-${now.dayOfMonth}T$timeString:00.000Z")
+        .toEpochMilli() / 1000
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -179,12 +181,14 @@ fun updateCheckBoxEditText(inputText: EditText, label: TextView, checkboxIsCheck
     val context = inputText.context
     if (checkboxIsChecked) {
         inputText.isEnabled = true
-        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.info, context.theme))
+        inputText.backgroundTintList =
+            ColorStateList.valueOf(resources.getColor(R.color.info, context.theme))
         inputText.setHintTextColor(resources.getColor(R.color.info, context.theme))
         label.setTextColor(resources.getColor(R.color.info, context.theme))
     } else {
         inputText.isEnabled = false
-        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.light, context.theme))
+        inputText.backgroundTintList =
+            ColorStateList.valueOf(resources.getColor(R.color.light, context.theme))
         inputText.setHintTextColor(resources.getColor(R.color.light, context.theme))
         label.setTextColor(resources.getColor(R.color.light, context.theme))
         inputText.setText("")
@@ -196,10 +200,12 @@ fun updateInputTextFocus(inputText: EditText, label: TextView, isFocused: Boolea
     val context = inputText.context
 
     if (isFocused) {
-        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.primary, context.theme))
+        inputText.backgroundTintList =
+            ColorStateList.valueOf(resources.getColor(R.color.primary, context.theme))
         label.setTextColor(resources.getColor(R.color.primary, context.theme))
     } else {
-        inputText.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.info, context.theme))
+        inputText.backgroundTintList =
+            ColorStateList.valueOf(resources.getColor(R.color.info, context.theme))
         label.setTextColor(resources.getColor(R.color.info, context.theme))
     }
 }
@@ -337,7 +343,7 @@ fun bindMyPlantsView(
         plantType.text = viewModel.plantTypes[pd.type]!!.name
     }
 
-    if(pd.manualMode){
+    if (pd.manualMode) {
         if (pd.commandMode == "Immediate") manualWateringButton.visibility = View.VISIBLE
         else manualWateringButton.visibility = View.GONE
 
@@ -353,7 +359,7 @@ fun bindMyPlantsView(
                 .setValue(true)
             sureCardLayout.visibility = View.GONE
         }
-    }else{
+    } else {
         manualWateringButton.visibility = View.GONE
     }
 
